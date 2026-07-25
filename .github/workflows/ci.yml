@@ -103,6 +103,9 @@ jobs:
       - name: Build (tsc)
         run: npx tsc
 
+      - name: Unit tests (jest)
+        run: npm test
+
       - name: Smoke test (emulator starts on Node 18)
         run: |
           set -e
