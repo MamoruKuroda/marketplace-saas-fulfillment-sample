@@ -1,0 +1,26 @@
+version: 2
+
+# Group the vendored emulator's npm updates into a single PR to cut the per-bump
+# noise that a committed lockfile produces, and pin uuid to the CommonJS v9 line
+# (uuid v14+ is ESM-only and crashes the Node 18 emulator at runtime — see #48).
+# Majors are NOT auto-merged: the dependabot-auto-merge workflow holds them open
+# for human review, and the build-emulator CI lane (build + jest + startup smoke)
+# must pass before any bump can merge.
+updates:
+  - package-ecosystem: "npm"
+    directory: "/emulator"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      emulator-npm:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "uuid"
+        update-types: ["version-update:semver-major"]
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+    labels:
+      - "dependencies"

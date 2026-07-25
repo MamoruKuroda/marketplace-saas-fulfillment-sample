@@ -1,10 +1,13 @@
 name: Dependabot auto-merge
 
-# Enable auto-merge (squash) on Dependabot pull requests.
-# Only Dependabot *security updates* are enabled for this repo, so these PRs are
-# targeted CVE patches. Auto-merge waits for the branch-protection required checks
-# (build-test, build-test-sqlserver) to pass, so a PR only merges once CI is green.
-# Uses `pull_request` (not `pull_request_target`) with an actor + repository guard.
+# Auto-merge (squash) Dependabot pull requests once the branch-protection
+# required checks pass — but ONLY for non-major updates. Major bumps are left
+# open for a human, because a major can carry breaking changes that even green
+# CI might not fully cover (see #48: uuid 9->14 built fine but crashed the
+# emulator at runtime). Patch/minor security + version updates still merge
+# automatically after CI (build-test, build-test-sqlserver, build-emulator) is
+# green. Uses `pull_request` (not `pull_request_target`) with an actor + repo
+# guard, plus dependabot/fetch-metadata to read the semver update type.
 
 on: pull_request
 
@@ -19,7 +22,14 @@ jobs:
       github.event.pull_request.user.login == 'dependabot[bot]' &&
       github.repository == 'MamoruKuroda/marketplace-saas-agent-sample'
     steps:
-      - name: Enable auto-merge (squash)
+      - name: Fetch Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@d7267f607e9d3fb96fc2fbe83e0af444713e90b7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge (squash) for non-major updates
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
