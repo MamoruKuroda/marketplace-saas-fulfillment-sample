@@ -75,3 +75,53 @@ jobs:
 
       - name: Test (SQL Server lane)
         run: dotnet test SaaSAgentSample.slnx --configuration Release --no-build --verbosity normal
+
+  # Emulator lane: builds the vendored Fulfillment API Emulator on Node 18 (the
+  # same base image emulator/docker/Dockerfile uses) and smoke-tests that it
+  # actually starts. This guards against dependency bumps that compile fine but
+  # crash the emulator at startup — e.g. an ESM-only major of a CommonJS
+  # dependency, which `require()` cannot load on Node 18. The .NET lanes above
+  # never build the emulator, so without this lane such a bump would pass CI and
+  # (via Dependabot auto-merge) only surface at `azd up`. Node 18 is used on
+  # purpose so require()-of-ESM regressions fail here, not in the cloud.
+  build-emulator:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: emulator
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build (tsc)
+        run: npx tsc
+
+      - name: Smoke test (emulator starts on Node 18)
+        run: |
+          set -e
+          PORT=8080 SKIP_DATA_LOAD=true node dist/index.js > emu.log 2>&1 &
+          PID=$!
+          up=0
+          for i in $(seq 1 30); do
+            if ! kill -0 "$PID" 2>/dev/null; then
+              echo "Emulator process exited during startup:"; cat emu.log; exit 1
+            fi
+            if grep -q "Listening to" emu.log; then up=1; break; fi
+            sleep 0.5
+          done
+          if [ "$up" != "1" ]; then
+            echo "Emulator did not report readiness in time:"; cat emu.log
+            kill "$PID" 2>/dev/null || true
+            exit 1
+          fi
+          echo "Emulator started on Node 18. Probing HTTP endpoint..."
+          curl -fsS "http://localhost:8080/" -o /dev/null && echo "HTTP 200 OK" || echo "warn: HTTP probe failed (non-fatal)"
+          kill "$PID" 2>/dev/null || true
+          echo "Smoke test passed."
