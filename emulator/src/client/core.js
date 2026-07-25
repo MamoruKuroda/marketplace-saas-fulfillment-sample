@@ -35,15 +35,15 @@ function guid() {
 }
 
 function showAlert(content, title) {
-    return _showModal(content, title, {"Ok": true}, "alert");
+    return _showModal(content, title, {[t("common.ok")]: true}, "alert");
 }
 
 function showYesNo(content, title) {
-    return _showModal(content, title, {"Yes": true, "No": false}, "alert");
+    return _showModal(content, title, {[t("common.yes")]: true, [t("common.no")]: false}, "alert");
 }
 
 function showDialog(content, title, buttons, contentClass) {
-    return _showModal(content, title, { ...buttons, "Close": true }, contentClass);
+    return _showModal(content, title, { ...buttons, [t("common.close")]: true }, contentClass);
 }
 
 function _showModal(content, title, buttons, contentClass) {
@@ -123,7 +123,7 @@ $(() => {
         if (Object.prototype.hasOwnProperty.call(notifications, n.id)) {
             const el = notifications[n.id];
 
-            const message = n.type === "update" ? "Subscription updated" : n.message;
+            const message = n.type === "update" ? t("notify.subscriptionUpdated") : n.message;
 
             serviceNotificationTemplate.clone().appendTo(el.find('.service')).html(message).addClass(n.type);
         }
@@ -181,7 +181,7 @@ const offerTemplate = $(`
         <div class="icon"><div></div></div>
         <div class="name"></div>
         <div class="publisher"></div>
-        <div class="starts-from">Plans start at</div>
+        <div class="starts-from"></div>
         <div class="price"></div>
         <div class="action">
             <a href="#"></a>
@@ -222,6 +222,7 @@ function renderOffer($offerContainer, offer, actionText, action, className) {
 
     $offer.children(".name").html(offer.displayName);
     $offer.children(".publisher").html(offer.publisher);
+    $offer.children(".starts-from").text(t("offerTile.plansStartAt"));
     $offer.children(".price").html(getMinPriceAndTerm(offer));
 }
 
@@ -246,30 +247,30 @@ async function renderOffers($offerContainer, actionText, action) {
 
 function getMinPriceAndTerm(offer) {
     if (!offer || !offer.plans) {
-        return 'Free';
+        return t('common.free');
     }
 
     const plans = Object.values(offer.plans);
 
     if (plans.length === 0) {
-        return 'Free';
+        return t('common.free');
     }
 
     const billingTerms = plans.flatMap(x => x.planComponents.recurrentBillingTerms);
     const perMonthMinPrice = Math.min(...billingTerms.filter(x => x.termUnit === 'P1M').map(x => x.price));
     const perYearMinPrice = Math.min(...billingTerms.filter(x => x.termUnit === 'P1Y').map(x => x.price));
     
-    const type = (plans[0].isPricePerSeat) ? 'user/' : '';
+    const type = (plans[0].isPricePerSeat) ? t('offerTile.perUser') : '';
 
     if (!isNaN(perMonthMinPrice) && isFinite(perMonthMinPrice)) {
-        return `$${perMonthMinPrice}/${type}month`;
+        return `$${perMonthMinPrice}/${type}${t('offerTile.month')}`;
     }
 
     if (!isNaN(perYearMinPrice) && isFinite(perYearMinPrice)) {
-        return `$${perYearMinPrice}/${type}year`;
+        return `$${perYearMinPrice}/${type}${t('offerTile.year')}`;
     }
 
-    return 'Unknown price';
+    return t('common.unknownPrice');
 }
 
 function highlightJson(json) {

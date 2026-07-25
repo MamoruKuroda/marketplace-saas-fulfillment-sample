@@ -32,7 +32,7 @@ $(async () => {
             $("section.purchase div.optional").toggleClass("hidden", displayOptionalFields);
             $purchaserToggle.trigger("change");
             displayOptionalFields = !displayOptionalFields;
-            $toggleOptionalFields.text(!displayOptionalFields ? "Show optional fields" : "Hide optional fields");
+            $toggleOptionalFields.text(!displayOptionalFields ? t("common.showOptionalFields") : t("common.hideOptionalFields"));
             return false;
         });
 
@@ -50,7 +50,7 @@ $(async () => {
 
     // Retrieve offers
 
-    const offerCount = await renderOffers($('section.offers'), 'Get it now', (e, offer) => {
+    const offerCount = await renderOffers($('section.offers'), t('common.getItNow'), (e, offer) => {
         $("section.purchase > div").removeClass("hidden");
         $("section.purchase > div.placeholder").addClass("hidden");
         selectOffer(offer);
@@ -123,22 +123,22 @@ function generateToken() {
 
 async function showJson() {
     const {json} = generateToken();
-    await showDialog(`<pre>${highlightJson(json)}</pre>`, "Subscription JSON", {
-        "Copy": ($btn) => {
-            $btn.text("Copied");
+    await showDialog(`<pre>${highlightJson(json)}</pre>`, t("common.subscriptionJson"), {
+        [t("common.copy")]: ($btn) => {
+            $btn.text(t("common.copied"));
             navigator.clipboard.writeText(json);
-            window.setTimeout(() => $btn.text("Copy"), 2000);
+            window.setTimeout(() => $btn.text(t("common.copy")), 2000);
         }
     });
 }
 
 async function showToken() {
     const {base64} = generateToken();
-    await showDialog(`<pre>${base64}</pre>`, "Marketplace Token", {
-        "Copy": ($btn) => {
-            $btn.text("Copied");
+    await showDialog(`<pre>${base64}</pre>`, t("common.marketplaceToken"), {
+        [t("common.copy")]: ($btn) => {
+            $btn.text(t("common.copied"));
             navigator.clipboard.writeText(base64);
-            window.setTimeout(() => $btn.text("Copy"), 2000);
+            window.setTimeout(() => $btn.text(t("common.copy")), 2000);
         }
     });
 }
@@ -148,19 +148,19 @@ async function postToLanding() {
     const {base64} = generateToken();
 
     if (config === undefined) {
-      await showAlert("Something went wrong trying to get config from the emulator", "Error");
+      await showAlert(t("index.configError"), t("common.error"));
       return;
     }
 
     const landingPage = config.landingPageUrl;
 
     if (!landingPage) {
-        await showAlert("No landing page URL set in config", "Landing Page");
+        await showAlert(t("index.noLandingPageUrl"), t("nav.landingPage"));
         return;
     }
 
     if (checkLandingPageUrl(landingPage)) {
-        const ok = await showYesNo('The landing page is set to localhost but the emulator appears to be running on a remote host. Please confirm the landing page URL is correct. Visit the Config page to check.<br /><br />Would you like to continue?', "Landing Page");
+        const ok = await showYesNo(t('index.remoteLandingConfirmHtml'), t('nav.landingPage'));
         if (!ok) {
             return;
         }

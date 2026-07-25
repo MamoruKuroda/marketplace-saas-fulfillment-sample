@@ -24,7 +24,7 @@ const apiVersion = '2018-08-31';
         const publisherId = result['publisherId'];
 
         const response = await doFetch(
-            "/resolve", 
+            t("notify.resolve"), 
             `/api/saas/subscriptions/resolve?publisherId=${publisherId}&api-version=${apiVersion}`,
             null,
             "POST",
@@ -55,7 +55,7 @@ const apiVersion = '2018-08-31';
 
         $('button.activate').on('click', async (e) => {
             $(e.target).prop('disabled', true);
-            const response = await doFetch("/activate",
+            const response = await doFetch(t("notify.activate"),
             `/api/saas/subscriptions/${subscriptionId}/activate?publisherId=${publisherId}&api-version=${apiVersion}`,
             JSON.stringify({ planId: resolveResult['planId'] })
           );
@@ -76,12 +76,12 @@ const apiVersion = '2018-08-31';
         $('#activate-button').prop('disabled', true);
         const publisherId = $('#publisherId').text();
 
-        const response = await doFetch("/activate",
+        const response = await doFetch(t("notify.activate"),
           `/api/saas/subscriptions/${subscriptionId}/activate?publisherId=${publisherId}&api-version=${apiVersion}`,
           JSON.stringify({ planId: $('#planId').text() })
         );
 
         if (response.ok) {
-          $('#activate-button').text('Subscription Activated');
+          $('#activate-button').text(t('common.subscriptionActivated'));
         }
       }

@@ -650,3 +650,20 @@ section.offers div.icon {
 section.offers div.custom div.icon {
     background: linear-gradient(135deg, #5c2e91, #8661c5);
 }
+/* Language toggle */
+nav .lang {
+    margin-left: auto;
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+}
+
+nav .lang a {
+    color: var(--nav-text-color, #605e5c);
+    font-weight: 400;
+}
+
+nav .lang a.active-lang {
+    color: var(--nav-text-active-color, #0f6cbd);
+    font-weight: 700;
+}
