@@ -1,0 +1,37 @@
+@model SaaSAgentSample.Web.DemoMapVm
+@inject Microsoft.Extensions.Configuration.IConfiguration Config
+@{
+    var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config);
+    var steps = new[]
+    {
+        new { N = 1, Label = L["Buy in Marketplace"].Value,  Where = L["Emulator"].Value, Desc = L["Pick an offer and continue. You are acting as Microsoft here."].Value,          Href = emu,                External = true  },
+        new { N = 2, Label = L["Activate"].Value,             Where = L["This app"].Value, Desc = L["The buyer lands here and confirms. Activation starts billing."].Value,             Href = (string?)"/",       External = false },
+        new { N = 3, Label = L["Manage"].Value,               Where = L["This app"].Value, Desc = L["The publisher sees the authoritative subscription state — the source of truth."].Value, Href = (string?)"/admin",  External = false },
+        new { N = 4, Label = L["Lifecycle events"].Value,     Where = L["Emulator"].Value, Desc = L["Suspend, change, or cancel from the emulator; webhooks update the state here."].Value, Href = emu,                External = true  },
+    };
+}
+<nav class="stepper @(Model.Expanded ? "expanded" : "compact")" aria-label="@L["Demo steps"]">
+    @foreach (var s in steps)
+    {
+        <div class="step @(Model.Current == s.N ? "current" : null)">
+            @if (s.Href is not null)
+            {
+                <a class="step-head" href="@s.Href" target="@(s.External ? "_blank" : null)" rel="@(s.External ? "noopener" : null)">
+                    <span class="n">@s.N</span>
+                    <span class="lbl">@s.Label<small>@s.Where@(s.External ? " ↗" : "")</small></span>
+                </a>
+            }
+            else
+            {
+                <span class="step-head">
+                    <span class="n">@s.N</span>
+                    <span class="lbl">@s.Label<small>@s.Where</small></span>
+                </span>
+            }
+            @if (Model.Expanded)
+            {
+                <p class="desc">@s.Desc</p>
+            }
+        </div>
+    }
+</nav>

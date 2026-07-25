@@ -124,4 +124,36 @@
   <data name="Subscription cannot be activated from its current state." xml:space="preserve"><value>現在の状態からは有効化できません。</value></data>
   <data name="Activation failed while calling the Fulfillment API." xml:space="preserve"><value>Fulfillment API の呼び出し中に有効化が失敗しました。</value></data>
   <data name="Unknown result." xml:space="preserve"><value>不明な結果です。</value></data>
+
+  <!-- Start-here / demo map (P1 wayfinding) -->
+  <data name="Start here" xml:space="preserve"><value>ここから始める</value></data>
+  <data name="A hands-on tour of a Marketplace SaaS purchase — you play all three roles." xml:space="preserve"><value>マーケットプレースでの SaaS 購入を体験するツアーです。あなたが3つの役割すべてを演じます。</value></data>
+  <data name="The flow, end to end" xml:space="preserve"><value>全体の流れ</value></data>
+  <data name="Who's who" xml:space="preserve"><value>登場人物</value></data>
+  <data name="Microsoft" xml:space="preserve"><value>Microsoft</value></data>
+  <data name="Marketplace" xml:space="preserve"><value>マーケットプレース</value></data>
+  <data name="Runs the marketplace and billing. The Fulfillment API Emulator stands in for Microsoft in this demo." xml:space="preserve"><value>マーケットプレースと課金を運営します。このデモでは Fulfillment API Emulator が Microsoft 役を務めます。</value></data>
+  <data name="This app" xml:space="preserve"><value>このアプリ</value></data>
+  <data name="Publisher (you)" xml:space="preserve"><value>パブリッシャー（あなた）</value></data>
+  <data name="Sells the SaaS offer. This app is the publisher side: the buyer landing, the connection webhook, and the authoritative state store." xml:space="preserve"><value>SaaS オファーを販売します。このアプリはパブリッシャー側＝購入者ランディング、接続 Webhook、権威ある状態ストアです。</value></data>
+  <data name="Different tenant" xml:space="preserve"><value>別テナント</value></data>
+  <data name="Buyer" xml:space="preserve"><value>購入者</value></data>
+  <data name="Purchases from the Marketplace, then signs in on the landing page to activate." xml:space="preserve"><value>マーケットプレースで購入し、ランディングページでサインインして有効化します。</value></data>
+  <data name="Begin at the Emulator →" xml:space="preserve"><value>エミュレーターから開始 →</value></data>
+  <data name="To begin, open your Fulfillment API Emulator and use its Marketplace tab." xml:space="preserve"><value>開始するには、Fulfillment API Emulator を開き、その「マーケットプレース」タブを使ってください。</value></data>
+  <data name="The emulator plays Microsoft: buy an offer there, and it sends you back here to activate." xml:space="preserve"><value>エミュレーターが Microsoft 役です。そこでオファーを購入すると、有効化のためにこのページへ戻されます。</value></data>
+  <data name="What the menu items mean" xml:space="preserve"><value>メニュー項目の意味</value></data>
+  <data name="This page — the demo map and starting point." xml:space="preserve"><value>このページ＝デモの地図であり出発点です。</value></data>
+  <data name="The authoritative subscription state store: view subscriptions and, when one is pending, confirm Activate." xml:space="preserve"><value>権威あるサブスクリプション状態ストア。サブスクリプションを閲覧し、保留中のものは Activate を確認して実行します。</value></data>
+  <data name="The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features." xml:space="preserve"><value>購入を成立させるための仕組み（Resolve・Activate・接続 Webhook）で、製品自体の機能とは別の層です。</value></data>
+  <data name="Demo steps" xml:space="preserve"><value>デモの手順</value></data>
+  <data name="Buy in Marketplace" xml:space="preserve"><value>マーケットプレースで購入</value></data>
+  <data name="Emulator" xml:space="preserve"><value>エミュレーター</value></data>
+  <data name="Pick an offer and continue. You are acting as Microsoft here." xml:space="preserve"><value>オファーを選んで続行します。ここではあなたが Microsoft 役です。</value></data>
+  <data name="Activate" xml:space="preserve"><value>有効化</value></data>
+  <data name="The buyer lands here and confirms. Activation starts billing." xml:space="preserve"><value>購入者がここに着地して確認します。有効化すると課金が始まります。</value></data>
+  <data name="Manage" xml:space="preserve"><value>管理</value></data>
+  <data name="The publisher sees the authoritative subscription state — the source of truth." xml:space="preserve"><value>パブリッシャーが権威あるサブスクリプション状態＝信頼できる情報源を確認します。</value></data>
+  <data name="Lifecycle events" xml:space="preserve"><value>ライフサイクル イベント</value></data>
+  <data name="Suspend, change, or cancel from the emulator; webhooks update the state here." xml:space="preserve"><value>エミュレーターから一時停止・変更・解約すると、Webhook でここの状態が更新されます。</value></data>
 </root>

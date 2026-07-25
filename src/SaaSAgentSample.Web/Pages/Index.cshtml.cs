@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using SaaSAgentSample.Fulfillment;
 using SaaSAgentSample.Fulfillment.Models;
@@ -11,11 +12,13 @@ public sealed class IndexModel : PageModel
 {
     private readonly LandingService _landing;
     private readonly IStringLocalizer<SharedResource> _l;
+    private readonly IConfiguration _config;
 
-    public IndexModel(LandingService landing, IStringLocalizer<SharedResource> l)
+    public IndexModel(LandingService landing, IStringLocalizer<SharedResource> l, IConfiguration config)
     {
         _landing = landing;
         _l = l;
+        _config = config;
     }
 
     [BindProperty(SupportsGet = true)]
@@ -27,11 +30,18 @@ public sealed class IndexModel : PageModel
 
     public bool IsActivated { get; private set; }
 
+    /// <summary>True when there is no purchase token: render the "Start here" demo map instead of the activation flow.</summary>
+    public bool ShowHome { get; private set; }
+
+    /// <summary>Browsable emulator URL for the "Begin at the Emulator" call to action, when known.</summary>
+    public string? EmulatorUrl { get; private set; }
+
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(Token))
         {
-            Message = _l["No purchase token was provided. Open this page from the Marketplace 'Configure account' link."];
+            ShowHome = true;
+            EmulatorUrl = DemoNavigation.EmulatorUrl(_config);
             return;
         }
 

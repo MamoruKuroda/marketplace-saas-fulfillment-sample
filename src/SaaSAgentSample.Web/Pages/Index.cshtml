@@ -1,53 +1,102 @@
 @page
 @model SaaSAgentSample.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = L["Activate your subscription"].Value;
+    ViewData["Title"] = (Model.ShowHome ? L["Start here"] : L["Activate your subscription"]).Value;
     var r = Model.Resolved;
     var sub = r?.Subscription;
 }
-<h1 class="page-title">@L["Activate your subscription"]</h1>
-<p class="subtitle">@L["Review the plan below, then confirm. Activation starts billing."]</p>
-
-@if (User?.Identity?.IsAuthenticated == true)
+@if (Model.ShowHome)
 {
-    <p class="muted">@L["Signed in as {0}", User.Identity!.Name!]</p>
-}
+    <h1 class="page-title">@L["Start here"]</h1>
+    <p class="subtitle">@L["A hands-on tour of a Marketplace SaaS purchase — you play all three roles."]</p>
 
-@if (Model.IsActivated)
-{
-    <div class="banner">
-        <span class="ico">&#10003;</span>
-        <div>
-            <strong>@L["Activated."]</strong> @Model.Message
-            <div style="margin-top:.4rem"><a href="/admin">@L["View all subscriptions in the publisher admin →"]</a></div>
+    <h2 class="section-h">@L["The flow, end to end"]</h2>
+    @(await Html.PartialAsync("_DemoMap", new SaaSAgentSample.Web.DemoMapVm(null, true)))
+
+    <h2 class="section-h">@L["Who's who"]</h2>
+    <div class="actors">
+        <div class="actor">
+            <span class="who ms">@L["Marketplace"]</span>
+            <h3>@L["Microsoft"]</h3>
+            <p>@L["Runs the marketplace and billing. The Fulfillment API Emulator stands in for Microsoft in this demo."]</p>
+        </div>
+        <div class="actor">
+            <span class="who pub">@L["This app"]</span>
+            <h3>@L["Publisher (you)"]</h3>
+            <p>@L["Sells the SaaS offer. This app is the publisher side: the buyer landing, the connection webhook, and the authoritative state store."]</p>
+        </div>
+        <div class="actor">
+            <span class="who buyer">@L["Different tenant"]</span>
+            <h3>@L["Buyer"]</h3>
+            <p>@L["Purchases from the Marketplace, then signs in on the landing page to activate."]</p>
         </div>
     </div>
-}
-else if (r is not null)
-{
-    <div class="card">
-        <h2>@L["Confirm activation"]</h2>
-        <p class="hint">@L["Resolved from your marketplace purchase token."]</p>
-        <dl class="kv">
-            <dt>@L["Subscription"]</dt><dd>@(r.SubscriptionName ?? sub?.Name)</dd>
-            <dt>@L["Offer"]</dt><dd>@(r.OfferId ?? sub?.OfferId)</dd>
-            <dt>@L["Plan"]</dt><dd>@(r.PlanId ?? sub?.PlanId)</dd>
-            <dt>@L["Quantity"]</dt><dd>@(r.Quantity?.ToString() ?? "—")</dd>
-            <dt>@L["Status"]</dt><dd><span class="badge pending">@sub?.SaasSubscriptionStatus</span></dd>
-        </dl>
-        <form method="post">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="subscriptionId" value="@(sub?.Id ?? r.Id)" />
-            <input type="hidden" name="planId" value="@(r.PlanId ?? sub?.PlanId)" />
-            @if (r.Quantity is int q)
-            {
-                <input type="hidden" name="quantity" value="@q" />
-            }
-            <button type="submit" class="btn primary">@L["Activate subscription"]</button>
-        </form>
+
+    <div class="cta-row">
+        @if (Model.EmulatorUrl is not null)
+        {
+            <a class="btn primary" href="@Model.EmulatorUrl" target="_blank" rel="noopener">@L["Begin at the Emulator →"]</a>
+        }
+        else
+        {
+            <p class="notice">@L["To begin, open your Fulfillment API Emulator and use its Marketplace tab."]</p>
+        }
+        <p class="hint">@L["The emulator plays Microsoft: buy an offer there, and it sends you back here to activate."]</p>
     </div>
+
+    <h2 class="section-h">@L["What the menu items mean"]</h2>
+    <dl class="glossary">
+        <dt>@L["Home"]</dt><dd>@L["This page — the demo map and starting point."]</dd>
+        <dt>@L["Publisher admin"]</dt><dd>@L["The authoritative subscription state store: view subscriptions and, when one is pending, confirm Activate."]</dd>
+        <dt>@L["Fulfillment plane"]</dt><dd>@L["The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features."]</dd>
+    </dl>
 }
 else
 {
-    <div class="card"><p class="muted">@(Model.Message ?? L["Nothing to show."].Value)</p></div>
+    <h1 class="page-title">@L["Activate your subscription"]</h1>
+    <p class="subtitle">@L["Review the plan below, then confirm. Activation starts billing."]</p>
+
+    @if (User?.Identity?.IsAuthenticated == true)
+    {
+        <p class="muted">@L["Signed in as {0}", User.Identity!.Name!]</p>
+    }
+
+    @if (Model.IsActivated)
+    {
+        <div class="banner">
+            <span class="ico">&#10003;</span>
+            <div>
+                <strong>@L["Activated."]</strong> @Model.Message
+                <div style="margin-top:.4rem"><a href="/admin">@L["View all subscriptions in the publisher admin →"]</a></div>
+            </div>
+        </div>
+    }
+    else if (r is not null)
+    {
+        <div class="card">
+            <h2>@L["Confirm activation"]</h2>
+            <p class="hint">@L["Resolved from your marketplace purchase token."]</p>
+            <dl class="kv">
+                <dt>@L["Subscription"]</dt><dd>@(r.SubscriptionName ?? sub?.Name)</dd>
+                <dt>@L["Offer"]</dt><dd>@(r.OfferId ?? sub?.OfferId)</dd>
+                <dt>@L["Plan"]</dt><dd>@(r.PlanId ?? sub?.PlanId)</dd>
+                <dt>@L["Quantity"]</dt><dd>@(r.Quantity?.ToString() ?? "—")</dd>
+                <dt>@L["Status"]</dt><dd><span class="badge pending">@sub?.SaasSubscriptionStatus</span></dd>
+            </dl>
+            <form method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="subscriptionId" value="@(sub?.Id ?? r.Id)" />
+                <input type="hidden" name="planId" value="@(r.PlanId ?? sub?.PlanId)" />
+                @if (r.Quantity is int q)
+                {
+                    <input type="hidden" name="quantity" value="@q" />
+                }
+                <button type="submit" class="btn primary">@L["Activate subscription"]</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="card"><p class="muted">@(Model.Message ?? L["Nothing to show."].Value)</p></div>
+    }
 }
