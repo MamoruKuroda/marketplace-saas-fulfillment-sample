@@ -33,26 +33,26 @@ $(async () => {
 
         result[jsonPath] = val;
 
-        if (!await showYesNo(`<p>This change will occur but not be persisted and will be lost if the emulator is restarted, to start the emulator with this new value use the following environment variable:</p><pre>${$input.data('env')} = ${val}</pre><p>Do you want to continue?</p>`, 'Change Config')) {
+        if (!await showYesNo(formatI18n('config.changeConfirmHtml', {env: $input.data('env'), val}), t('config.changeTitle'))) {
             return;
         }
 
         const patchResult = await callAPI('/api/util/config', 'PATCH', result);
 
         if (patchResult.status >= 300) {
-            await showAlert(`<p>Failed to update config</p><p class="error">${patchResult.result}</p>`);
+            await showAlert(formatI18n('config.updateFailedHtml', {error: patchResult.result}));
         }
     });
 
     $('.buttons > button').on('click', async () => {
         const config = JSON.parse(JSON.stringify(result));
         config.webhook['clientSecret'] = "&lt;redacted&gt;";
-        await showDialog('<pre>' + highlightJson(JSON.stringify(config, undefined, 2)) + '</pre>', 'Config');
+        await showDialog('<pre>' + highlightJson(JSON.stringify(config, undefined, 2)) + '</pre>', t('config.rawTitle'));
     });
 });
 
 async function clear_click() {
-    if (!await showYesNo("Clearing the data file will remove all custom offers and subscriptions and cannot be undone.<br /><br />Are you sure you want to continue?", "Clear Data")) {
+    if (!await showYesNo(t("config.clearConfirmHtml"), t("config.clearTitle"))) {
         return;
     }
 

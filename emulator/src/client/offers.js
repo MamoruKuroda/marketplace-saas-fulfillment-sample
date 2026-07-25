@@ -5,13 +5,13 @@ $(async () => {
     const $offersContainer = $('section.offers');
 
     await renderOffer($offersContainer, {
-        displayName: 'Create New Offer',
-        publisher: 'You'
-    }, 'Create', () => {
+        displayName: t('common.createNewOffer'),
+        publisher: t('common.you')
+    }, t('common.create'), () => {
         selectOffer();
     }, 'new');
 
-    await renderOffers($offersContainer, 'View', (e) => {
+    await renderOffers($offersContainer, t('common.view'), (e) => {
         selectOffer($(e.target).data('offer'));
     });
 
@@ -20,7 +20,7 @@ $(async () => {
         const offer = $e.data('offer');
 
         if (offer && offer.plans && !offer.builtIn) {
-            $e.text("Edit");
+            $e.text(t("common.edit"));
         }
     });
 
@@ -43,7 +43,7 @@ function clone_click(e) {
     offer.offerId = '';
 
     if (offer.displayName.length > 0) {
-        offer.displayName += " Copy";
+        offer.displayName += t("offers.copySuffix");
     }
 
     offer.builtIn = false;
@@ -71,15 +71,15 @@ function selectOffer(offer, cloned) {
 
     if (!offer || cloned) {
         $buttons.not('.new').attr('disabled', true).hide();
-        $header.text('New Offer');
+        $header.text(t('common.newOffer'));
     }
     else if (offer.builtIn) {
         $buttons.not('.built-in').attr('disabled', true).hide();
-        $header.text('View Offer');
+        $header.text(t('common.viewOffer'));
     }
     else {
         $buttons.not('.custom').attr('disabled', true).hide();
-        $header.text('Edit Offer');
+        $header.text(t('common.editOffer'));
     }
 
     if (offer) {
@@ -126,7 +126,7 @@ function validateDetail() {
         }
         const val = $e.val();
         if (val.trim() === '') {
-            $e.addClass('invalid').attr('title', 'Value is required');
+            $e.addClass('invalid').attr('title', t('common.valueRequired'));
             valid = false;
         }
     });
@@ -136,7 +136,7 @@ function validateDetail() {
 
     if ($(`[data-offer-id='${offerIdToCheck}']`).length > 0) {
         if ($('#offer-id').not(':disabled').length > 0) {
-            $('#offer-id').addClass('invalid').attr('title', 'Offer Id already exists');
+            $('#offer-id').addClass('invalid').attr('title', t('offers.offerIdExists'));
             valid = false;
         }
     }
@@ -161,7 +161,7 @@ function validateDetail() {
         
         if (Object.prototype.hasOwnProperty.call(planIds, planIdToCheck)) {
             
-            $e.addClass('invalid').attr('title', 'Plan Id already exists');
+            $e.addClass('invalid').attr('title', t('offers.planIdExists'));
             valid = false;
         }
     });
@@ -212,7 +212,7 @@ async function saveOffer_click() {
         return;
     }
 
-    renderOffer($('section.offers'), result, 'Edit', (e) => {
+    renderOffer($('section.offers'), result, t('common.edit'), (e) => {
         selectOffer(result);
     });
 
@@ -221,7 +221,7 @@ async function saveOffer_click() {
 
 async function deleteOffer_click() {
 
-    if (!await showYesNo('Deleting an offer cannot be undone<br /><br />Are you sure you want to continue?', 'Delete Offer')) {
+    if (!await showYesNo(t('offers.deleteConfirmHtml'), t('offers.deleteTitle'))) {
         return;
     }
 
@@ -234,7 +234,7 @@ async function deleteOffer_click() {
         cancel_click();
     }
     else {
-        await showAlert('Unable to delete offer, it might be associated with a subscription', 'Delete Offer');
+        await showAlert(t('offers.unableDelete'), t('offers.deleteTitle'));
     }
 }
 

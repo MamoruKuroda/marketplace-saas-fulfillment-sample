@@ -19,7 +19,7 @@ $(async () => {
       .removeClass('template')
       .attr('id', '')
       .children('td')
-      .text(`Publisher Id: ${pid}`);
+      .text(t("common.publisherIdPrefix") + pid);
 
     for (const sid in publisherSubscriptions) {
       addRow(publisherSubscriptions[sid].subscription, pid);
@@ -83,9 +83,10 @@ function addRow(subscription) {
     $(cells[3]).text(subscription.planId).data('copy', subscription.planId);
     $(cells[4]).text(offer.plans[subscription.planId].isPricePerSeat ? subscription.quantity : '-');
     if (status === 'PendingFulfillmentStart') {
-      $(cells[5]).text('Pending');
+      $(cells[5]).text(t('status.PendingFulfillmentStart'));
     } else {
-      $(cells[5]).text(status);
+      const statusText = t('status.' + status);
+      $(cells[5]).text(statusText === 'status.' + status ? status : statusText);
     }
 
     $(cells[6])
@@ -153,8 +154,8 @@ async function activate_click(e) {
 async function delete_click(e) {
   if (
     !(await showYesNo(
-      'Deleting a subscription cannot be undone<br /> <br />Are you sure you want to continue?',
-      'Delete Subscription'
+      t('subs.deleteConfirmHtml'),
+      t('subs.deleteTitle')
     ))
   ) {
     return;
@@ -171,16 +172,16 @@ async function delete_click(e) {
 }
 
 async function changeQuantity_click(e) {
-  const quantity = await showDialog($('#change-quantity-dialog'), 'Change Quantity', {
-    Ok: (button, body) => {
+  const quantity = await showDialog($('#change-quantity-dialog'), t('action.changeQuantity'), {
+    [t('common.ok')]: (button, body) => {
       const $input = body.find('input');
       const val = $input.val();
       if (val.trim() === '') {
-        $input.attr('title', 'Value is required').addClass('invalid');
+        $input.attr('title', t('common.valueRequired')).addClass('invalid');
         return;
       }
       if (isNaN(val) || val <= 0 || val > 1000000) {
-        $input.attr('title', 'Invalid value').addClass('invalid');
+        $input.attr('title', t('common.invalidValue')).addClass('invalid');
         return;
       }
       return parseInt(val);
@@ -188,7 +189,7 @@ async function changeQuantity_click(e) {
   });
 
   if (typeof quantity === 'number' && !isNaN(quantity)) {
-    await callWebhook('Change quantity', $(e.target).data('subscriptionId'), '', { quantity });
+    await callWebhook(t('action.changeQuantityWebhook'), $(e.target).data('subscriptionId'), '', { quantity });
   }
 }
 
@@ -209,7 +210,7 @@ async function changePlan_click(e) {
   const plansList = plansData.plans;
 
   if (plansList.length <= 1) {
-    await showAlert('There are no other plans defined on this offer', 'Change Plan');
+    await showAlert(t('subs.noOtherPlans'), t('action.changePlan'));
     return;
   }
 
@@ -218,8 +219,8 @@ async function changePlan_click(e) {
 
   $select.append(...plansList.map((x) => $(`<option value='${x.planId}'>${x.displayName}</option>`)));
 
-  const planId = await showDialog($dialog, 'Change Plan', {
-    Ok: (button, body) => {
+  const planId = await showDialog($dialog, t('action.changePlan'), {
+    [t('common.ok')]: (button, body) => {
       return body.find('select').val();
     }
   });
@@ -228,23 +229,23 @@ async function changePlan_click(e) {
     return;
   }
 
-  await callWebhook('Change plan', $(e.target).data('subscriptionId'), '', { planId });
+  await callWebhook(t('action.changePlanWebhook'), $(e.target).data('subscriptionId'), '', { planId });
 }
 
 async function suspend_click(e) {
-  await callWebhook('Suspend', $(e.target).data('subscriptionId'), 'suspend');
+  await callWebhook(t('action.suspend'), $(e.target).data('subscriptionId'), 'suspend');
 }
 
 async function reinstate_click(e) {
-  await callWebhook('Reinstate', $(e.target).data('subscriptionId'), 'reinstate');
+  await callWebhook(t('action.reinstate'), $(e.target).data('subscriptionId'), 'reinstate');
 }
 
 async function unsubscribe_click(e) {
-  await callWebhook('Unsubscribe', $(e.target).data('subscriptionId'), 'unsubscribe');
+  await callWebhook(t('action.unsubscribe'), $(e.target).data('subscriptionId'), 'unsubscribe');
 }
 
 async function renew_click(e) {
-  await callWebhook('Renew', $(e.target).data('subscriptionId'), 'renew');
+  await callWebhook(t('action.renew'), $(e.target).data('subscriptionId'), 'renew');
 }
 
 async function callWebhook(name, sid, endpoint, body) {
