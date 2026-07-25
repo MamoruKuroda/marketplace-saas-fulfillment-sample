@@ -489,6 +489,5 @@ $RECYCLE.BIN/
 
 # Azure Developer CLI (azd) environment — contains subscription/tenant ids; never commit
 .azure/
-
-# Emulator source fetched on demand by scripts/fetch-emulator.* (upstream, pinned commit)
-.emulator-src/
+# Vendored emulator build outputs (source lives in ./emulator; see emulator/NOTICE.md)
+emulator/dist/
