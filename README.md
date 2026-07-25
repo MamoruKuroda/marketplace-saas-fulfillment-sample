@@ -74,6 +74,9 @@ again). Open the emulator endpoint and drive the whole lifecycle from the browse
 For a production-shaped deploy against the **real** marketplace (sign-in on, no emulator, each
 step explained), see [docs/deploy.md](docs/deploy.md).
 
+> **Language:** the app UI is available in **English and 日本語**. It follows your browser
+> language by default, and a header **EN / 日本語** toggle switches it anytime.
+
 ### Run locally
 
 You only need the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).

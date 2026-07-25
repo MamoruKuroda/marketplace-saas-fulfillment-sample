@@ -76,6 +76,9 @@ The `Development` environment uses the SQLite store, disables buyer sign-in
 emulator, and accepts unsigned webhook tokens — so the whole flow works without Entra or a
 real purchase.
 
+The UI is localized in **English and 日本語**: it follows the browser's `Accept-Language` by
+default, and a header **EN / 日本語** toggle (persisted in a cookie) overrides it.
+
 | Path | What it is |
 | --- | --- |
 | `/?token=<purchase-token>` | Buyer SSO landing (Resolve → explicit-confirm Activate) |

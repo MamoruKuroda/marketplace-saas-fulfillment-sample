@@ -75,6 +75,9 @@ dotnet run --project src/SaaSAgentSample.Web
 （`Landing:RequireAuthentication=false`）、Fulfillment クライアントをローカルエミュレーター向けに設定し、
 未署名の Webhook トークンを受理します — つまり Entra も実購入もなしで一連のフローがローカルで動きます。
 
+UI は **英語と日本語**にローカライズされています。既定ではブラウザの `Accept-Language` に従い、
+ヘッダーの **EN / 日本語** トグル（Cookie に保存）で上書きできます。
+
 | パス | 内容 |
 | --- | --- |
 | `/?token=<purchase-token>` | 購入者 SSO ランディング（Resolve → 明示確認 Activate） |
