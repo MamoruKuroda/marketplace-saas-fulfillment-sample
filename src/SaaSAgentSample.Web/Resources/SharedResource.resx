@@ -129,4 +129,36 @@
   <data name="Subscription cannot be activated from its current state." xml:space="preserve"><value>Subscription cannot be activated from its current state.</value></data>
   <data name="Activation failed while calling the Fulfillment API." xml:space="preserve"><value>Activation failed while calling the Fulfillment API.</value></data>
   <data name="Unknown result." xml:space="preserve"><value>Unknown result.</value></data>
+
+  <!-- Start-here / demo map (P1 wayfinding) -->
+  <data name="Start here" xml:space="preserve"><value>Start here</value></data>
+  <data name="A hands-on tour of a Marketplace SaaS purchase — you play all three roles." xml:space="preserve"><value>A hands-on tour of a Marketplace SaaS purchase — you play all three roles.</value></data>
+  <data name="The flow, end to end" xml:space="preserve"><value>The flow, end to end</value></data>
+  <data name="Who's who" xml:space="preserve"><value>Who's who</value></data>
+  <data name="Microsoft" xml:space="preserve"><value>Microsoft</value></data>
+  <data name="Marketplace" xml:space="preserve"><value>Marketplace</value></data>
+  <data name="Runs the marketplace and billing. The Fulfillment API Emulator stands in for Microsoft in this demo." xml:space="preserve"><value>Runs the marketplace and billing. The Fulfillment API Emulator stands in for Microsoft in this demo.</value></data>
+  <data name="This app" xml:space="preserve"><value>This app</value></data>
+  <data name="Publisher (you)" xml:space="preserve"><value>Publisher (you)</value></data>
+  <data name="Sells the SaaS offer. This app is the publisher side: the buyer landing, the connection webhook, and the authoritative state store." xml:space="preserve"><value>Sells the SaaS offer. This app is the publisher side: the buyer landing, the connection webhook, and the authoritative state store.</value></data>
+  <data name="Different tenant" xml:space="preserve"><value>Different tenant</value></data>
+  <data name="Buyer" xml:space="preserve"><value>Buyer</value></data>
+  <data name="Purchases from the Marketplace, then signs in on the landing page to activate." xml:space="preserve"><value>Purchases from the Marketplace, then signs in on the landing page to activate.</value></data>
+  <data name="Begin at the Emulator →" xml:space="preserve"><value>Begin at the Emulator →</value></data>
+  <data name="To begin, open your Fulfillment API Emulator and use its Marketplace tab." xml:space="preserve"><value>To begin, open your Fulfillment API Emulator and use its Marketplace tab.</value></data>
+  <data name="The emulator plays Microsoft: buy an offer there, and it sends you back here to activate." xml:space="preserve"><value>The emulator plays Microsoft: buy an offer there, and it sends you back here to activate.</value></data>
+  <data name="What the menu items mean" xml:space="preserve"><value>What the menu items mean</value></data>
+  <data name="This page — the demo map and starting point." xml:space="preserve"><value>This page — the demo map and starting point.</value></data>
+  <data name="The authoritative subscription state store: view subscriptions and, when one is pending, confirm Activate." xml:space="preserve"><value>The authoritative subscription state store: view subscriptions and, when one is pending, confirm Activate.</value></data>
+  <data name="The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features." xml:space="preserve"><value>The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features.</value></data>
+  <data name="Demo steps" xml:space="preserve"><value>Demo steps</value></data>
+  <data name="Buy in Marketplace" xml:space="preserve"><value>Buy in Marketplace</value></data>
+  <data name="Emulator" xml:space="preserve"><value>Emulator</value></data>
+  <data name="Pick an offer and continue. You are acting as Microsoft here." xml:space="preserve"><value>Pick an offer and continue. You are acting as Microsoft here.</value></data>
+  <data name="Activate" xml:space="preserve"><value>Activate</value></data>
+  <data name="The buyer lands here and confirms. Activation starts billing." xml:space="preserve"><value>The buyer lands here and confirms. Activation starts billing.</value></data>
+  <data name="Manage" xml:space="preserve"><value>Manage</value></data>
+  <data name="The publisher sees the authoritative subscription state — the source of truth." xml:space="preserve"><value>The publisher sees the authoritative subscription state — the source of truth.</value></data>
+  <data name="Lifecycle events" xml:space="preserve"><value>Lifecycle events</value></data>
+  <data name="Suspend, change, or cancel from the emulator; webhooks update the state here." xml:space="preserve"><value>Suspend, change, or cancel from the emulator; webhooks update the state here.</value></data>
 </root>
