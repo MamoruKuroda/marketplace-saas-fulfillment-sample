@@ -47,3 +47,15 @@ hooks:
       run: ./scripts/postprovision.sh
       interactive: true
       continueOnError: false
+  # After `azd up` completes, print a short "start here" guide (which URL to open
+  # first, and the three-role flow) so it's obvious in the terminal without reading
+  # the README. Purely informational — never fail the run.
+  postup:
+    windows:
+      shell: pwsh
+      run: ./scripts/postup.ps1
+      continueOnError: true
+    posix:
+      shell: sh
+      run: ./scripts/postup.sh
+      continueOnError: true
