@@ -4,7 +4,7 @@
     var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config);
     var steps = new[]
     {
-        new { N = 1, Label = L["Buy in Marketplace"].Value,  Where = L["Emulator"].Value, Desc = L["Pick an offer and continue. You are acting as Microsoft here."].Value,          Href = emu,                External = true  },
+        new { N = 1, Label = L["Buy in Marketplace"].Value,  Where = L["Emulator"].Value, Desc = L["You're the buyer, shopping in Microsoft's marketplace — pick an offer and continue."].Value,          Href = emu,                External = true  },
         new { N = 2, Label = L["Activate"].Value,             Where = L["This app"].Value, Desc = L["The buyer lands here and confirms. Activation starts billing."].Value,             Href = (string?)"/",       External = false },
         new { N = 3, Label = L["Manage"].Value,               Where = L["This app"].Value, Desc = L["The publisher sees the authoritative subscription state — the source of truth."].Value, Href = (string?)"/admin",  External = false },
         new { N = 4, Label = L["Lifecycle events"].Value,     Where = L["Emulator"].Value, Desc = L["Suspend, change, or cancel from the emulator; webhooks update the state here."].Value, Href = emu,                External = true  },
