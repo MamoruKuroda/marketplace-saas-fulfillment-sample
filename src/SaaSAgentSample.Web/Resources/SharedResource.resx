@@ -161,4 +161,17 @@
   <data name="The publisher sees the authoritative subscription state — the source of truth." xml:space="preserve"><value>The publisher sees the authoritative subscription state — the source of truth.</value></data>
   <data name="Lifecycle events" xml:space="preserve"><value>Lifecycle events</value></data>
   <data name="Suspend, change, or cancel from the emulator; webhooks update the state here." xml:space="preserve"><value>Suspend, change, or cancel from the emulator; webhooks update the state here.</value></data>
+
+  <!-- Key terms (P2 wayfinding) -->
+  <data name="Key terms" xml:space="preserve"><value>Key terms</value></data>
+  <data name="Purchase token" xml:space="preserve"><value>Purchase token</value></data>
+  <data name="An opaque token Microsoft passes to the landing page. Resolve exchanges it for the subscription details." xml:space="preserve"><value>An opaque token Microsoft passes to the landing page. Resolve exchanges it for the subscription details.</value></data>
+  <data name="Resolve" xml:space="preserve"><value>Resolve</value></data>
+  <data name="Exchanges the purchase token for the subscription — offer, plan, and buyer." xml:space="preserve"><value>Exchanges the purchase token for the subscription — offer, plan, and buyer.</value></data>
+  <data name="Confirms fulfillment has started: moves the subscription to Subscribed and begins billing." xml:space="preserve"><value>Confirms fulfillment has started: moves the subscription to Subscribed and begins billing.</value></data>
+  <data name="Webhook (connection)" xml:space="preserve"><value>Webhook (connection)</value></data>
+  <data name="Microsoft's notification of a plan/quantity change, suspend/reinstate, or cancel. The app validates it before updating state." xml:space="preserve"><value>Microsoft's notification of a plan/quantity change, suspend/reinstate, or cancel. The app validates it before updating state.</value></data>
+  <data name="Entitlement" xml:space="preserve"><value>Entitlement</value></data>
+  <data name="Whether the buyer may use the product — derived from the authoritative state, never invented by the app or the model." xml:space="preserve"><value>Whether the buyer may use the product — derived from the authoritative state, never invented by the app or the model.</value></data>
+  <data name="You're the buyer. This is the publisher's landing page — confirm to activate your subscription." xml:space="preserve"><value>You're the buyer. This is the publisher's landing page — confirm to activate your subscription.</value></data>
 </root>

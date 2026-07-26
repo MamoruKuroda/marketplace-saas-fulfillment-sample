@@ -156,4 +156,17 @@
   <data name="The publisher sees the authoritative subscription state — the source of truth." xml:space="preserve"><value>パブリッシャーが権威あるサブスクリプション状態＝信頼できる情報源を確認します。</value></data>
   <data name="Lifecycle events" xml:space="preserve"><value>ライフサイクル イベント</value></data>
   <data name="Suspend, change, or cancel from the emulator; webhooks update the state here." xml:space="preserve"><value>エミュレーターから一時停止・変更・解約すると、Webhook でここの状態が更新されます。</value></data>
+
+  <!-- Key terms (P2 wayfinding) -->
+  <data name="Key terms" xml:space="preserve"><value>用語集</value></data>
+  <data name="Purchase token" xml:space="preserve"><value>購入トークン</value></data>
+  <data name="An opaque token Microsoft passes to the landing page. Resolve exchanges it for the subscription details." xml:space="preserve"><value>Microsoft がランディングページに渡す不透明なトークン。Resolve でサブスクリプションの詳細に引き換えます。</value></data>
+  <data name="Resolve" xml:space="preserve"><value>Resolve（解決）</value></data>
+  <data name="Exchanges the purchase token for the subscription — offer, plan, and buyer." xml:space="preserve"><value>購入トークンをサブスクリプション（オファー・プラン・購入者）に引き換えます。</value></data>
+  <data name="Confirms fulfillment has started: moves the subscription to Subscribed and begins billing." xml:space="preserve"><value>フルフィルメント開始を確定し、サブスクリプションを Subscribed にして課金を開始します。</value></data>
+  <data name="Webhook (connection)" xml:space="preserve"><value>Webhook（接続）</value></data>
+  <data name="Microsoft's notification of a plan/quantity change, suspend/reinstate, or cancel. The app validates it before updating state." xml:space="preserve"><value>プラン/数量の変更・一時停止/再開・解約を Microsoft が通知する仕組み。アプリは検証してから状態を更新します。</value></data>
+  <data name="Entitlement" xml:space="preserve"><value>エンタイトルメント（利用権）</value></data>
+  <data name="Whether the buyer may use the product — derived from the authoritative state, never invented by the app or the model." xml:space="preserve"><value>購入者が製品を使ってよいか。権威ある状態から導かれ、アプリやモデルが捏造することはありません。</value></data>
+  <data name="You're the buyer. This is the publisher's landing page — confirm to activate your subscription." xml:space="preserve"><value>あなたは購入者です。これはパブリッシャーのランディングページです — 確認するとサブスクリプションが有効化されます。</value></data>
 </root>
