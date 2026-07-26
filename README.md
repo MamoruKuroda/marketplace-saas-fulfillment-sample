@@ -71,6 +71,9 @@ again). Open the emulator endpoint and drive the whole lifecycle from the browse
 4. In the app's **Publisher admin**, refresh to watch the authoritative state follow each event
    (allow a few seconds for the emulator's notification delay).
 
+> `azd up` prints these steps (with your two URLs) in the terminal when it finishes — start at
+> the **emulator** URL; the app's own URL is where the buyer lands.
+
 For a production-shaped deploy against the **real** marketplace (sign-in on, no emulator, each
 step explained), see [docs/deploy.md](docs/deploy.md).
 
