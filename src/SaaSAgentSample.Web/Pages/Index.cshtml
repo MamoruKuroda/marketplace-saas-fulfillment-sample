@@ -73,6 +73,7 @@ else
     }
     else if (r is not null)
     {
+        <p class="notice">@L["You're the buyer. This is the publisher's landing page — confirm to activate your subscription."]</p>
         <div class="card">
             <h2>@L["Confirm activation"]</h2>
             <p class="hint">@L["Resolved from your marketplace purchase token."]</p>
@@ -94,6 +95,7 @@ else
                 <button type="submit" class="btn primary">@L["Activate subscription"]</button>
             </form>
         </div>
+        @(await Html.PartialAsync("_KeyTerms"))
     }
     else
     {

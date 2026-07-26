@@ -45,6 +45,8 @@
     </div>
 </details>
 
+@(await Html.PartialAsync("_KeyTerms"))
+
 @if (Model.Subscriptions.Count == 0)
 {
     <div class="card"><p class="muted">@L["No subscriptions yet. Activate one from a buyer landing link to see it here."]</p></div>

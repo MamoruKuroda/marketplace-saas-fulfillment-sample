@@ -1,0 +1,23 @@
+@{
+    // Shared "Key terms" glossary — collapsed by default. Reuses the .explainer (from the
+    // admin lifecycle aid) and .glossary (from the Start-here home) styles.
+}
+<details class="explainer">
+    <summary>@L["Key terms"]</summary>
+    <div class="body">
+        <dl class="glossary">
+            <dt>@L["Purchase token"]</dt>
+            <dd>@L["An opaque token Microsoft passes to the landing page. Resolve exchanges it for the subscription details."]</dd>
+            <dt>@L["Resolve"]</dt>
+            <dd>@L["Exchanges the purchase token for the subscription — offer, plan, and buyer."]</dd>
+            <dt>@L["Activate"]</dt>
+            <dd>@L["Confirms fulfillment has started: moves the subscription to Subscribed and begins billing."]</dd>
+            <dt>@L["Webhook (connection)"]</dt>
+            <dd>@L["Microsoft's notification of a plan/quantity change, suspend/reinstate, or cancel. The app validates it before updating state."]</dd>
+            <dt>@L["Entitlement"]</dt>
+            <dd>@L["Whether the buyer may use the product — derived from the authoritative state, never invented by the app or the model."]</dd>
+            <dt>@L["Fulfillment plane"]</dt>
+            <dd>@L["The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features."]</dd>
+        </dl>
+    </div>
+</details>
