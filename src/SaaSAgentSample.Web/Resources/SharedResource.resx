@@ -144,7 +144,6 @@
   <data name="Different tenant" xml:space="preserve"><value>Different tenant</value></data>
   <data name="Buyer" xml:space="preserve"><value>Buyer</value></data>
   <data name="Purchases from the Marketplace, then signs in on the landing page to activate." xml:space="preserve"><value>Purchases from the Marketplace, then signs in on the landing page to activate.</value></data>
-  <data name="Begin at the Emulator →" xml:space="preserve"><value>Begin at the Emulator →</value></data>
   <data name="To begin, open your Fulfillment API Emulator and use its Marketplace tab." xml:space="preserve"><value>To begin, open your Fulfillment API Emulator and use its Marketplace tab.</value></data>
   <data name="The emulator plays Microsoft: buy an offer there, and it sends you back here to activate." xml:space="preserve"><value>The emulator plays Microsoft: buy an offer there, and it sends you back here to activate.</value></data>
   <data name="What the menu items mean" xml:space="preserve"><value>What the menu items mean</value></data>
@@ -174,4 +173,8 @@
   <data name="Entitlement" xml:space="preserve"><value>Entitlement</value></data>
   <data name="Whether the buyer may use the product — derived from the authoritative state, never invented by the app or the model." xml:space="preserve"><value>Whether the buyer may use the product — derived from the authoritative state, never invented by the app or the model.</value></data>
   <data name="You're the buyer. This is the publisher's landing page — confirm to activate your subscription." xml:space="preserve"><value>You're the buyer. This is the publisher's landing page — confirm to activate your subscription.</value></data>
+
+  <!-- Front-door framing (masthead label + step-1 CTA) -->
+  <data name="Publisher app" xml:space="preserve"><value>Publisher app</value></data>
+  <data name="Step 1 — buy in the Marketplace (opens the emulator) →" xml:space="preserve"><value>Step 1 — buy in the Marketplace (opens the emulator) →</value></data>
 </root>
