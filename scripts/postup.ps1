@@ -13,7 +13,7 @@ Write-Host "====================================================================
 Write-Host " Demo ready. You play all three roles - START AT THE EMULATOR." -ForegroundColor Cyan
 Write-Host "======================================================================" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "  1. Marketplace (you = Microsoft)"
+Write-Host "  1. Marketplace (you = the buyer)"
 Write-Host "     $emu"
 Write-Host "     Pick an offer -> Continue. It hands the app a token and opens the landing page."
 Write-Host ""

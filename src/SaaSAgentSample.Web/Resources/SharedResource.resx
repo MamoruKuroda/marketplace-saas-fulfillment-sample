@@ -154,7 +154,7 @@
   <data name="Demo steps" xml:space="preserve"><value>Demo steps</value></data>
   <data name="Buy in Marketplace" xml:space="preserve"><value>Buy in Marketplace</value></data>
   <data name="Emulator" xml:space="preserve"><value>Emulator</value></data>
-  <data name="Pick an offer and continue. You are acting as Microsoft here." xml:space="preserve"><value>Pick an offer and continue. You are acting as Microsoft here.</value></data>
+  <data name="You're the buyer, shopping in Microsoft's marketplace — pick an offer and continue." xml:space="preserve"><value>You're the buyer, shopping in Microsoft's marketplace — pick an offer and continue.</value></data>
   <data name="Activate" xml:space="preserve"><value>Activate</value></data>
   <data name="The buyer lands here and confirms. Activation starts billing." xml:space="preserve"><value>The buyer lands here and confirms. Activation starts billing.</value></data>
   <data name="Manage" xml:space="preserve"><value>Manage</value></data>
