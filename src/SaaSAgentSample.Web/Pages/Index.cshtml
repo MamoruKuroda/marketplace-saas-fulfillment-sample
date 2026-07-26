@@ -35,7 +35,7 @@
     <div class="cta-row">
         @if (Model.EmulatorUrl is not null)
         {
-            <a class="btn primary" href="@Model.EmulatorUrl" target="_blank" rel="noopener">@L["Begin at the Emulator →"]</a>
+            <a class="btn primary" href="@Model.EmulatorUrl" target="_blank" rel="noopener">@L["Step 1 — buy in the Marketplace (opens the emulator) →"]</a>
         }
         else
         {
@@ -48,7 +48,6 @@
     <dl class="glossary">
         <dt>@L["Home"]</dt><dd>@L["This page — the demo map and starting point."]</dd>
         <dt>@L["Publisher admin"]</dt><dd>@L["The authoritative subscription state store: view subscriptions and, when one is pending, confirm Activate."]</dd>
-        <dt>@L["Fulfillment plane"]</dt><dd>@L["The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features."]</dd>
     </dl>
 }
 else
