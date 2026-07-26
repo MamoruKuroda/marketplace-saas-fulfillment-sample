@@ -667,3 +667,23 @@ nav .lang a.active-lang {
     color: var(--nav-text-active-color, #0f6cbd);
     font-weight: 700;
 }
+
+/* Per-page purpose hint under the nav (P4 wayfinding) */
+.page-hint {
+    margin: 0;
+    padding: .55rem 1.5rem;
+    background: #ffffff;
+    border-bottom: 1px solid #edebe9;
+    color: #605e5c;
+    font-size: .82rem;
+}
+
+/* Intro walkthrough steps (P3 wayfinding) */
+section.info ol.steps {
+    margin: .4rem 0 .8rem;
+    padding-left: 1.35rem;
+}
+
+section.info ol.steps li {
+    margin: .4rem 0;
+}
