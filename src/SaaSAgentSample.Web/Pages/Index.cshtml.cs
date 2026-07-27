@@ -30,6 +30,11 @@ public sealed class IndexModel : PageModel
 
     public bool IsActivated { get; private set; }
 
+    /// <summary>True when the resolved subscription is already Subscribed (e.g. re-visiting or toggling
+    /// language after activation): show the "active" state instead of the Activate button, so a GET is
+    /// idempotent and the confirmation survives a language switch.</summary>
+    public bool AlreadyActive { get; private set; }
+
     /// <summary>True when there is no purchase token: render the "Start here" demo map instead of the activation flow.</summary>
     public bool ShowHome { get; private set; }
 
@@ -51,6 +56,11 @@ public sealed class IndexModel : PageModel
             if (Resolved is null)
             {
                 Message = _l["The purchase could not be resolved."];
+            }
+            else if (string.Equals(Resolved.Subscription?.SaasSubscriptionStatus, "Subscribed", StringComparison.OrdinalIgnoreCase))
+            {
+                AlreadyActive = true;
+                Message = _l["This subscription is already active."];
             }
         }
         catch (FulfillmentApiException)
