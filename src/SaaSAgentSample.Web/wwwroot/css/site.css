@@ -102,10 +102,13 @@ footer.site-footer a { color:var(--text-2); }
 .stepper .step.current .n { background:var(--brand); color:#fff; }
 .stepper .step.current .lbl { color:var(--brand); }
 .stepper.compact .step + .step::before { content:"→"; position:absolute; left:-.5rem; top:.55rem; color:#c8c6c4; font-size:.85rem; }
-.stepper.expanded { gap:1rem; margin:0 0 2rem; }
+.stepper.expanded { gap:1rem; margin:0 0 .75rem; }
 .stepper.expanded .step { border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); padding:1rem; }
 .stepper.expanded .step.current { border-color:var(--brand); }
 .stepper.expanded .desc { margin:.6rem 0 0; font-size:.86rem; color:var(--text-2); }
+.stepper .step.external .n { background:transparent; border:1.5px dashed #c8c6c4; color:var(--text-2); }
+.stepper.expanded .step.external { border-style:dashed; background:#faf9f8; box-shadow:none; }
+.stepper-note { margin:0 0 2rem; font-size:.85rem; color:var(--text-2); }
 
 /* Start-here home */
 .section-h { font-size:1.05rem; font-weight:600; margin:2rem 0 .8rem; }

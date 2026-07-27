@@ -13,7 +13,7 @@
 <nav class="stepper @(Model.Expanded ? "expanded" : "compact")" aria-label="@L["Demo steps"]">
     @foreach (var s in steps)
     {
-        <div class="step @(Model.Current == s.N ? "current" : null)">
+        <div class="step @(s.External ? "external" : null) @(Model.Current == s.N ? "current" : null)">
             @if (s.Href is not null)
             {
                 <a class="step-head" href="@s.Href" target="@(s.External ? "_blank" : null)" rel="@(s.External ? "noopener" : null)">
@@ -35,3 +35,7 @@
         </div>
     }
 </nav>
+@if (Model.Expanded)
+{
+    <p class="stepper-note">@L["The current-step highlight applies only to this app's steps (2 and 3). Steps 1 and 4 run in the emulator — a separate system — and open in a new tab."]</p>
+}
