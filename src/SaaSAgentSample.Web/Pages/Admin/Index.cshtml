@@ -1,6 +1,7 @@
 @page "/admin"
 @using SaaSAgentSample.Core.Subscriptions
 @model SaaSAgentSample.Web.Pages.Admin.IndexModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Config
 @{
     ViewData["Title"] = L["Publisher admin — subscriptions"].Value;
     static string BadgeClass(SubscriptionState state) => state switch
@@ -42,6 +43,11 @@
             @L["In this demo the Fulfillment API Emulator plays Microsoft. To trigger the webhook events above, open the emulator's Subscriptions tab and act on a subscription — then refresh here to watch the authoritative state follow."]
             <a href="https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle" target="_blank" rel="noopener">@L["Lifecycle reference"]</a>.
         </p>
+        @{ var emuSubs = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config); }
+        @if (emuSubs is not null)
+        {
+            <p class="foot" style="margin-top:.4rem"><a href="@(emuSubs + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></p>
+        }
     </div>
 </details>
 

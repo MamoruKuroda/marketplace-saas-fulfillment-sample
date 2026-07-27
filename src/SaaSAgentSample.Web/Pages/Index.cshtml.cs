@@ -43,10 +43,11 @@ public sealed class IndexModel : PageModel
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
+        EmulatorUrl = DemoNavigation.EmulatorUrl(_config);
+
         if (string.IsNullOrWhiteSpace(Token))
         {
             ShowHome = true;
-            EmulatorUrl = DemoNavigation.EmulatorUrl(_config);
             return;
         }
 
@@ -71,6 +72,8 @@ public sealed class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string subscriptionId, string planId, int? quantity, CancellationToken cancellationToken)
     {
+        EmulatorUrl = DemoNavigation.EmulatorUrl(_config);
+
         if (string.IsNullOrWhiteSpace(subscriptionId) || string.IsNullOrWhiteSpace(planId))
         {
             Message = _l["Missing subscription details."];

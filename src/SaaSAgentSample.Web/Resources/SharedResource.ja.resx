@@ -170,11 +170,15 @@
   <data name="You're the buyer. This is the publisher's landing page — confirm to activate your subscription." xml:space="preserve"><value>あなたは購入者です。これはパブリッシャーのランディングページです — 確認するとサブスクリプションが有効化されます。</value></data>
 
   <!-- Front-door framing (masthead label + step-1 CTA) -->
-  <data name="Publisher app" xml:space="preserve"><value>パブリッシャーのアプリ</value></data>
+  <data name="Publisher-side app" xml:space="preserve"><value>パブリッシャー側のアプリ</value></data>
   <data name="Step 1 — buy in the Marketplace (opens the emulator) →" xml:space="preserve"><value>① マーケットプレースで購入（エミュレーターを開く）→</value></data>
 
   <!-- Landing: activation state + fulfillment note -->
   <data name="Already active." xml:space="preserve"><value>有効化済み。</value></data>
   <data name="This subscription is already active." xml:space="preserve"><value>このサブスクリプションは既に有効です。</value></data>
   <data name="Activation is the publisher's fulfillment step — confirming here has the app call the Fulfillment Activate API. Offers can also be set to auto-activate, skipping this page." xml:space="preserve"><value>有効化はパブリッシャーのフルフィルメント処理です — ここで確認すると、アプリが Fulfillment の Activate API を呼び出します。オファーを自動有効化に設定すると、この画面は省略されます。</value></data>
+
+  <!-- Hand-off deep links (wayfinding v2) -->
+  <data name="Next: to try a lifecycle change, act on this subscription in the emulator's Subscriptions tab. Changes arrive at this app as a webhook." xml:space="preserve"><value>次の一歩：ライフサイクルの変化を試すには、エミュレーターの「サブスクリプション」タブでこのサブスクリプションを操作してください。変更は Webhook としてこのアプリに届きます。</value></data>
+  <data name="Open the emulator's Subscriptions tab →" xml:space="preserve"><value>エミュレーターの「サブスクリプション」タブを開く →</value></data>
 </root>
