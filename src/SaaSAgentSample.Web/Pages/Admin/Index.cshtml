@@ -11,9 +11,22 @@
         SubscriptionState.Unsubscribed => "unsubscribed",
         _ => "pending",
     };
+    var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config);
 }
 <h1 class="page-title">@L["Subscriptions"]</h1>
 <p class="subtitle">@L["Authoritative state store · read-only view. State changes require explicit confirmation on the detail page."]</p>
+
+@if (emu is not null)
+{
+    <div class="banner" style="max-width:760px;margin:0 0 1.25rem">
+        <span class="ico">&#8644;</span>
+        <div>
+            <strong>@L["The 3⇄4 loop"]</strong>
+            <div style="margin-top:.25rem">@L["Step 4 (Lifecycle events): trigger a change in the emulator — suspend, change plan, or cancel — and it arrives here as a connection webhook. Reload this page (step 3) and the authoritative state follows."]</div>
+            <div style="margin-top:.4rem"><a href="@(emu + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></div>
+        </div>
+    </div>
+}
 
 <details class="explainer" open>
     <summary>@L["How the subscription lifecycle works"]</summary>
@@ -40,14 +53,9 @@
             </div>
         </div>
         <p class="foot">
-            @L["In this demo the Fulfillment API Emulator plays Microsoft. To trigger the webhook events above, open the emulator's Subscriptions tab and act on a subscription — then refresh here to watch the authoritative state follow."]
+            @L["In this demo the Fulfillment API Emulator plays Microsoft — the source of the webhook events above."]
             <a href="https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle" target="_blank" rel="noopener">@L["Lifecycle reference"]</a>.
         </p>
-        @{ var emuSubs = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config); }
-        @if (emuSubs is not null)
-        {
-            <p class="foot" style="margin-top:.4rem"><a href="@(emuSubs + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></p>
-        }
     </div>
 </details>
 
