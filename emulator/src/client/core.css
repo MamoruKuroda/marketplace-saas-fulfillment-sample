@@ -678,6 +678,13 @@ nav .lang a.active-lang {
     font-size: .82rem;
 }
 
+/* Masthead "which side" subtitle (wayfinding v2) */
+body > header .side-tag {
+    margin: .15rem 0 0;
+    color: #605e5c;
+    font-size: .8rem;
+}
+
 /* Intro walkthrough steps (P3 wayfinding) */
 section.info ol.steps {
     margin: .4rem 0 .8rem;
