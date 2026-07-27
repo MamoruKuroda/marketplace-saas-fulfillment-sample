@@ -60,12 +60,12 @@ else
         <p class="muted">@L["Signed in as {0}", User.Identity!.Name!]</p>
     }
 
-    @if (Model.IsActivated)
+    @if (Model.IsActivated || Model.AlreadyActive)
     {
         <div class="banner">
             <span class="ico">&#10003;</span>
             <div>
-                <strong>@L["Activated."]</strong> @Model.Message
+                <strong>@(Model.IsActivated ? L["Activated."] : L["Already active."])</strong> @Model.Message
                 <div style="margin-top:.4rem"><a href="/admin">@L["View all subscriptions in the publisher admin →"]</a></div>
             </div>
         </div>
@@ -93,6 +93,7 @@ else
                 }
                 <button type="submit" class="btn primary">@L["Activate subscription"]</button>
             </form>
+            <p class="hint" style="margin-top:.9rem">@L["Activation is the publisher's fulfillment step — confirming here has the app call the Fulfillment Activate API. Offers can also be set to auto-activate, skipping this page."]</p>
         </div>
         @(await Html.PartialAsync("_KeyTerms"))
     }

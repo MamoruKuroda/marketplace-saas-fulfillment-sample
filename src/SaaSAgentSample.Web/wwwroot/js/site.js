@@ -38,6 +38,7 @@
         // document, so replacing the header (and its toggle links) is safe.
         swapInner(doc, "main");
         swapInner(doc, ".site-header");
+        swapInner(doc, ".stepper-bar");
         swapInner(doc, ".site-footer");
 
         var lang = doc.documentElement.getAttribute("lang");

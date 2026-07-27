@@ -177,4 +177,9 @@
   <!-- Front-door framing (masthead label + step-1 CTA) -->
   <data name="Publisher app" xml:space="preserve"><value>Publisher app</value></data>
   <data name="Step 1 — buy in the Marketplace (opens the emulator) →" xml:space="preserve"><value>Step 1 — buy in the Marketplace (opens the emulator) →</value></data>
+
+  <!-- Landing: activation state + fulfillment note -->
+  <data name="Already active." xml:space="preserve"><value>Already active.</value></data>
+  <data name="This subscription is already active." xml:space="preserve"><value>This subscription is already active.</value></data>
+  <data name="Activation is the publisher's fulfillment step — confirming here has the app call the Fulfillment Activate API. Offers can also be set to auto-activate, skipping this page." xml:space="preserve"><value>Activation is the publisher's fulfillment step — confirming here has the app call the Fulfillment Activate API. Offers can also be set to auto-activate, skipping this page.</value></data>
 </root>
