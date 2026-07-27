@@ -54,8 +54,10 @@ hooks:
     windows:
       shell: pwsh
       run: ./scripts/postup.ps1
+      interactive: true
       continueOnError: true
     posix:
       shell: sh
       run: ./scripts/postup.sh
+      interactive: true
       continueOnError: true
