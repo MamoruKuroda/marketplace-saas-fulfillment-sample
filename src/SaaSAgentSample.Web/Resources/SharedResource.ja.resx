@@ -102,7 +102,9 @@
   <data name="Change plan / quantity" xml:space="preserve"><value>プラン/数量の変更</value></data>
   <data name="Suspend / Reinstate (e.g. payment failure / recovery)" xml:space="preserve"><value>一時停止 / 再開（例：支払い失敗 / 復旧）</value></data>
   <data name="Unsubscribe (terminal)" xml:space="preserve"><value>解約（終端）</value></data>
-  <data name="In this demo the Fulfillment API Emulator plays Microsoft. To trigger the webhook events above, open the emulator's Subscriptions tab and act on a subscription — then refresh here to watch the authoritative state follow." xml:space="preserve"><value>このデモでは Fulfillment API Emulator が Microsoft 役を務めます。上記の Webhook イベントを発生させるには、エミュレーターの Subscriptions タブを開いてサブスクリプションを操作し、その後この画面を再読み込みして権威ある状態が追随する様子を確認してください。</value></data>
+  <data name="In this demo the Fulfillment API Emulator plays Microsoft — the source of the webhook events above." xml:space="preserve"><value>このデモでは Fulfillment API Emulator が Microsoft 役を務めます — 上記の Webhook イベントの発生源です。</value></data>
+  <data name="The 3⇄4 loop" xml:space="preserve"><value>③⇄④ のループ</value></data>
+  <data name="Step 4 (Lifecycle events): trigger a change in the emulator — suspend, change plan, or cancel — and it arrives here as a connection webhook. Reload this page (step 3) and the authoritative state follows." xml:space="preserve"><value>④ ライフサイクル イベント：エミュレーターで変更（一時停止・プラン変更・解約）を起こすと、接続 Webhook としてこのアプリに届きます。この画面（③ 管理）を再読み込みすると、権威ある状態が追随します。</value></data>
   <data name="Lifecycle reference" xml:space="preserve"><value>ライフサイクルのリファレンス</value></data>
   <data name="Marketplace subscription" xml:space="preserve"><value>マーケットプレース サブスクリプション</value></data>
   <data name="Name" xml:space="preserve"><value>名前</value></data>
