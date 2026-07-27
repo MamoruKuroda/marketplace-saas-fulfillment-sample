@@ -153,6 +153,7 @@
   <data name="The authoritative subscription state store: view subscriptions and, when one is pending, confirm Activate." xml:space="preserve"><value>The authoritative subscription state store: view subscriptions and, when one is pending, confirm Activate.</value></data>
   <data name="The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features." xml:space="preserve"><value>The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features.</value></data>
   <data name="Demo steps" xml:space="preserve"><value>Demo steps</value></data>
+  <data name="The current-step highlight applies only to this app's steps (2 and 3). Steps 1 and 4 run in the emulator — a separate system — and open in a new tab." xml:space="preserve"><value>The current-step highlight applies only to this app's steps (2 and 3). Steps 1 and 4 run in the emulator — a separate system — and open in a new tab.</value></data>
   <data name="Buy in Marketplace" xml:space="preserve"><value>Buy in Marketplace</value></data>
   <data name="Emulator" xml:space="preserve"><value>Emulator</value></data>
   <data name="You're the buyer, shopping in Microsoft's marketplace — pick an offer and continue." xml:space="preserve"><value>You're the buyer, shopping in Microsoft's marketplace — pick an offer and continue.</value></data>
