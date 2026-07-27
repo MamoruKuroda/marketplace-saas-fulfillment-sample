@@ -1,9 +1,11 @@
 @page "/admin/{id:guid}"
 @using SaaSAgentSample.Core.Subscriptions
 @model SaaSAgentSample.Web.Pages.Admin.DetailModel
+@inject Microsoft.Extensions.Configuration.IConfiguration Config
 @{
     ViewData["Title"] = L["Subscription detail"].Value;
     var s = Model.Subscription;
+    var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config);
     static string BadgeClass(SubscriptionState state) => state switch
     {
         SubscriptionState.Subscribed => "subscribed",
@@ -47,6 +49,10 @@
             <p class="hint" style="margin-top:.4rem">
                 @L["From here, changes (Suspend, Reinstate, Change plan, Unsubscribe) are Microsoft-initiated and arrive as a connection webhook — this app validates it and updates state. In this demo, trigger them from the emulator's Subscriptions tab, then refresh this page."]
             </p>
+            @if (emu is not null)
+            {
+                <p style="margin-top:.6rem"><a href="@(emu + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></p>
+            }
         }
     </div>
 }

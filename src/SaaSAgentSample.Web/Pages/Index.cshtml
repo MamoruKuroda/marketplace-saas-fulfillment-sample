@@ -67,6 +67,13 @@ else
             <div>
                 <strong>@(Model.IsActivated ? L["Activated."] : L["Already active."])</strong> @Model.Message
                 <div style="margin-top:.4rem"><a href="/admin">@L["View all subscriptions in the publisher admin →"]</a></div>
+                @if (Model.EmulatorUrl is not null)
+                {
+                    <div class="muted" style="margin-top:.55rem;font-size:.9rem">
+                        @L["Next: to try a lifecycle change, act on this subscription in the emulator's Subscriptions tab. Changes arrive at this app as a webhook."]
+                        <div style="margin-top:.3rem"><a href="@(Model.EmulatorUrl + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></div>
+                    </div>
+                }
             </div>
         </div>
     }
