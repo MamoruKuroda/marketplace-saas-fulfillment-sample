@@ -66,13 +66,12 @@ else
             <span class="ico">&#10003;</span>
             <div>
                 <strong>@(Model.IsActivated ? L["Activated."] : L["Already active."])</strong> @Model.Message
-                <div style="margin-top:.4rem"><a href="/admin">@L["View all subscriptions in the publisher admin →"]</a></div>
+                <div class="muted" style="margin-top:.55rem;font-size:.9rem">@L["Next step (step 3, Manage): open the publisher admin and confirm the status now reads Subscribed — it's the authoritative state store."]</div>
+                <div style="margin-top:.3rem"><a href="/admin">@L["View all subscriptions in the publisher admin →"]</a></div>
                 @if (Model.EmulatorUrl is not null)
                 {
-                    <div class="muted" style="margin-top:.55rem;font-size:.9rem">
-                        @L["Next: to try a lifecycle change, act on this subscription in the emulator's Subscriptions tab. Changes arrive at this app as a webhook."]
-                        <div style="margin-top:.3rem"><a href="@(Model.EmulatorUrl + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></div>
-                    </div>
+                    <div class="muted" style="margin-top:.7rem;font-size:.9rem">@L["Then (step 4, Lifecycle events — the 3⇄4 loop): act on this subscription in the emulator's Subscriptions tab; the change arrives here as a webhook, and the admin's state follows when you refresh."]</div>
+                    <div style="margin-top:.3rem"><a href="@(Model.EmulatorUrl + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></div>
                 }
             </div>
         </div>
