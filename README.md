@@ -170,6 +170,22 @@ dotnet test --filter FullyQualifiedName~SyntheticL2LifecycleTests
 
 Details, including the manual emulator path: [docs/l2-demo.md](docs/l2-demo.md).
 
+## Agent layer — planned, not yet built
+
+This repository is named `marketplace-saas-agent-sample` to reflect its **founding design**: an
+LLM tool-calling layer (promotable to
+[Azure AI Foundry Agent Service](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/overview))
+as a core element alongside the fulfillment plane. Marketplace fulfillment operations (Resolve,
+Activate, Get Subscription, webhook operations) map naturally to typed tool calls, making the
+subscription lifecycle drivable by an LLM with explicit confirmation guardrails.
+
+**v0 — this version — contains the fulfillment plane only:** the landing page, webhook, state
+store, and publisher admin described in this README. The agent / LLM layer is not yet implemented.
+
+When built, the agent layer will expose the fulfillment operations as tools and let a conversational
+agent drive the lifecycle end to end — while the state DB remains the single source of truth for
+every state-changing call.
+
 ## Guardrails
 
 A few rules this sample never breaks:
