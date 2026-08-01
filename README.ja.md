@@ -24,6 +24,17 @@
 **marketplace SaaS が初めての方へ:** まず [体験ウォークスルー](docs/walkthrough.ja.md) から。
 購入者・パブリッシャーそれぞれの「誰が何をするか」を平易に地図化し、本サンプルの実装に対応づけています。
 
+## 画面イメージ
+
+2つのシステムにまたがる4ステップを、あなたが3役すべてを演じながら体験します。画像をクリックすると拡大表示されます。
+
+| | |
+| --- | --- |
+| **① ここから始める** — アプリが入口です。3つの役割と全体の流れを示し、ステップ①をエミュレーターで開くボタンを置いています。<br>[![アプリの「ここから始める」ページ。4ステップの流れ、Microsoft・パブリッシャー・購入者の3つの役割カード、「① マーケットプレースで購入」ボタンが並んでいる。](docs/images/screenshots/ja-1-home.png)](docs/images/screenshots/ja-1-home.png) | **② 有効化** — あなたは購入者です。ランディングページが購入トークンを Resolve し、有効化の前に明示的な確認を求めます。<br>[![購入者向けランディングページ。サブスクリプション・オファー・プラン・数量と PendingFulfillmentStart の状態、「サブスクリプションを有効化」ボタンが表示されている。](docs/images/screenshots/ja-2-landing.png)](docs/images/screenshots/ja-2-landing.png) |
+| **③ 有効化完了** — 有効化すると Fulfillment の Activate API が呼ばれ、次の一歩と ③⇄④ のループが案内されます。<br>[![緑色の「有効化しました」バナー。パブリッシャー管理とエミュレーターの「サブスクリプション」タブへのリンクが並ぶ。](docs/images/screenshots/ja-3-activated.png)](docs/images/screenshots/ja-3-activated.png) | **④ パブリッシャー管理** — 権威ある状態ストアです。状態が `Subscribed` になり、ライフサイクルの解説が添えられています。<br>[![パブリッシャー管理画面。Subscribed 状態のサブスクリプションが1件表示され、その上にパブリッシャー起点と Microsoft 起点の遷移を説明するライフサイクル解説がある。](docs/images/screenshots/ja-4-admin.png)](docs/images/screenshots/ja-4-admin.png) |
+
+①と④は Fulfillment API Emulator（Microsoft の代役）で、②と③がこのアプリです。UI は英語と日本語に対応しています。
+
 ## 動かし方は2通り
 
 | | **クラウドにデモをデプロイ** | **ローカルで動かす** |
