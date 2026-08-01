@@ -185,4 +185,7 @@
   <data name="Next step (step 3, Manage): open the publisher admin and confirm the status now reads Subscribed — it's the authoritative state store." xml:space="preserve"><value>次の一歩（③ 管理）：パブリッシャー管理を開き、状態が「Subscribed」になっていることを確認します — ここが権威ある状態ストアです。</value></data>
   <data name="Then (step 4, Lifecycle events — the 3⇄4 loop): act on this subscription in the emulator's Subscriptions tab; the change arrives here as a webhook, and the admin's state follows when you refresh." xml:space="preserve"><value>そのあと（④ ライフサイクル — ③⇄④ のループ）：エミュレーターの「サブスクリプション」タブでこのサブスクリプションを操作します。変更は Webhook としてこのアプリに届き、管理画面を再読み込みすると状態が追随します。</value></data>
   <data name="Open the emulator's Subscriptions tab →" xml:space="preserve"><value>エミュレーターの「サブスクリプション」タブを開く →</value></data>
+
+  <!-- Accessibility labels -->
+  <data name="Language" xml:space="preserve"><value>言語</value></data>
 </root>
