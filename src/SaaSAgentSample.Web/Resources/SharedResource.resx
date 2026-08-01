@@ -190,4 +190,7 @@
   <data name="Next step (step 3, Manage): open the publisher admin and confirm the status now reads Subscribed — it's the authoritative state store." xml:space="preserve"><value>Next step (step 3, Manage): open the publisher admin and confirm the status now reads Subscribed — it's the authoritative state store.</value></data>
   <data name="Then (step 4, Lifecycle events — the 3⇄4 loop): act on this subscription in the emulator's Subscriptions tab; the change arrives here as a webhook, and the admin's state follows when you refresh." xml:space="preserve"><value>Then (step 4, Lifecycle events — the 3⇄4 loop): act on this subscription in the emulator's Subscriptions tab; the change arrives here as a webhook, and the admin's state follows when you refresh.</value></data>
   <data name="Open the emulator's Subscriptions tab →" xml:space="preserve"><value>Open the emulator's Subscriptions tab →</value></data>
+
+  <!-- Accessibility labels -->
+  <data name="Language" xml:space="preserve"><value>Language</value></data>
 </root>
