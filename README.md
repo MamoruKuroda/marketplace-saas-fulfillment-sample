@@ -24,6 +24,18 @@ stands in for the marketplace, so no real purchase is needed.
 **New to marketplace SaaS?** Start with the [experience walkthrough](docs/walkthrough.md) —
 a plain-language map of who does what, and how it maps to the code here.
 
+## What it looks like
+
+Four steps across two systems, and you play all three roles. Click a screenshot for full size.
+
+| | |
+| --- | --- |
+| **1 · Start here** — the app is the front door: the three roles, the end-to-end flow, and the button that opens step 1 in the emulator.<br>[![The app's Start here page: a four-step flow, three role cards for Microsoft, Publisher and Buyer, and a "Step 1 — buy in the Marketplace" button.](docs/images/screenshots/en-1-home.png)](docs/images/screenshots/en-1-home.png) | **2 · Activate** — you're the buyer. The landing page resolves your purchase token and asks for explicit confirmation before activating.<br>[![The buyer landing page showing subscription, offer, plan, quantity and a PendingFulfillmentStart status, with an "Activate subscription" button.](docs/images/screenshots/en-2-landing.png)](docs/images/screenshots/en-2-landing.png) |
+| **3 · Activated** — activation calls the Fulfillment Activate API, then points you at the next step and the 3⇄4 loop.<br>[![A green "Activated" banner with links to the publisher admin and to the emulator's Subscriptions tab.](docs/images/screenshots/en-3-activated.png)](docs/images/screenshots/en-3-activated.png) | **4 · Publisher admin** — the authoritative state store, now reading `Subscribed`, with the lifecycle explainer.<br>[![The publisher admin listing one subscription in the Subscribed state, above a lifecycle explainer of publisher- and Microsoft-initiated transitions.](docs/images/screenshots/en-4-admin.png)](docs/images/screenshots/en-4-admin.png) |
+
+Steps 1 and 4 happen in the Fulfillment API Emulator (Microsoft's stand-in); steps 2 and 3 are
+this app. The UI ships in English and Japanese.
+
 ## Two ways to run it
 
 | | **Deploy a cloud demo** | **Run locally** |
