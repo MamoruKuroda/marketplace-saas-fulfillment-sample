@@ -1,4 +1,4 @@
-# marketplace-saas-agent-sample
+# marketplace-saas-fulfillment-sample
 
 > **実験的な教材サンプル（作成中）。本番利用は想定していません。**
 > Microsoft 商用マーケットプレースの **SaaS Offer** を Tier-1 定額（flat-rate）・.NET 10 で
@@ -96,8 +96,8 @@ azd down    # 使い終わったら一括削除
 Docker・Azure・マーケットプレースでの購入は不要です。
 
 ```bash
-git clone https://github.com/MamoruKuroda/marketplace-saas-agent-sample
-cd marketplace-saas-agent-sample
+git clone https://github.com/MamoruKuroda/marketplace-saas-fulfillment-sample
+cd marketplace-saas-fulfillment-sample
 
 # 購読ライフサイクル全体（Resolve → Activate → Webhook → 状態）を
 # ローカル HTTP 上でエンドツーエンドに実証:
@@ -161,14 +161,6 @@ dotnet test --filter FullyQualifiedName~SyntheticL2LifecycleTests
 ```
 
 手動のエミュレーター手順を含む詳細は [docs/l2-demo.ja.md](docs/l2-demo.ja.md)。
-
-## エージェント層 — 計画中（v0 では未実装）
-
-このリポジトリが `marketplace-saas-agent-sample` と名付けられているのは、その**設計上の意図**を反映しているためです：LLM ツール呼び出し層（[Microsoft Foundry Agent Service](https://learn.microsoft.com/ja-jp/azure/foundry/agents/overview) への昇格も視野に入れた）をフルフィルメント層と並ぶコア要素とする設計です。マーケットプレースのフルフィルメント操作（Resolve・Activate・Get Subscription・Webhook 操作）は型付きのツール呼び出しに自然にマッピングでき、会話型エージェントが購読ライフサイクルをエンドツーエンドで駆動できます。
-
-**v0（このバージョン）はフルフィルメント層のみ**を実装します：この README に記載されているランディングページ・Webhook・状態ストア・パブリッシャー管理画面がそれです。エージェント / LLM 層はまだ実装されていません。
-
-エージェント層が実装される際には、フルフィルメント操作をツールとして公開し、会話型エージェントがライフサイクルをエンドツーエンドで駆動できるようにします — 状態を変更するすべての呼び出しにおいて、状態 DB が唯一の正本であり続けます。
 
 ## ガードレール
 

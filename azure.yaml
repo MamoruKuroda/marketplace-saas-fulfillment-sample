@@ -8,9 +8,9 @@
 #
 # This is the automated equivalent of the manual walkthrough in docs/deploy.md.
 # Nothing here runs automatically — a person runs `azd up` (provisioning is human-authorized).
-name: marketplace-saas-agent-sample
+name: marketplace-saas-fulfillment-sample
 metadata:
-  template: marketplace-saas-agent-sample@0.1.0
+  template: marketplace-saas-fulfillment-sample@0.1.0
 
 services:
   web:
