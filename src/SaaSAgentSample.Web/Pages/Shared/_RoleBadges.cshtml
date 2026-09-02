@@ -1,0 +1,22 @@
+@model SaaSAgentSample.Web.RoleBadgeVm
+@{
+    // Element 3: who you are on this page. Deliberately consistent with the step map: steps 1 and 4
+    // are Microsoft's (the emulator, a separate system), steps 2 and 3 are this app — which is why
+    // the Microsoft badge is never the active one while you are inside this app.
+    var roles = new[]
+    {
+        new { Role = SaaSAgentSample.Web.DemoRole.Microsoft, Css = "ms",    Label = L["Microsoft"].Value,        Where = L["Steps 1 & 4 — the emulator"].Value },
+        new { Role = SaaSAgentSample.Web.DemoRole.Publisher, Css = "pub",   Label = L["Publisher (you)"].Value,  Where = L["Steps 2 & 3 — this app"].Value },
+        new { Role = SaaSAgentSample.Web.DemoRole.Buyer,     Css = "buyer", Label = L["Buyer"].Value,            Where = L["A different tenant"].Value },
+    };
+}
+<div class="role-badges" role="group" aria-label="@L["Roles"]">
+    <span class="rb-caption">@L["You are:"]</span>
+    @foreach (var r in roles)
+    {
+        var on = Model.Current == r.Role;
+        <span class="rb @r.Css @(on ? "on" : null)" title="@r.Where" aria-current="@(on ? "true" : null)">
+            @r.Label<small>@r.Where</small>
+        </span>
+    }
+</div>

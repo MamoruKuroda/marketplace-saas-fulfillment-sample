@@ -1,11 +1,16 @@
 @{
     // Shared "Key terms" glossary — collapsed by default. Reuses the .explainer (from the
     // admin lifecycle aid) and .glossary (from the Start-here home) styles.
+    //
+    // Single source of truth for the inline tooltips too: SaaSAgentSample.Web.TermVm pulls the
+    // same catalog keys, so a tooltip and this list cannot drift apart.
 }
 <details class="explainer">
     <summary>@L["Key terms"]</summary>
     <div class="body">
         <dl class="glossary">
+            <dt>@L["Landing page"]</dt>
+            <dd>@L["The page Microsoft opens after a purchase, carrying the purchase token. Where the buyer signs in and the subscription is activated."]</dd>
             <dt>@L["Purchase token"]</dt>
             <dd>@L["An opaque token Microsoft passes to the landing page. Resolve exchanges it for the subscription details."]</dd>
             <dt>@L["Resolve"]</dt>
@@ -14,8 +19,16 @@
             <dd>@L["Confirms fulfillment has started: moves the subscription to Subscribed and begins billing."]</dd>
             <dt>@L["Webhook (connection)"]</dt>
             <dd>@L["Microsoft's notification of a plan/quantity change, suspend/reinstate, or cancel. The app validates it before updating state."]</dd>
+            <dt>@L["Change plan"]</dt>
+            <dd>@L["The buyer moves to a different plan on the same subscription. It stays one subscription; Microsoft handles the pricing side."]</dd>
+            <dt>@L["State store"]</dt>
+            <dd>@L["The publisher's own database of who has which subscription. The only thing this app consults to decide whether a customer may use the product."]</dd>
             <dt>@L["Entitlement"]</dt>
-            <dd>@L["Whether the buyer may use the product — derived from the authoritative state, never invented by the app or the model."]</dd>
+            <dd>@L["Whether the buyer may use the product — decided from the subscription database alone, never invented by the app or a model."]</dd>
+            <dt>@L["Dimension (billing unit)"]</dt>
+            <dd>@L["The unit a metered plan charges by — API calls, gigabytes, jobs. This sample is flat-rate only, so it has none."]</dd>
+            <dt>@L["Prepaid capacity"]</dt>
+            <dd>@L["An allowance the customer pays for up front and draws down as they use the service. Shown here only to illustrate the idea."]</dd>
             <dt>@L["Fulfillment plane"]</dt>
             <dd>@L["The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features."]</dd>
         </dl>

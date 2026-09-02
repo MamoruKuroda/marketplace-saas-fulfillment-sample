@@ -1,0 +1,6 @@
+@model SaaSAgentSample.Web.TermVm
+@{
+    // Element 8: an inline term tooltip. CSS-only (no JavaScript, no new dependency) and
+    // keyboard reachable. Label and definition both come from the shared catalog, so a tooltip
+    // and the "Key terms" list can never drift apart.
+}<span class="term" tabindex="0" role="note" aria-label="@Model.Label: @Model.Definition"><span class="term-word">@Model.Label</span><span class="term-tip" aria-hidden="true">@Model.Definition</span></span>

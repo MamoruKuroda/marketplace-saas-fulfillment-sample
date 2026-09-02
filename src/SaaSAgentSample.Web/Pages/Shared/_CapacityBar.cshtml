@@ -1,0 +1,31 @@
+@using System.Globalization
+@model SaaSAgentSample.Web.CapacityVm
+@{
+    // Element 7: an ILLUSTRATIVE prepaid-capacity bar. This sample is Tier-1 flat rate and does no
+    // metering at all — the numbers are derived from the subscription and plan ids, never measured,
+    // and never billed. It is here because "I prepaid an allowance and my usage draws it down" is
+    // the mental model customers actually hold, and it is worth showing next to the real state.
+    // The "Illustrative only" label is mandatory and must stay visible.
+    var (used, total) = SaaSAgentSample.Web.Teaching.IllustrativeCapacity(Model.MarketplaceSubscriptionId, Model.PlanId);
+    var remaining = total - used;
+    // The bar fills with what is LEFT, so it matches the "remaining" reading beside it.
+    var percentRemaining = total == 0 ? 0 : (int)Math.Round(remaining / total * 100m);
+    var inv = CultureInfo.InvariantCulture;
+    var reading = string.Format(inv, "{0:0.00} / {1:0.00}", remaining, total);
+}
+<div class="cap @(Model.Compact ? "compact" : "full")">
+    <div class="cap-head">
+        <span class="cap-label">@L["Remaining allowance"]</span>
+        <span class="cap-illus">@L["Illustrative only"]</span>
+    </div>
+    <div class="cap-bar" role="img" aria-label="@L["Illustrative only"]: @reading @L["units"]">
+        <span class="cap-fill" style="width:@(percentRemaining.ToString(inv))%"></span>
+    </div>
+    <div class="cap-read"><strong>@reading</strong> @L["units"]</div>
+    @if (!Model.Compact)
+    {
+        <p class="cap-note">
+            @L["Not measured and not billed. This sample is flat-rate and does no metering; the numbers are made up from the subscription and plan ids so the bar stays put between reloads — and visibly moves when the plan changes."]
+        </p>
+    }
+</div>

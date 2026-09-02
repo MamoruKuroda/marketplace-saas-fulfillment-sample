@@ -1,0 +1,40 @@
+@{
+    // Element 6: why the publisher needs a database at all, when Microsoft already holds the
+    // subscription. Two layers: Microsoft is upstream truth for the commercial fact, and the
+    // publisher holds the one thing Microsoft cannot — the link to your own accounts.
+}
+<details class="explainer" open>
+    <summary>@L["Microsoft also holds the subscription — so why keep your own database?"]</summary>
+    <div class="body">
+        <div class="truth-cols">
+            <div class="truth-col ms">
+                <span class="who ms">@L["Microsoft"]</span>
+                <h4>@L["The commercial fact"]</h4>
+                <ul>
+                    <li>@L["Purchased, active, suspended, cancelled"]</li>
+                    <li>@L["Plan and quantity"]</li>
+                    <li>@L["Invoicing the customer"]</li>
+                </ul>
+                <p class="foot-note">@L["Microsoft is upstream here. You can always re-read it: GET /subscriptions/{id}."]</p>
+            </div>
+            <div class="truth-arrows" aria-hidden="true">
+                <span class="ta">@L["at start: Resolve / Activate"]</span>
+                <span class="ta">@L["in operation: Webhook"]</span>
+                <span class="ta back">@L["re-read any time"]</span>
+            </div>
+            <div class="truth-col pub">
+                <span class="who pub">@L["Publisher (you)"]</span>
+                <h4>@L["Your own side"]</h4>
+                <ul>
+                    <li>@L["A synced copy of the commercial state above"]</li>
+                    <li>@L["The link to your existing company account and users"]</li>
+                    <li>@L["What you provisioned, their settings, their data"]</li>
+                </ul>
+                <p class="foot-note">@L["Microsoft cannot hold this. That link is why you need a database of your own."]</p>
+            </div>
+        </div>
+        <p class="foot">
+            @L["Because Microsoft is upstream, this app never takes a webhook at face value: it checks the notification against Microsoft's Operations API before writing anything. Your database then answers exactly one question — may this customer use the product?"]
+        </p>
+    </div>
+</details>

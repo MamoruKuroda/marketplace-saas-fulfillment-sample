@@ -21,11 +21,18 @@ public sealed class LandingService
 {
     private readonly IFulfillmentClient _fulfillment;
     private readonly ISubscriptionRepository _repository;
+    private readonly ISubscriptionEventLog? _events;
 
-    public LandingService(IFulfillmentClient fulfillment, ISubscriptionRepository repository)
+    // The event log is optional so the service stays constructible without it: it is a
+    // display-only teaching aid and must never be required for the flow to work.
+    public LandingService(
+        IFulfillmentClient fulfillment,
+        ISubscriptionRepository repository,
+        ISubscriptionEventLog? events = null)
     {
         _fulfillment = fulfillment;
         _repository = repository;
+        _events = events;
     }
 
     /// <summary>
@@ -56,6 +63,7 @@ public sealed class LandingService
 
             await _repository.AddAsync(subscription, cancellationToken);
             await _repository.SaveChangesAsync(cancellationToken);
+            _events?.Record(marketplaceSubscriptionId, SubscriptionEventSource.Landing, "Resolve", subscription.PlanId);
         }
 
         return resolved;
@@ -93,6 +101,7 @@ public sealed class LandingService
             case SubscriptionState.PendingFulfillmentStart:
                 subscription.Activate(DateTimeOffset.UtcNow);
                 await _repository.SaveChangesAsync(cancellationToken);
+                _events?.Record(marketplaceSubscriptionId, SubscriptionEventSource.Landing, "Activate", planId);
                 return LandingActivationResult.Activated;
 
             default:

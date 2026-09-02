@@ -24,12 +24,20 @@ public sealed class AdminService
     private readonly ISubscriptionRepository _repository;
     private readonly IFulfillmentClient _fulfillment;
     private readonly ILogger<AdminService> _logger;
+    private readonly ISubscriptionEventLog? _events;
 
-    public AdminService(ISubscriptionRepository repository, IFulfillmentClient fulfillment, ILogger<AdminService> logger)
+    // The event log is optional so the service stays constructible without it: it is a
+    // display-only teaching aid and must never be required for the flow to work.
+    public AdminService(
+        ISubscriptionRepository repository,
+        IFulfillmentClient fulfillment,
+        ILogger<AdminService> logger,
+        ISubscriptionEventLog? events = null)
     {
         _repository = repository;
         _fulfillment = fulfillment;
         _logger = logger;
+        _events = events;
     }
 
     public Task<IReadOnlyList<Subscription>> ListSubscriptionsAsync(CancellationToken cancellationToken = default)
@@ -69,6 +77,7 @@ public sealed class AdminService
         await _repository.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Admin activated subscription {SubscriptionId}.", subscription.MarketplaceSubscriptionId);
+        _events?.Record(subscription.MarketplaceSubscriptionId, SubscriptionEventSource.Admin, "Activate", subscription.PlanId);
         return AdminActivationResult.Activated;
     }
 }

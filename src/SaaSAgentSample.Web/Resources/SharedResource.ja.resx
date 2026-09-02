@@ -91,9 +91,7 @@
   <!-- Admin list -->
   <data name="Publisher admin — subscriptions" xml:space="preserve"><value>パブリッシャー管理 — サブスクリプション</value></data>
   <data name="Subscriptions" xml:space="preserve"><value>サブスクリプション</value></data>
-  <data name="Authoritative state store · read-only view. State changes require explicit confirmation on the detail page." xml:space="preserve"><value>権威ある状態ストア・読み取り専用ビュー。状態変更は詳細ページでの明示的な確認が必要です。</value></data>
   <data name="How the subscription lifecycle works" xml:space="preserve"><value>サブスクリプションのライフサイクルの仕組み</value></data>
-  <data name="Microsoft Marketplace drives the lifecycle. This app is the publisher side: it activates a purchase, then keeps its state store in sync with events Microsoft sends. It never invents state." xml:space="preserve"><value>ライフサイクルを駆動するのは Microsoft Marketplace です。このアプリはパブリッシャー側として、購入を有効化し、その後は Microsoft から届くイベントに合わせて状態ストアを同期し続けます。状態を勝手に作り出すことはありません。</value></data>
   <data name="Publisher-initiated" xml:space="preserve"><value>パブリッシャー起点</value></data>
   <data name="This app calls the Fulfillment API." xml:space="preserve"><value>このアプリが Fulfillment API を呼び出します。</value></data>
   <data name="Resolve → Activate — confirmed here, only from PendingFulfillmentStart. Starts billing." xml:space="preserve"><value>Resolve → Activate — ここで確認します（PendingFulfillmentStart のときのみ）。課金が始まります。</value></data>
@@ -104,7 +102,6 @@
   <data name="Unsubscribe (terminal)" xml:space="preserve"><value>解約（終端）</value></data>
   <data name="In this demo the Fulfillment API Emulator plays Microsoft — the source of the webhook events above." xml:space="preserve"><value>このデモでは Fulfillment API Emulator が Microsoft 役を務めます — 上記の Webhook イベントの発生源です。</value></data>
   <data name="The 3⇄4 loop" xml:space="preserve"><value>③⇄④ のループ</value></data>
-  <data name="Step 4 (Lifecycle events): trigger a change in the emulator — suspend, change plan, or cancel — and it arrives here as a connection webhook. Reload this page (step 3) and the authoritative state follows." xml:space="preserve"><value>④ ライフサイクル イベント：エミュレーターで変更（一時停止・プラン変更・解約）を起こすと、接続 Webhook としてこのアプリに届きます。この画面（③ 管理）を再読み込みすると、権威ある状態が追随します。</value></data>
   <data name="Lifecycle reference" xml:space="preserve"><value>ライフサイクルのリファレンス</value></data>
   <data name="Marketplace subscription" xml:space="preserve"><value>マーケットプレース サブスクリプション</value></data>
   <data name="Name" xml:space="preserve"><value>名前</value></data>
@@ -137,7 +134,6 @@
   <data name="Runs the marketplace and billing. The Fulfillment API Emulator stands in for Microsoft in this demo." xml:space="preserve"><value>マーケットプレースと課金を運営します。このデモでは Fulfillment API Emulator が Microsoft 役を務めます。</value></data>
   <data name="This app" xml:space="preserve"><value>このアプリ</value></data>
   <data name="Publisher (you)" xml:space="preserve"><value>パブリッシャー（あなた）</value></data>
-  <data name="Sells the SaaS offer. This app is the publisher side: the buyer landing, the connection webhook, and the authoritative state store." xml:space="preserve"><value>SaaS オファーを販売します。このアプリはパブリッシャー側＝購入者ランディング、接続 Webhook、権威ある状態ストアです。</value></data>
   <data name="Different tenant" xml:space="preserve"><value>別テナント</value></data>
   <data name="Buyer" xml:space="preserve"><value>購入者</value></data>
   <data name="Purchases from the Marketplace, then signs in on the landing page to activate." xml:space="preserve"><value>マーケットプレースで購入し、ランディングページでサインインして有効化します。</value></data>
@@ -145,7 +141,6 @@
   <data name="The emulator plays Microsoft: buy an offer there, and it sends you back here to activate." xml:space="preserve"><value>エミュレーターが Microsoft 役です。そこでオファーを購入すると、有効化のためにこのページへ戻されます。</value></data>
   <data name="What the menu items mean" xml:space="preserve"><value>メニュー項目の意味</value></data>
   <data name="This page — the demo map and starting point." xml:space="preserve"><value>このページ＝デモの地図であり出発点です。</value></data>
-  <data name="The authoritative subscription state store: view subscriptions and, when one is pending, confirm Activate." xml:space="preserve"><value>権威あるサブスクリプション状態ストア。サブスクリプションを閲覧し、保留中のものは Activate を確認して実行します。</value></data>
   <data name="The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features." xml:space="preserve"><value>購入を成立させるための仕組み（Resolve・Activate・接続 Webhook）で、製品自体の機能とは別の層です。</value></data>
   <data name="Demo steps" xml:space="preserve"><value>デモの手順</value></data>
   <data name="The current-step highlight applies only to this app's steps (2 and 3). Steps 1 and 4 run in the emulator — a separate system — and open in a new tab." xml:space="preserve"><value>現在地（青いハイライト）はこのアプリのステップ（②③）だけに付きます。①④ はエミュレーター（別システム／Microsoft 役）で行い、別タブで開きます。</value></data>
@@ -155,7 +150,6 @@
   <data name="Activate" xml:space="preserve"><value>有効化</value></data>
   <data name="The buyer lands here and confirms. Activation starts billing." xml:space="preserve"><value>購入者がここに着地して確認します。有効化すると課金が始まります。</value></data>
   <data name="Manage" xml:space="preserve"><value>管理</value></data>
-  <data name="The publisher sees the authoritative subscription state — the source of truth." xml:space="preserve"><value>パブリッシャーが権威あるサブスクリプション状態＝信頼できる情報源を確認します。</value></data>
   <data name="Lifecycle events" xml:space="preserve"><value>ライフサイクル イベント</value></data>
   <data name="Suspend, change, or cancel from the emulator; webhooks update the state here." xml:space="preserve"><value>エミュレーターから一時停止・変更・解約すると、Webhook でここの状態が更新されます。</value></data>
 
@@ -169,7 +163,6 @@
   <data name="Webhook (connection)" xml:space="preserve"><value>Webhook（接続）</value></data>
   <data name="Microsoft's notification of a plan/quantity change, suspend/reinstate, or cancel. The app validates it before updating state." xml:space="preserve"><value>プラン/数量の変更・一時停止/再開・解約を Microsoft が通知する仕組み。アプリは検証してから状態を更新します。</value></data>
   <data name="Entitlement" xml:space="preserve"><value>エンタイトルメント（利用権）</value></data>
-  <data name="Whether the buyer may use the product — derived from the authoritative state, never invented by the app or the model." xml:space="preserve"><value>購入者が製品を使ってよいか。権威ある状態から導かれ、アプリやモデルが捏造することはありません。</value></data>
   <data name="You're the buyer. This is the publisher's landing page — confirm to activate your subscription." xml:space="preserve"><value>あなたは購入者です。これはパブリッシャーのランディングページです — 確認するとサブスクリプションが有効化されます。</value></data>
 
   <!-- Front-door framing (masthead label + step-1 CTA) -->
@@ -182,10 +175,109 @@
   <data name="Activation is the publisher's fulfillment step — confirming here has the app call the Fulfillment Activate API. Offers can also be set to auto-activate, skipping this page." xml:space="preserve"><value>有効化はパブリッシャーのフルフィルメント処理です — ここで確認すると、アプリが Fulfillment の Activate API を呼び出します。オファーを自動有効化に設定すると、この画面は省略されます。</value></data>
 
   <!-- Hand-off deep links (wayfinding v2) -->
-  <data name="Next step (step 3, Manage): open the publisher admin and confirm the status now reads Subscribed — it's the authoritative state store." xml:space="preserve"><value>次の一歩（③ 管理）：パブリッシャー管理を開き、状態が「Subscribed」になっていることを確認します — ここが権威ある状態ストアです。</value></data>
   <data name="Then (step 4, Lifecycle events — the 3⇄4 loop): act on this subscription in the emulator's Subscriptions tab; the change arrives here as a webhook, and the admin's state follows when you refresh." xml:space="preserve"><value>そのあと（④ ライフサイクル — ③⇄④ のループ）：エミュレーターの「サブスクリプション」タブでこのサブスクリプションを操作します。変更は Webhook としてこのアプリに届き、管理画面を再読み込みすると状態が追随します。</value></data>
   <data name="Open the emulator's Subscriptions tab →" xml:space="preserve"><value>エミュレーターの「サブスクリプション」タブを開く →</value></data>
 
   <!-- Accessibility labels -->
   <data name="Language" xml:space="preserve"><value>言語</value></data>
+
+  <!-- Layout / hero -->
+  <data name="Marketplace handles the money. You build the part that turns the service on and keeps its state — via Resolve/Activate at start and the Webhook during operation." xml:space="preserve"><value>Marketplace は“お金”を扱う。あなたが作るのは“サービスをONにして状態を持ち続ける”側。境目は、起動時の Resolve/Activate と、運用中の Webhook。</value></data>
+  <data name="Roles" xml:space="preserve"><value>役割</value></data>
+  <data name="You are:" xml:space="preserve"><value>今のあなたの役：</value></data>
+  <data name="Steps 1 &amp; 4 — the emulator" xml:space="preserve"><value>① と ④ — エミュレーター</value></data>
+  <data name="Steps 2 &amp; 3 — this app" xml:space="preserve"><value>② と ③ — このアプリ</value></data>
+  <data name="A different tenant" xml:space="preserve"><value>別のテナント</value></data>
+
+  <!-- The three parts you build -->
+  <data name="The three parts you build" xml:space="preserve"><value>あなたが作る3つの部品</value></data>
+  <data name="You build:" xml:space="preserve"><value>あなたが作るのは：</value></data>
+  <data name="Landing page" xml:space="preserve"><value>ランディング ページ</value></data>
+  <data name="The buyer arrives here from the Marketplace, signs in, and the subscription is activated." xml:space="preserve"><value>購入者がマーケットプレースからここに着地し、サインインして、サブスクリプションが有効化されます。</value></data>
+  <data name="Connection webhook" xml:space="preserve"><value>接続 Webhook</value></data>
+  <data name="Receives renewals, suspensions, cancellations and plan or quantity changes. No page — it is an endpoint (POST /api/webhook)." xml:space="preserve"><value>更新・一時停止・解約・プラン変更・数量変更を受け取ります。画面はなく、エンドポイントです（POST /api/webhook）。</value></data>
+  <data name="Your subscription database" xml:space="preserve"><value>自社側の契約状況DB</value></data>
+  <data name="Who has which subscription, on your side. The only thing this app consults to decide whether a customer may use the product." xml:space="preserve"><value>誰がどのサブスクリプションを持っているかを、自社側で保持します。顧客に製品を使わせてよいかを判断するとき、このアプリが見るのはここだけです。</value></data>
+  <data name="Steps 1 and 4 are Microsoft's side (the emulator in this demo). The webhook has no page of its own — it is how step 4 reaches step 3." xml:space="preserve"><value>① と ④ は Microsoft 側です（このデモではエミュレーターが代役）。Webhook に専用の画面はありません — ④ が ③ に届くための経路そのものです。</value></data>
+
+  <!-- Demo map legend and region note -->
+  <data name="Steps 2 &amp; 3 — this app. This is what you build." xml:space="preserve"><value>② と ③ — このアプリ。あなたが作るのはここです。</value></data>
+  <data name="Steps 1 &amp; 4 — Microsoft's side. The emulator stands in for it and opens in a new tab." xml:space="preserve"><value>① と ④ — Microsoft 側。エミュレーターが代役を務め、新しいタブで開きます。</value></data>
+  <data name="One offer can serve several regions: where a customer's data is uploaded is chosen per region — US users to a US region, and so on. This sample deploys one region; the fulfillment plane above is the same in each." xml:space="preserve"><value>1つのオファーで複数リージョンに展開できます。顧客のデータをどこにアップロードするかはリージョンごとに決まります（例：米国のユーザーは米国リージョンへ）。本サンプルのデプロイは1リージョンですが、上のフルフィルメント層はどのリージョンでも同じです。</value></data>
+  <data name="The publisher checks the subscription database. It is what this app consults to decide whether a customer may use the product." xml:space="preserve"><value>パブリッシャーが自社側の契約状況DBを確認します。顧客に製品を使わせてよいかを判断するとき、このアプリが見るのはここです。</value></data>
+
+  <!-- Landing sub-steps -->
+  <data name="You do not have to rewrite your desktop or client app for this. Only this one purchase-and-activation screen has to be a web page — Microsoft opens it with the purchase token. Show it in a browser, or inside your app's embedded browser." xml:space="preserve"><value>このために既存のデスクトップ アプリやクライアント アプリを作り替える必要はありません。ブラウザーで開く必要があるのは、この購入・有効化の画面1つだけです（Microsoft が購入トークン付きで開きます）。通常のブラウザーでも、アプリ内ブラウザーでの表示でも構いません。</value></data>
+  <data name="Sign in" xml:space="preserve"><value>サインイン</value></data>
+  <data name="Proves who the person in front of you is. Microsoft requires Entra single sign-on on this page." xml:space="preserve"><value>目の前の相手が誰かを確認します。このページでは Microsoft が Entra シングル サインオン（SSO）を必須としています。</value></data>
+  <data name="Trades the purchase token for the real details — which subscription, which offer, which plan. Already done: that is what you see below." xml:space="preserve"><value>購入トークンを実データに交換します — どのサブスクリプション、どのオファー、どのプランか。これは実行済みで、その結果が下に表示されています。</value></data>
+  <data name="Tells Microsoft fulfillment is done, which starts billing." xml:space="preserve"><value>フルフィルメントが完了したことを Microsoft に伝えます。ここから課金が始まります。</value></data>
+  <data name="This is also where you link the Marketplace subscription to your own company account or user — the record Microsoft cannot hold for you. From here on, the right to use the product hangs off that account of yours, not off the sign-in." xml:space="preserve"><value>ここは、Marketplace のサブスクリプションを自社の既存の企業アカウントやユーザーに紐付ける場所でもあります — Microsoft が代わりに持つことはできない情報です。これ以降、製品の利用権はサインインではなく、その自社アカウントに結びつきます。</value></data>
+  <data name="Sells the SaaS offer. This app is the publisher side: the buyer landing, the connection webhook, and the subscription database." xml:space="preserve"><value>SaaS オファーを販売する側です。このアプリが担当するのは3つ：購入者向けランディング ページ、接続 Webhook、自社側の契約状況DB。</value></data>
+  <data name="Your subscription database: view subscriptions and, when one is pending, confirm Activate." xml:space="preserve"><value>自社側の契約状況DB。サブスクリプションを閲覧し、保留中のものは Activate を確認して実行します。</value></data>
+  <data name="Next step (step 3, Manage): open the publisher admin and confirm the status now reads Subscribed — that database is what this app consults to decide whether a customer may use the product." xml:space="preserve"><value>次の一歩（③ 管理）：パブリッシャー管理を開き、状態が「Subscribed」になっていることを確認します — 顧客に製品を使わせてよいかを判断するとき、このアプリが見るのはそのDBです。</value></data>
+
+  <!-- Admin list -->
+  <data name="Your subscription database — read-only here. State changes require explicit confirmation on the detail page." xml:space="preserve"><value>自社側の契約状況DB — ここでは閲覧のみです。状態を変えるときは詳細ページで明示的に確認します。</value></data>
+  <data name="Step 4 (Lifecycle events): trigger a change in the emulator — suspend, change plan, or cancel — and it arrives here as a connection webhook. Reload this page (step 3) and the database follows." xml:space="preserve"><value>④ ライフサイクル イベント：エミュレーターで変更（一時停止・プラン変更・解約）を起こすと、接続 Webhook としてこのアプリに届きます。この画面（③ 管理）を再読み込みすると、契約状況DBが追随します。</value></data>
+  <data name="Microsoft Marketplace drives the lifecycle. This app is the publisher side: it activates a purchase, then keeps its database in sync with events Microsoft sends. It never invents state." xml:space="preserve"><value>ライフサイクルを駆動するのは Microsoft Marketplace です。このアプリはパブリッシャー側として、購入を有効化し、その後は Microsoft から届くイベントに合わせて自社の契約状況DBを同期し続けます。状態を勝手に作り出すことはありません。</value></data>
+  <data name="What changed it" xml:space="preserve"><value>更新のきっかけ</value></data>
+  <data name="Remaining allowance" xml:space="preserve"><value>残りの利用枠</value></data>
+
+  <!-- Why keep your own database (two layers of truth) -->
+  <data name="Microsoft also holds the subscription — so why keep your own database?" xml:space="preserve"><value>Microsoft 側もサブスクリプションを持っています — では、なぜ自社でもDBを持つのか？</value></data>
+  <data name="The commercial fact" xml:space="preserve"><value>商取引としての事実</value></data>
+  <data name="Purchased, active, suspended, cancelled" xml:space="preserve"><value>購入済み・有効・一時停止・解約</value></data>
+  <data name="Plan and quantity" xml:space="preserve"><value>プランと数量</value></data>
+  <data name="Invoicing the customer" xml:space="preserve"><value>顧客への請求</value></data>
+  <data name="Microsoft is upstream here. You can always re-read it: GET /subscriptions/{id}." xml:space="preserve"><value>ここは Microsoft が上流です。いつでも読み直せます：GET /subscriptions/{id}。</value></data>
+  <data name="at start: Resolve / Activate" xml:space="preserve"><value>起動時：Resolve / Activate</value></data>
+  <data name="in operation: Webhook" xml:space="preserve"><value>運用中：Webhook</value></data>
+  <data name="re-read any time" xml:space="preserve"><value>いつでも読み直せる</value></data>
+  <data name="Your own side" xml:space="preserve"><value>自社側</value></data>
+  <data name="A synced copy of the commercial state above" xml:space="preserve"><value>上の商取引の状態を同期した写し</value></data>
+  <data name="The link to your existing company account and users" xml:space="preserve"><value>自社の既存の企業アカウントやユーザーとの紐付け</value></data>
+  <data name="What you provisioned, their settings, their data" xml:space="preserve"><value>プロビジョニングしたもの、その設定、顧客のデータ</value></data>
+  <data name="Microsoft cannot hold this. That link is why you need a database of your own." xml:space="preserve"><value>これは Microsoft には持てません。この紐付けこそが、自社でDBを持つ理由です。</value></data>
+  <data name="Because Microsoft is upstream, this app never takes a webhook at face value: it checks the notification against Microsoft's Operations API before writing anything. Your database then answers exactly one question — may this customer use the product?" xml:space="preserve"><value>Microsoft が上流であるため、このアプリは Webhook を鵜呑みにしません。書き込む前に、必ず Microsoft の Operations API に照合します。そのうえで自社のDBが答えるのは、たった1つの問いだけです — この顧客に製品を使わせてよいか？</value></data>
+
+  <!-- Provenance (display only) -->
+  <data name="What changed this, and when" xml:space="preserve"><value>何が、いつ更新したか</value></data>
+  <data name="2 · Landing page (at start)" xml:space="preserve"><value>② ランディング ページ（起動時）</value></data>
+  <data name="3 · Publisher admin (at start)" xml:space="preserve"><value>③ パブリッシャー管理（起動時）</value></data>
+  <data name="4→3 · Webhook (in operation)" xml:space="preserve"><value>④→③ Webhook（運用中）</value></data>
+  <data name="Activate at start, or a webhook in operation" xml:space="preserve"><value>起動時の Activate、または運用中の Webhook</value></data>
+  <data name="inferred" xml:space="preserve"><value>推定</value></data>
+  <data name="Nothing recorded in this process yet, so this is inferred from the current state:" xml:space="preserve"><value>このプロセスではまだ記録がないため、現在の状態から推定しています：</value></data>
+  <data name="This list is display only and clears when the app restarts. The durable record is the subscription database itself, plus the application log." xml:space="preserve"><value>この一覧は表示専用で、アプリを再起動すると消えます。恒久的な記録は契約状況DBそのものと、アプリケーション ログです。</value></data>
+
+  <!-- Illustrative prepaid capacity (not metered, not billed) -->
+  <data name="Illustrative only" xml:space="preserve"><value>表示用の例</value></data>
+  <data name="units" xml:space="preserve"><value>ユニット</value></data>
+  <data name="Not measured and not billed. This sample is flat-rate and does no metering; the numbers are made up from the subscription and plan ids so the bar stays put between reloads — and visibly moves when the plan changes." xml:space="preserve"><value>計測もしていませんし、課金もしません。本サンプルは定額制で、従量計測は行いません。数値はサブスクリプション ID とプラン ID から作った架空の値なので、再読み込みしても動かず、プランが変わったときだけ目に見えて変わります。</value></data>
+
+  <!-- Plan change figure -->
+  <data name="What a plan change actually means for you" xml:space="preserve"><value>プラン変更は、あなたにとって何を意味するか</value></data>
+  <data name="One subscription before the change, one subscription after it — only the plan differs." xml:space="preserve"><value>変更の前も後もサブスクリプションは1本。違うのはプランだけです。</value></data>
+  <data name="Before" xml:space="preserve"><value>変更前</value></data>
+  <data name="ChangePlan webhook" xml:space="preserve"><value>ChangePlan の Webhook</value></data>
+  <data name="After" xml:space="preserve"><value>変更後</value></data>
+  <data name="Still one subscription. The id does not change and no second subscription is created — a plan change is an update, not a new purchase." xml:space="preserve"><value>サブスクリプションは1本のままです。ID は変わらず、2本目が作られることもありません — プラン変更は更新であって、新規購入ではありません。</value></data>
+  <data name="Only an active subscription can be updated; it stays active throughout." xml:space="preserve"><value>更新できるのはアクティブなサブスクリプションだけで、更新中もアクティブなままです。</value></data>
+  <data name="Your job is two things: switch the features to match the new plan, and reply to the Operations API within 10 seconds. No reply within 10 seconds and Microsoft records it as a success anyway." xml:space="preserve"><value>あなたがやることは2つだけです：新しいプランに合わせて機能を切り替えること、そして 10 秒以内に Operations API へ応答すること。10 秒以内に応答がない場合、Microsoft は成功として自動的に記録します。</value></data>
+  <data name="Pricing, proration and invoicing for the change are handled on Microsoft's side. This app never calculates money." xml:space="preserve"><value>変更にともなう価格・日割り・請求はすべて Microsoft 側で処理されます。このアプリが金額を計算することはありません。</value></data>
+  <data name="Try it: trigger ChangePlan in the emulator and watch the plan, the provenance and the illustrative allowance below all move together." xml:space="preserve"><value>試してみてください：エミュレーターで ChangePlan を起こすと、下のプラン・更新のきっかけ・利用枠の例が連動して変わります。</value></data>
+  <data name="Operations API reference" xml:space="preserve"><value>Operations API リファレンス</value></data>
+
+  <!-- Key terms (added) -->
+  <data name="The page Microsoft opens after a purchase, carrying the purchase token. Where the buyer signs in and the subscription is activated." xml:space="preserve"><value>購入後に Microsoft が購入トークン付きで開くページです。購入者がサインインし、サブスクリプションを有効化する場所です。</value></data>
+  <data name="Change plan" xml:space="preserve"><value>プラン変更</value></data>
+  <data name="The buyer moves to a different plan on the same subscription. It stays one subscription; Microsoft handles the pricing side." xml:space="preserve"><value>購入者が同じサブスクリプションのまま別のプランに移ります。サブスクリプションは1本のままで、価格まわりは Microsoft 側が扱います。</value></data>
+  <data name="State store" xml:space="preserve"><value>契約状況DB</value></data>
+  <data name="The publisher's own database of who has which subscription. The only thing this app consults to decide whether a customer may use the product." xml:space="preserve"><value>誰がどのサブスクリプションを持っているかを、パブリッシャー自身が持つデータベースです。顧客に製品を使わせてよいかを判断するとき、このアプリが見るのはここだけです。</value></data>
+  <data name="Whether the buyer may use the product — decided from the subscription database alone, never invented by the app or a model." xml:space="preserve"><value>購入者が製品を使ってよいかどうか。契約状況DBの値だけで決まり、アプリや AI が勝手に判断することはありません。</value></data>
+  <data name="Dimension (billing unit)" xml:space="preserve"><value>ディメンション（課金の単位）</value></data>
+  <data name="The unit a metered plan charges by — API calls, gigabytes, jobs. This sample is flat-rate only, so it has none." xml:space="preserve"><value>従量課金プランが何を単位に課金するか（API 呼び出し数、ギガバイト、ジョブ数など）。本サンプルは定額制のみなので、ディメンションはありません。</value></data>
+  <data name="Prepaid capacity" xml:space="preserve"><value>前払いの利用枠</value></data>
+  <data name="An allowance the customer pays for up front and draws down as they use the service. Shown here only to illustrate the idea." xml:space="preserve"><value>顧客が前払いし、サービスを使うにつれて減っていく利用枠のことです。ここでは考え方を示すためだけに表示しています。</value></data>
 </root>

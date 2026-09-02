@@ -40,12 +40,20 @@ public sealed class WebhookService
     private readonly IFulfillmentClient _fulfillment;
     private readonly ISubscriptionRepository _repository;
     private readonly ILogger<WebhookService> _logger;
+    private readonly ISubscriptionEventLog? _events;
 
-    public WebhookService(IFulfillmentClient fulfillment, ISubscriptionRepository repository, ILogger<WebhookService> logger)
+    // The event log is optional so the service stays constructible without it: it is a
+    // display-only teaching aid and must never be required for the flow to work.
+    public WebhookService(
+        IFulfillmentClient fulfillment,
+        ISubscriptionRepository repository,
+        ILogger<WebhookService> logger,
+        ISubscriptionEventLog? events = null)
     {
         _fulfillment = fulfillment;
         _repository = repository;
         _logger = logger;
+        _events = events;
     }
 
     public async Task<WebhookProcessingResult> ProcessAsync(WebhookNotification notification, CancellationToken cancellationToken = default)
@@ -94,6 +102,7 @@ public sealed class WebhookService
 
         var now = DateTimeOffset.UtcNow;
         var acknowledge = false;
+        string? detail = null;
 
         try
         {
@@ -138,12 +147,14 @@ public sealed class WebhookService
                     }
 
                     acknowledge = true;
+                    detail = newPlanId;
                     break;
 
                 case "changequantity":
                     // The v0 domain state has no quantity dimension, so there is nothing to mutate;
                     // still acknowledge the operation so Microsoft does not auto-accept by timeout.
                     acknowledge = true;
+                    detail = (operation.Quantity ?? notification.Quantity)?.ToString();
                     break;
 
                 case "subscribe":
@@ -151,6 +162,7 @@ public sealed class WebhookService
                     // Informational only. Activation is driven by the buyer landing (Activate); renewal
                     // does not change the 4-state model. No state mutation.
                     _logger.LogInformation("Received informational {Action} for {SubscriptionId}; no state change.", action, subscriptionId);
+                    _events?.Record(subscriptionId, SubscriptionEventSource.Webhook, action, null);
                     return WebhookProcessingResult.Succeeded;
 
                 default:
@@ -172,6 +184,7 @@ public sealed class WebhookService
         }
 
         _logger.LogInformation("Processed {Action} for {SubscriptionId}.", action, subscriptionId);
+        _events?.Record(subscriptionId, SubscriptionEventSource.Webhook, action, detail);
         return WebhookProcessingResult.Succeeded;
     }
 
