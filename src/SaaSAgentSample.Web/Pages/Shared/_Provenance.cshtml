@@ -1,0 +1,81 @@
+@using SaaSAgentSample.Core.Subscriptions
+@using SaaSAgentSample.Web.Services
+@model SaaSAgentSample.Web.ProvenanceVm
+@{
+    // Element 6: what last wrote this state, and when. Display only — see ISubscriptionEventLog.
+    // When nothing is recorded (a fresh process, because the trail is in memory), fall back to
+    // what the current state alone can tell us, and say plainly that it is inferred.
+    string SourceLabel(SubscriptionEventSource source) => source switch
+    {
+        SubscriptionEventSource.Landing => L["2 · Landing page (at start)"].Value,
+        SubscriptionEventSource.Admin => L["3 · Publisher admin (at start)"].Value,
+        _ => L["4→3 · Webhook (in operation)"].Value,
+    };
+
+    // Action names are Fulfillment API terms (Resolve, Activate, Suspend, ChangePlan …) and are
+    // left untranslated, like the state names.
+    var inferred = Model.Events.Count == 0;
+    var fallbackSource = Model.State switch
+    {
+        SubscriptionState.PendingFulfillmentStart => L["2 · Landing page (at start)"].Value,
+        SubscriptionState.Subscribed => L["Activate at start, or a webhook in operation"].Value,
+        _ => L["4→3 · Webhook (in operation)"].Value,
+    };
+    var fallbackAction = Model.State switch
+    {
+        SubscriptionState.PendingFulfillmentStart => "Resolve",
+        SubscriptionState.Suspended => "Suspend",
+        SubscriptionState.Unsubscribed => "Unsubscribe",
+        _ => "—",
+    };
+}
+@if (Model.Compact)
+{
+    <span class="prov compact">
+        @if (inferred)
+        {
+            <span class="prov-src">@fallbackSource</span> <span class="prov-act">@fallbackAction</span>
+            <span class="prov-inferred">@L["inferred"]</span>
+        }
+        else
+        {
+            var latest = Model.Events[0];
+            <span class="prov-src">@SourceLabel(latest.Source)</span> <span class="prov-act">@latest.Action</span>
+            @if (!string.IsNullOrEmpty(latest.Detail))
+            {
+                <span class="prov-detail">@latest.Detail</span>
+            }
+        }
+    </span>
+}
+else
+{
+    <div class="prov full">
+        <h3 class="prov-h">@L["What changed this, and when"]</h3>
+        @if (inferred)
+        {
+            <p class="muted prov-empty">
+                @L["Nothing recorded in this process yet, so this is inferred from the current state:"]
+                <span class="prov-src">@fallbackSource</span> <span class="prov-act">@fallbackAction</span>
+            </p>
+        }
+        else
+        {
+            <ol class="prov-list">
+                @foreach (var e in Model.Events)
+                {
+                    <li>
+                        <span class="prov-src">@SourceLabel(e.Source)</span>
+                        <span class="prov-act">@e.Action</span>
+                        @if (!string.IsNullOrEmpty(e.Detail))
+                        {
+                            <span class="prov-detail">@e.Detail</span>
+                        }
+                        <time class="muted">@e.At.UtcDateTime.ToString("u")</time>
+                    </li>
+                }
+            </ol>
+        }
+        <p class="prov-note">@L["This list is display only and clears when the app restarts. The durable record is the subscription database itself, plus the application log."]</p>
+    </div>
+}

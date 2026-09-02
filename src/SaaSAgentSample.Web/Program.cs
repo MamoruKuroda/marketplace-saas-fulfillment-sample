@@ -21,6 +21,11 @@ builder.Services.AddScoped<LandingService>();
 builder.Services.AddScoped<WebhookService>();
 builder.Services.AddScoped<AdminService>();
 
+// Display-only "what last wrote this state" trail for the publisher admin. A singleton so a demo
+// session accumulates a visible history; in memory only, so it clears on restart. No decision in
+// this app reads it — see ISubscriptionEventLog.
+builder.Services.AddSingleton<ISubscriptionEventLog, InMemorySubscriptionEventLog>();
+
 // Buyer sign-in. In production, require a multitenant Microsoft Entra sign-in (work/school
 // + personal accounts; authority "common"). Locally (emulator/dev) set
 // Landing:RequireAuthentication=false to skip Entra so the token-free L2 flow can be

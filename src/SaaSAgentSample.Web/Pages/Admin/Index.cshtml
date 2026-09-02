@@ -2,6 +2,7 @@
 @using SaaSAgentSample.Core.Subscriptions
 @model SaaSAgentSample.Web.Pages.Admin.IndexModel
 @inject Microsoft.Extensions.Configuration.IConfiguration Config
+@inject SaaSAgentSample.Web.Services.ISubscriptionEventLog Events
 @{
     ViewData["Title"] = L["Publisher admin — subscriptions"].Value;
     static string BadgeClass(SubscriptionState state) => state switch
@@ -14,7 +15,7 @@
     var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config);
 }
 <h1 class="page-title">@L["Subscriptions"]</h1>
-<p class="subtitle">@L["Authoritative state store · read-only view. State changes require explicit confirmation on the detail page."]</p>
+<p class="subtitle">@L["Your subscription database — read-only here. State changes require explicit confirmation on the detail page."]</p>
 
 @if (emu is not null)
 {
@@ -22,7 +23,7 @@
         <span class="ico">&#8644;</span>
         <div>
             <strong>@L["The 3⇄4 loop"]</strong>
-            <div style="margin-top:.25rem">@L["Step 4 (Lifecycle events): trigger a change in the emulator — suspend, change plan, or cancel — and it arrives here as a connection webhook. Reload this page (step 3) and the authoritative state follows."]</div>
+            <div style="margin-top:.25rem">@L["Step 4 (Lifecycle events): trigger a change in the emulator — suspend, change plan, or cancel — and it arrives here as a connection webhook. Reload this page (step 3) and the database follows."]</div>
             <div style="margin-top:.4rem"><a href="@(emu + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></div>
         </div>
     </div>
@@ -32,7 +33,7 @@
     <summary>@L["How the subscription lifecycle works"]</summary>
     <div class="body">
         <p class="muted" style="margin:.2rem 0 1rem">
-            @L["Microsoft Marketplace drives the lifecycle. This app is the publisher side: it activates a purchase, then keeps its state store in sync with events Microsoft sends. It never invents state."]
+            @L["Microsoft Marketplace drives the lifecycle. This app is the publisher side: it activates a purchase, then keeps its database in sync with events Microsoft sends. It never invents state."]
         </p>
         <div class="lc-cols">
             <div class="lc-group">
@@ -59,6 +60,10 @@
     </div>
 </details>
 
+@(await Html.PartialAsync("_TruthLayers"))
+
+@(await Html.PartialAsync("_PlanChangeFigure"))
+
 @(await Html.PartialAsync("_KeyTerms"))
 
 @if (Model.Subscriptions.Count == 0)
@@ -76,6 +81,8 @@ else
                     <th>@L["Offer"]</th>
                     <th>@L["Plan"]</th>
                     <th>@L["State"]</th>
+                    <th>@L["What changed it"]</th>
+                    <th>@L["Remaining allowance"]</th>
                     <th>@L["Updated (UTC)"]</th>
                     <th></th>
                 </tr>
@@ -89,6 +96,8 @@ else
                         <td>@s.OfferId</td>
                         <td>@s.PlanId</td>
                         <td><span class="badge @BadgeClass(s.State)">@s.State</span></td>
+                        <td>@(await Html.PartialAsync("_Provenance", new SaaSAgentSample.Web.ProvenanceVm(Events.For(s.MarketplaceSubscriptionId), s.State, true)))</td>
+                        <td>@(await Html.PartialAsync("_CapacityBar", new SaaSAgentSample.Web.CapacityVm(s.MarketplaceSubscriptionId, s.PlanId, true)))</td>
                         <td class="muted">@s.UpdatedAt.UtcDateTime.ToString("u")</td>
                         <td><a href="/admin/@s.Id">@L["Details"]</a></td>
                     </tr>

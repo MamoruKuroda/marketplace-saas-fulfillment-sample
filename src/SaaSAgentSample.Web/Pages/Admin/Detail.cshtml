@@ -2,6 +2,7 @@
 @using SaaSAgentSample.Core.Subscriptions
 @model SaaSAgentSample.Web.Pages.Admin.DetailModel
 @inject Microsoft.Extensions.Configuration.IConfiguration Config
+@inject SaaSAgentSample.Web.Services.ISubscriptionEventLog Events
 @{
     ViewData["Title"] = L["Subscription detail"].Value;
     var s = Model.Subscription;
@@ -34,6 +35,10 @@
             <dt>@L["Created (UTC)"]</dt><dd>@s.CreatedAt.UtcDateTime.ToString("u")</dd>
             <dt>@L["Updated (UTC)"]</dt><dd>@s.UpdatedAt.UtcDateTime.ToString("u")</dd>
         </dl>
+
+        @(await Html.PartialAsync("_Provenance", new SaaSAgentSample.Web.ProvenanceVm(Events.For(s.MarketplaceSubscriptionId), s.State, false)))
+
+        @(await Html.PartialAsync("_CapacityBar", new SaaSAgentSample.Web.CapacityVm(s.MarketplaceSubscriptionId, s.PlanId, false)))
 
         @if (Model.CanActivate)
         {

@@ -85,6 +85,130 @@ code { font-family:"Cascadia Code",Consolas,ui-monospace,monospace; background:#
 footer.site-footer { max-width:var(--maxw); margin:2.5rem auto 3rem; padding:1rem 1.25rem 0; border-top:1px solid var(--border); color:var(--text-2); font-size:.85rem; }
 footer.site-footer a { color:var(--text-2); }
 
+/* Teaching chrome: the one-line framing above every page (element 1) */
+.hero-line { background:#f3f0fa; border-bottom:1px solid #e3dcf3; }
+.hero-line p { max-width:var(--maxw); margin:0 auto; padding:.55rem 1.25rem; font-size:.86rem; color:#4a2d7a; line-height:1.45; }
+
+/* Teaching chrome: "you build" parts + "you are" roles, one compact row (elements 2, 3) */
+.teach-strip { background:var(--surface); border-bottom:1px solid var(--border); }
+.teach-strip .inner { max-width:var(--maxw); margin:0 auto; padding:.45rem 1.25rem; display:flex; flex-wrap:wrap; align-items:center; gap:.6rem 1.25rem; }
+.teach-strip .role-badges { margin-left:auto; }
+@media (max-width:820px){ .teach-strip .role-badges { margin-left:0; } }
+
+.bp-caption, .rb-caption { font-size:.72rem; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--text-2); }
+.build-parts.compact { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
+.build-parts.compact .bp-items { display:flex; align-items:center; gap:.35rem; flex-wrap:wrap; }
+.build-parts.compact .bp-head { display:inline-flex; align-items:center; gap:.35rem; padding:.15rem .45rem; border-radius:999px; color:var(--text-2); font-size:.82rem; }
+.build-parts.compact .bp-head:hover { background:#f3f2f1; text-decoration:none; color:var(--text); }
+.build-parts.compact .n { flex:none; min-width:1.35rem; height:1.35rem; padding:0 .3rem; border-radius:999px; display:inline-grid; place-items:center; font-size:.7rem; font-weight:700; background:#f3f2f1; color:var(--text-2); }
+.build-parts.compact .bp.on .n { background:var(--brand); color:#fff; }
+.build-parts.compact .bp.on .lbl { color:var(--brand); font-weight:600; }
+
+.build-parts.expanded { margin:0 0 .75rem; }
+.build-parts.expanded .bp-caption { display:block; margin:0 0 .5rem; }
+.build-parts.expanded .bp-items { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+@media (max-width:720px){ .build-parts.expanded .bp-items { grid-template-columns:1fr; } }
+.build-parts.expanded .bp { border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); padding:1rem; }
+.build-parts.expanded .bp-head { display:flex; align-items:center; gap:.55rem; color:var(--text); }
+.build-parts.expanded .n { flex:none; min-width:1.6rem; height:1.6rem; padding:0 .35rem; border-radius:999px; display:inline-grid; place-items:center; font-size:.78rem; font-weight:700; background:#eff6fc; color:var(--brand); }
+.build-parts.expanded .lbl { font-size:.95rem; font-weight:600; }
+.build-parts.expanded .desc { margin:.6rem 0 0; font-size:.86rem; color:var(--text-2); }
+.bp-note { margin:0 0 2rem; font-size:.85rem; color:var(--text-2); }
+
+.role-badges { display:flex; align-items:center; gap:.35rem; flex-wrap:wrap; }
+.rb { display:inline-flex; flex-direction:column; line-height:1.15; padding:.2rem .55rem; border-radius:999px; font-size:.78rem; font-weight:600; background:#f3f2f1; color:#8a8886; border:1px solid transparent; }
+.rb small { font-weight:400; font-size:.66rem; opacity:.85; }
+.rb.ms.on { background:#f3f0fa; color:#5c2e91; border-color:#d9cdee; }
+.rb.pub.on { background:#eff6fc; color:#0f6cbd; border-color:#cfe4fb; }
+.rb.buyer.on { background:#e8f6f2; color:#0f7b6c; border-color:#c3e6dd; }
+
+/* Step map legend (element 10) */
+.stepper-legend { display:flex; flex-wrap:wrap; gap:.4rem 1.5rem; margin:.2rem 0 .7rem; font-size:.85rem; color:var(--text-2); }
+.sl-item { display:inline-flex; align-items:center; gap:.45rem; }
+.sl-key { width:1.1rem; height:1.1rem; border-radius:999px; flex:none; }
+.sl-key.app { background:var(--brand); }
+.sl-key.ext { background:transparent; border:1.5px dashed #c8c6c4; }
+.region-note { margin-top:-1.4rem; }
+
+/* Inline term tooltip (element 8) — CSS only, no JavaScript */
+.term { position:relative; display:inline-block; }
+.term-word { border-bottom:1px dotted var(--brand); color:var(--brand); cursor:help; }
+.term-tip { position:absolute; left:0; top:calc(100% + .35rem); z-index:20; width:min(20rem,70vw); padding:.55rem .7rem; border-radius:var(--radius-sm); background:#201f1e; color:#fff; font-size:.8rem; font-weight:400; line-height:1.4; box-shadow:0 4px 12px rgba(0,0,0,.18); opacity:0; visibility:hidden; transition:opacity .12s ease; }
+.term:hover .term-tip, .term:focus .term-tip, .term:focus-within .term-tip { opacity:1; visibility:visible; }
+
+/* Landing sub-steps (element 4) */
+.browser-note { max-width:760px; margin:0 0 1.1rem; padding:.7rem .9rem; border-left:3px solid #c8c6c4; background:#faf9f8; border-radius:0 var(--radius-sm) var(--radius-sm) 0; font-size:.88rem; color:var(--text-2); }
+.substeps { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:0 0 1.5rem; padding:0; max-width:900px; }
+@media (max-width:720px){ .substeps { grid-template-columns:1fr; } }
+.substeps li { display:flex; gap:.6rem; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); padding:.9rem 1rem; }
+.substeps li.now { border-color:var(--brand); }
+.substeps .ss-n { flex:none; width:1.5rem; height:1.5rem; border-radius:999px; display:grid; place-items:center; font-size:.78rem; font-weight:700; background:#f3f2f1; color:var(--text-2); }
+.substeps li.done .ss-n { background:#dff6dd; color:#0e700e; }
+.substeps li.now .ss-n { background:var(--brand); color:#fff; }
+.substeps strong { font-size:.92rem; }
+.substeps p { margin:.3rem 0 0; font-size:.84rem; color:var(--text-2); }
+.substeps .ss-link { margin-top:.5rem; padding-top:.5rem; border-top:1px dashed var(--border); color:var(--text); }
+
+/* Two-layer truth figure (element 6) */
+.truth-cols { display:grid; grid-template-columns:1fr auto 1fr; gap:1rem; align-items:stretch; }
+@media (max-width:720px){ .truth-cols { grid-template-columns:1fr; } }
+.truth-col { border:1px solid var(--border); border-radius:var(--radius-sm); padding:.8rem .9rem; }
+.truth-col.ms { background:#faf9fd; }
+.truth-col.pub { background:#f7fbff; }
+.truth-col h4 { margin:.45rem 0 .5rem; font-size:.9rem; }
+.truth-col ul { margin:0; padding-left:1.05rem; font-size:.86rem; }
+.truth-col li { margin:.15rem 0; }
+.truth-col .foot-note { margin:.6rem 0 0; font-size:.8rem; color:var(--text-2); }
+.truth-arrows { display:flex; flex-direction:column; justify-content:center; gap:.45rem; min-width:11rem; }
+.ta { font-size:.74rem; color:var(--text-2); text-align:center; padding:.2rem .4rem; border-radius:var(--radius-sm); background:#f3f2f1; }
+.ta::before { content:"\2192 "; }
+.ta.back::before { content:"\2190 "; }
+
+/* Plan-change figure (element 7) */
+.pc-figure { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin:.2rem 0 1rem; }
+.pc-box { display:flex; flex-direction:column; gap:.35rem; align-items:flex-start; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); padding:.7rem .85rem; min-width:11rem; }
+.pc-cap { font-size:.7rem; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--text-2); }
+.pc-plan { font-size:.84rem; color:var(--text-2); }
+.pc-arrow { display:flex; flex-direction:column; align-items:center; gap:.2rem; }
+.pc-arrow-line { font-size:1.3rem; color:var(--brand); }
+.pc-arrow-lbl { font-size:.74rem; color:var(--text-2); }
+.pc-points { margin:0; padding-left:1.05rem; font-size:.88rem; }
+.pc-points li { margin:.3rem 0; }
+
+/* Provenance — display only (element 6) */
+.prov.compact { display:inline-flex; flex-wrap:wrap; align-items:center; gap:.3rem; font-size:.78rem; }
+.prov-src { color:var(--text-2); }
+.prov-act { font-weight:600; }
+.prov-detail { background:#f3f2f1; color:#3b3a39; padding:.05rem .35rem; border-radius:4px; font-size:.9em; }
+.prov-inferred { font-style:italic; color:#8a8886; }
+.prov.full { margin:0 0 1.35rem; }
+.prov-h { margin:0 0 .5rem; font-size:.86rem; text-transform:uppercase; letter-spacing:.03em; color:var(--text-2); font-weight:600; }
+.prov-list { margin:0; padding-left:1.15rem; font-size:.86rem; }
+.prov-list li { margin:.25rem 0; display:flex; flex-wrap:wrap; gap:.4rem; align-items:baseline; }
+.prov-list time { font-size:.78rem; }
+.prov-empty { font-size:.86rem; }
+.prov-note { margin:.6rem 0 0; font-size:.78rem; color:var(--text-2); }
+
+/* Illustrative prepaid-capacity bar — NOT metered, NOT billed (element 7) */
+.cap { min-width:9rem; }
+.cap.compact { max-width:9.5rem; }
+/* The list already has a column header, so the inline label would just repeat it. The
+   "Illustrative only" badge always stays: the numbers must never be mistaken for metering. */
+.cap.compact .cap-label { display:none; }
+.cap-head { display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; margin:0 0 .25rem; }
+.cap-label { font-size:.72rem; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--text-2); }
+.cap-illus { font-size:.66rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase; background:#fff4ce; color:#8a6400; border:1px solid #f2e0a6; padding:.02rem .35rem; border-radius:4px; }
+.cap-bar { height:.5rem; border-radius:999px; background:#f3f2f1; overflow:hidden; }
+.cap.full .cap-bar { height:.7rem; max-width:22rem; }
+.cap-fill { display:block; height:100%; background:linear-gradient(90deg,#0f7b6c,#2aa08c); }
+.cap-read { margin-top:.2rem; font-size:.78rem; color:var(--text-2); white-space:nowrap; }
+.cap-note { margin:.5rem 0 0; max-width:34rem; font-size:.78rem; color:var(--text-2); }
+
+/* The admin list carries nine columns once provenance and the allowance are in it. */
+.table-wrap code { white-space:nowrap; }
+.table-wrap thead th, .table-wrap tbody td { padding:.7rem .6rem; }
+.table-wrap thead th:first-child, .table-wrap tbody td:first-child { padding-left:1rem; }
+
 /* Role chip base (colours .who.ms / .who.pub already defined above) */
 .who { display:inline-block; font-size:.72rem; font-weight:600; padding:.1rem .55rem; border-radius:999px; }
 .who.buyer { background:#e8f6f2; color:#0f7b6c; }

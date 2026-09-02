@@ -4,6 +4,7 @@
     ViewData["Title"] = (Model.ShowHome ? L["Start here"] : L["Activate your subscription"]).Value;
     var r = Model.Resolved;
     var sub = r?.Subscription;
+    var signedIn = User?.Identity?.IsAuthenticated == true;
 }
 @if (Model.ShowHome)
 {
@@ -12,6 +13,9 @@
 
     <h2 class="section-h">@L["The flow, end to end"]</h2>
     @(await Html.PartialAsync("_DemoMap", new SaaSAgentSample.Web.DemoMapVm(null, true)))
+
+    <h2 class="section-h">@L["The three parts you build"]</h2>
+    @(await Html.PartialAsync("_BuildParts", new SaaSAgentSample.Web.BuildPartsVm(SaaSAgentSample.Web.BuildPart.None, true)))
 
     <h2 class="section-h">@L["Who's who"]</h2>
     <div class="actors">
@@ -23,7 +27,7 @@
         <div class="actor">
             <span class="who pub">@L["This app"]</span>
             <h3>@L["Publisher (you)"]</h3>
-            <p>@L["Sells the SaaS offer. This app is the publisher side: the buyer landing, the connection webhook, and the authoritative state store."]</p>
+            <p>@L["Sells the SaaS offer. This app is the publisher side: the buyer landing, the connection webhook, and the subscription database."]</p>
         </div>
         <div class="actor">
             <span class="who buyer">@L["Different tenant"]</span>
@@ -47,7 +51,7 @@
     <h2 class="section-h">@L["What the menu items mean"]</h2>
     <dl class="glossary">
         <dt>@L["Home"]</dt><dd>@L["This page — the demo map and starting point."]</dd>
-        <dt>@L["Publisher admin"]</dt><dd>@L["The authoritative subscription state store: view subscriptions and, when one is pending, confirm Activate."]</dd>
+        <dt>@L["Publisher admin"]</dt><dd>@L["Your subscription database: view subscriptions and, when one is pending, confirm Activate."]</dd>
     </dl>
 }
 else
@@ -55,9 +59,9 @@ else
     <h1 class="page-title">@L["Activate your subscription"]</h1>
     <p class="subtitle">@L["Review the plan below, then confirm. Activation starts billing."]</p>
 
-    @if (User?.Identity?.IsAuthenticated == true)
+    @if (signedIn)
     {
-        <p class="muted">@L["Signed in as {0}", User.Identity!.Name!]</p>
+        <p class="muted">@L["Signed in as {0}", User!.Identity!.Name!]</p>
     }
 
     @if (Model.IsActivated || Model.AlreadyActive)
@@ -66,7 +70,7 @@ else
             <span class="ico">&#10003;</span>
             <div>
                 <strong>@(Model.IsActivated ? L["Activated."] : L["Already active."])</strong> @Model.Message
-                <div class="muted" style="margin-top:.55rem;font-size:.9rem">@L["Next step (step 3, Manage): open the publisher admin and confirm the status now reads Subscribed — it's the authoritative state store."]</div>
+                <div class="muted" style="margin-top:.55rem;font-size:.9rem">@L["Next step (step 3, Manage): open the publisher admin and confirm the status now reads Subscribed — that database is what this app consults to decide whether a customer may use the product."]</div>
                 <div style="margin-top:.3rem"><a href="/admin">@L["View all subscriptions in the publisher admin →"]</a></div>
                 @if (Model.EmulatorUrl is not null)
                 {
@@ -79,6 +83,36 @@ else
     else if (r is not null)
     {
         <p class="notice">@L["You're the buyer. This is the publisher's landing page — confirm to activate your subscription."]</p>
+
+        <p class="browser-note">
+            @L["You do not have to rewrite your desktop or client app for this. Only this one purchase-and-activation screen has to be a web page — Microsoft opens it with the purchase token. Show it in a browser, or inside your app's embedded browser."]
+        </p>
+
+        <ol class="substeps">
+            <li class="@(signedIn ? "done" : null)">
+                <span class="ss-n">1</span>
+                <div>
+                    <strong>@L["Sign in"]</strong>
+                    <p>@L["Proves who the person in front of you is. Microsoft requires Entra single sign-on on this page."]</p>
+                </div>
+            </li>
+            <li class="done">
+                <span class="ss-n">2</span>
+                <div>
+                    <strong>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Resolve(L)))</strong>
+                    <p>@L["Trades the purchase token for the real details — which subscription, which offer, which plan. Already done: that is what you see below."]</p>
+                </div>
+            </li>
+            <li class="now">
+                <span class="ss-n">3</span>
+                <div>
+                    <strong>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Activate(L)))</strong>
+                    <p>@L["Tells Microsoft fulfillment is done, which starts billing."]</p>
+                    <p class="ss-link">@L["This is also where you link the Marketplace subscription to your own company account or user — the record Microsoft cannot hold for you. From here on, the right to use the product hangs off that account of yours, not off the sign-in."]</p>
+                </div>
+            </li>
+        </ol>
+
         <div class="card">
             <h2>@L["Confirm activation"]</h2>
             <p class="hint">@L["Resolved from your marketplace purchase token."]</p>
