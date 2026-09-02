@@ -2,7 +2,8 @@
 
 **Assessed:** 2026-07-28  
 **Reviewer:** GitHub Copilot (issue #67)  
-**Scope:** `MamoruKuroda/marketplace-saas-agent-sample` — a Microsoft Commercial Marketplace
+**Scope:** `MamoruKuroda/marketplace-saas-fulfillment-sample` (assessed while named
+`marketplace-saas-agent-sample`) — a Microsoft Commercial Marketplace
 Tier-1 flat-rate SaaS reference implementation on .NET 10. Reviewed through the eyes of a
 partner engineer or PM deciding whether to adopt or learn from this sample.
 
@@ -28,6 +29,11 @@ map to LLM tool calls), that v0 is the fulfillment plane only, and what the agen
 when built.
 
 **Status: Fixed in this PR.** Both READMEs now carry the section.
+
+**Update (2026-09-02) — resolved differently.** The name/content gap was closed from the other
+side: the repository was renamed to `marketplace-saas-fulfillment-sample`, which describes what
+`src/` actually contains, and the "Agent layer — planned, not yet built" section was removed from
+both READMEs. The sample no longer promises an agent layer, so there is nothing left to explain.
 
 ---
 
@@ -281,7 +287,7 @@ token / secret / PII in model context or logs; webhook Authorization validated s
 
 | # | Priority | Item | Status |
 | --- | --- | --- | --- |
-| P0-1 | **P0** | Repo name vs. contents: no agent in `src/`; README silent on it | ✅ **Fixed in this PR** |
+| P0-1 | **P0** | Repo name vs. contents: no agent in `src/`; README silent on it | ✅ **Fixed in this PR**; superseded 2026-09-02 by the rename to `marketplace-saas-fulfillment-sample` |
 | P1-1 | P1 | Secrets / PII sweep | ✅ Clean |
 | P1-2 | P1 | README ↔ UX drift | ✅ Accurate |
 | P1-3 | P1 | Evaluate-without-deploy: no screenshots / GIF in README | ⚠️ **Open gap** — recommend screenshots |

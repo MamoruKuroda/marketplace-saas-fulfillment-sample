@@ -1,4 +1,4 @@
-# marketplace-saas-agent-sample
+# marketplace-saas-fulfillment-sample
 
 > **Experimental teaching sample — work in progress. Not for production use.**
 > A small, readable reference for publishing and operating a **Microsoft Commercial
@@ -98,8 +98,8 @@ You only need the [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.
 No Docker, no Azure, no marketplace purchase.
 
 ```bash
-git clone https://github.com/MamoruKuroda/marketplace-saas-agent-sample
-cd marketplace-saas-agent-sample
+git clone https://github.com/MamoruKuroda/marketplace-saas-fulfillment-sample
+cd marketplace-saas-fulfillment-sample
 
 # Prove the whole subscription lifecycle end to end
 # (Resolve → Activate → webhook → state), all over local HTTP:
@@ -181,22 +181,6 @@ dotnet test --filter FullyQualifiedName~SyntheticL2LifecycleTests
 ```
 
 Details, including the manual emulator path: [docs/l2-demo.md](docs/l2-demo.md).
-
-## Agent layer — planned, not yet built
-
-This repository is named `marketplace-saas-agent-sample` to reflect its **founding design**: an
-LLM tool-calling layer (promotable to
-[Microsoft Foundry Agent Service](https://learn.microsoft.com/en-us/azure/foundry/agents/overview))
-as a core element alongside the fulfillment plane. Marketplace fulfillment operations (Resolve,
-Activate, Get Subscription, webhook operations) map naturally to typed tool calls, making the
-subscription lifecycle drivable by an LLM with explicit confirmation guardrails.
-
-**v0 — this version — contains the fulfillment plane only:** the landing page, webhook, state
-store, and publisher admin described in this README. The agent / LLM layer is not yet implemented.
-
-When built, the agent layer will expose the fulfillment operations as tools and let a conversational
-agent drive the lifecycle end to end — while the state DB remains the single source of truth for
-every state-changing call.
 
 ## Guardrails
 

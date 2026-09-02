@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     if: >-
       github.event.pull_request.user.login == 'dependabot[bot]' &&
-      github.repository == 'MamoruKuroda/marketplace-saas-agent-sample'
+      github.repository == 'MamoruKuroda/marketplace-saas-fulfillment-sample'
     steps:
       - name: Fetch Dependabot metadata
         id: metadata
