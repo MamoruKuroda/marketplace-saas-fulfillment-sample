@@ -15,7 +15,12 @@ public enum DemoMapDetail
 /// <summary>View-model for the shared demo map, which is the one place the flow is explained.</summary>
 /// <param name="Current">The step the visitor is on (1-4), or null when they are on none of them.</param>
 /// <param name="Detail">Whether to expand every step or only the current one.</param>
-public sealed record DemoMapVm(int? Current, DemoMapDetail Detail);
+/// <param name="CompletedThrough">
+/// The highest step known to be finished, or null when nothing is. Only ever set from evidence —
+/// arriving with a purchase token means step 1 happened, an activated subscription means step 2 did.
+/// The step after it is marked as the one to go to next.
+/// </param>
+public sealed record DemoMapVm(int? Current, DemoMapDetail Detail, int? CompletedThrough = null);
 
 /// <summary>Helpers for the in-product demo wayfinding ("where do I start / where am I").</summary>
 public static class DemoNavigation

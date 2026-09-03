@@ -75,7 +75,6 @@
   <data name="Review the plan below, then confirm. Activation starts billing." xml:space="preserve"><value>Review the plan below, then confirm. Activation starts billing.</value></data>
   <data name="Signed in as {0}" xml:space="preserve"><value>Signed in as {0}</value></data>
   <data name="Activated." xml:space="preserve"><value>Activated.</value></data>
-  <data name="View all subscriptions in the publisher admin →" xml:space="preserve"><value>View all subscriptions in the publisher admin →</value></data>
   <data name="Confirm activation" xml:space="preserve"><value>Confirm activation</value></data>
   <data name="Subscription" xml:space="preserve"><value>Subscription</value></data>
   <data name="Offer" xml:space="preserve"><value>Offer</value></data>
@@ -242,11 +241,9 @@
   <data name="Also where you link this subscription to your own company account — Microsoft cannot hold that." xml:space="preserve"><value>Also where you link this subscription to your own company account — Microsoft cannot hold that.</value></data>
   <data name="Offers can also auto-activate, skipping this page." xml:space="preserve"><value>Offers can also auto-activate, skipping this page.</value></data>
   <data name="Next: open the publisher admin and confirm the status now reads Subscribed." xml:space="preserve"><value>Next: open the publisher admin and confirm the status now reads Subscribed.</value></data>
-  <data name="Then act on it in the emulator — the change arrives here as a webhook and the admin follows." xml:space="preserve"><value>Then act on it in the emulator — the change arrives here as a webhook and the admin follows.</value></data>
 
   <!-- Publisher admin -->
   <data name="Your subscription database. Read-only here." xml:space="preserve"><value>Your subscription database. Read-only here.</value></data>
-  <data name="Change, suspend or cancel in the emulator — it arrives here as a webhook. Reload to see it." xml:space="preserve"><value>Change, suspend or cancel in the emulator — it arrives here as a webhook. Reload to see it.</value></data>
   <data name="Open the emulator →" xml:space="preserve"><value>Open the emulator →</value></data>
   <data name="How this works" xml:space="preserve"><value>How this works</value></data>
   <data name="Who drives the lifecycle" xml:space="preserve"><value>Who drives the lifecycle</value></data>
@@ -296,4 +293,10 @@
   <data name="Emulator (Microsoft)" xml:space="preserve"><value>Emulator (Microsoft)</value></data>
   <data name="Solid — the system you are in now" xml:space="preserve"><value>Solid — the system you are in now</value></data>
   <data name="Dashed — the other system, opens in a new tab" xml:space="preserve"><value>Dashed — the other system, opens in a new tab</value></data>
+
+  <!-- Wayfinding — what is done, and what to do next -->
+  <data name="Next: go here →" xml:space="preserve"><value>Next: go here →</value></data>
+  <data name="Open the publisher admin (step 3) →" xml:space="preserve"><value>Open the publisher admin (step 3) →</value></data>
+  <data name="After that, step 4: act on it in the emulator and the change arrives here as a webhook." xml:space="preserve"><value>After that, step 4: act on it in the emulator and the change arrives here as a webhook.</value></data>
+  <data name="Step 4 — change, suspend or cancel in the emulator. It arrives here as a webhook; reload to see it." xml:space="preserve"><value>Step 4 — change, suspend or cancel in the emulator. It arrives here as a webhook; reload to see it.</value></data>
 </root>

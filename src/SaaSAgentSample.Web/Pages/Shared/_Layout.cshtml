@@ -12,6 +12,10 @@
     // everywhere else only the step you are on expands, which keeps one part and one actor per page.
     int? demoStep = onAdmin ? 3 : (path == "/" && hasToken ? 2 : (int?)null);
     var mapDetail = isHome ? SaaSAgentSample.Web.DemoMapDetail.All : SaaSAgentSample.Web.DemoMapDetail.CurrentOnly;
+
+    // Pages report how far the visitor has actually got, so the map can tick off what is done and
+    // point at what is next. Set from evidence only — see each page for what it counts as proof.
+    var completedThrough = ViewData["DemoCompletedThrough"] as int?;
 }
 <!DOCTYPE html>
 <html lang="@htmlLang">
@@ -38,7 +42,7 @@
     <div class="orient-bar">
         <div class="orient-inner">
             @(await Html.PartialAsync("_HeroLine"))
-            @(await Html.PartialAsync("_DemoMap", new SaaSAgentSample.Web.DemoMapVm(demoStep, mapDetail)))
+            @(await Html.PartialAsync("_DemoMap", new SaaSAgentSample.Web.DemoMapVm(demoStep, mapDetail, completedThrough)))
         </div>
     </div>
     <main>

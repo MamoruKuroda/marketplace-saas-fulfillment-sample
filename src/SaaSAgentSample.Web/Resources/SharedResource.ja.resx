@@ -70,7 +70,6 @@
   <data name="Review the plan below, then confirm. Activation starts billing." xml:space="preserve"><value>以下のプランを確認してから有効化してください。有効化すると課金が始まります。</value></data>
   <data name="Signed in as {0}" xml:space="preserve"><value>{0} でサインイン中</value></data>
   <data name="Activated." xml:space="preserve"><value>有効化しました。</value></data>
-  <data name="View all subscriptions in the publisher admin →" xml:space="preserve"><value>パブリッシャー管理ですべてのサブスクリプションを表示 →</value></data>
   <data name="Confirm activation" xml:space="preserve"><value>有効化の確認</value></data>
   <data name="Subscription" xml:space="preserve"><value>サブスクリプション</value></data>
   <data name="Offer" xml:space="preserve"><value>オファー</value></data>
@@ -237,11 +236,9 @@
   <data name="Also where you link this subscription to your own company account — Microsoft cannot hold that." xml:space="preserve"><value>ここは自社の企業アカウントへ紐付ける場所でもあります。Microsoft はこの情報を持てません。</value></data>
   <data name="Offers can also auto-activate, skipping this page." xml:space="preserve"><value>オファーを自動有効化に設定すると、この画面は省略されます。</value></data>
   <data name="Next: open the publisher admin and confirm the status now reads Subscribed." xml:space="preserve"><value>次は、パブリッシャー管理を開いて状態が「Subscribed」になったことを確認します。</value></data>
-  <data name="Then act on it in the emulator — the change arrives here as a webhook and the admin follows." xml:space="preserve"><value>そのあとエミュレーターで操作すると、変更が Webhook で届き、管理画面が追随します。</value></data>
 
   <!-- Publisher admin -->
   <data name="Your subscription database. Read-only here." xml:space="preserve"><value>自社側の契約状況DB。ここでは閲覧のみです。</value></data>
-  <data name="Change, suspend or cancel in the emulator — it arrives here as a webhook. Reload to see it." xml:space="preserve"><value>エミュレーターでプラン変更・一時停止・解約を起こすと、Webhook でここに届きます。再読み込みで反映されます。</value></data>
   <data name="Open the emulator →" xml:space="preserve"><value>エミュレーターを開く →</value></data>
   <data name="How this works" xml:space="preserve"><value>しくみを学ぶ</value></data>
   <data name="Who drives the lifecycle" xml:space="preserve"><value>ライフサイクルを動かすのは誰か</value></data>
@@ -291,4 +288,10 @@
   <data name="Emulator (Microsoft)" xml:space="preserve"><value>エミュレーター（Microsoft）</value></data>
   <data name="Solid — the system you are in now" xml:space="preserve"><value>実線 — 今いるシステム</value></data>
   <data name="Dashed — the other system, opens in a new tab" xml:space="preserve"><value>破線 — もう一方のシステム。別タブで開きます</value></data>
+
+  <!-- Wayfinding — what is done, and what to do next -->
+  <data name="Next: go here →" xml:space="preserve"><value>次はここ →</value></data>
+  <data name="Open the publisher admin (step 3) →" xml:space="preserve"><value>パブリッシャー管理（③）を開く →</value></data>
+  <data name="After that, step 4: act on it in the emulator and the change arrives here as a webhook." xml:space="preserve"><value>そのあとは ④ です。エミュレーターで操作すると、変更が Webhook でこのアプリに届きます。</value></data>
+  <data name="Step 4 — change, suspend or cancel in the emulator. It arrives here as a webhook; reload to see it." xml:space="preserve"><value>④ エミュレーターでプラン変更・一時停止・解約を起こすと、Webhook でここに届きます。再読み込みで反映されます。</value></data>
 </root>

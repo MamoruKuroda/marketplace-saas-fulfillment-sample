@@ -60,25 +60,41 @@
         },
     };
     var all = Model.Detail == SaaSAgentSample.Web.DemoMapDetail.All;
+
+    // A step is done when there is evidence for it; the one after the last done step is where to
+    // go next. Without that, the map could say where you are but not that you had finished with it.
+    // The step you are standing on is never also the "next" one.
+    var doneThrough = Model.CompletedThrough ?? 0;
+    var nextStep = doneThrough > 0 && doneThrough < steps.Length ? doneThrough + 1 : (int?)null;
+    if (nextStep == Model.Current)
+    {
+        nextStep = null;
+    }
 }
 <nav class="stepper" aria-label="@L["Demo steps"]">
     @foreach (var s in steps)
     {
         var current = Model.Current == s.N;
-        <div class="step @(s.External ? "external" : null) @(current ? "current" : null)" aria-current="@(current ? "step" : null)">
+        var done = s.N <= doneThrough;
+        var next = nextStep == s.N;
+        <div class="step @(s.External ? "external" : null) @(done ? "done" : null) @(next ? "next" : null) @(current ? "current" : null)" aria-current="@(current ? "step" : null)">
             @if (s.Href is not null)
             {
                 <a class="step-head" href="@s.Href" target="@(s.External ? "_blank" : null)" rel="@(s.External ? "noopener" : null)">
-                    <span class="n">@s.N</span>
+                    <span class="n">@(done ? "✓" : s.N.ToString())</span>
                     <span class="lbl">@s.Label<small>@s.Where@(s.External ? " ↗" : "")</small></span>
                 </a>
             }
             else
             {
                 <span class="step-head">
-                    <span class="n">@s.N</span>
+                    <span class="n">@(done ? "✓" : s.N.ToString())</span>
                     <span class="lbl">@s.Label<small>@s.Where</small></span>
                 </span>
+            }
+            @if (next)
+            {
+                <p class="step-next">@L["Next: go here →"]</p>
             }
             @if (all || current)
             {

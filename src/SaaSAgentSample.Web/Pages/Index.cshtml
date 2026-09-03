@@ -5,6 +5,13 @@
     var r = Model.Resolved;
     var sub = r?.Subscription;
     var signedIn = User?.Identity?.IsAuthenticated == true;
+
+    // What the map may tick off. Arriving with a purchase token is proof step 1 happened; an
+    // activated subscription is proof step 2 did. The home page proves nothing yet.
+    if (!Model.ShowHome && r is not null)
+    {
+        ViewData["DemoCompletedThrough"] = (Model.IsActivated || Model.AlreadyActive) ? 2 : 1;
+    }
 }
 @if (Model.ShowHome)
 {
@@ -60,16 +67,20 @@ else
 
     @if (Model.IsActivated || Model.AlreadyActive)
     {
+        @* One primary action — step 3 — because that is the single next thing to do. Step 4 comes
+           after it, so it is a quiet note rather than a second link of equal weight. *@
         <div class="banner">
             <span class="ico">&#10003;</span>
             <div>
                 <strong>@(Model.IsActivated ? L["Activated."] : L["Already active."])</strong> @Model.Message
-                <div class="muted" style="margin-top:.55rem;font-size:.9rem">@L["Next: open the publisher admin and confirm the status now reads Subscribed."]</div>
-                <div style="margin-top:.3rem"><a href="/admin">@L["View all subscriptions in the publisher admin →"]</a></div>
+                <p class="banner-next">@L["Next: open the publisher admin and confirm the status now reads Subscribed."]</p>
+                <p class="banner-cta"><a class="btn primary" href="/admin">@L["Open the publisher admin (step 3) →"]</a></p>
                 @if (Model.EmulatorUrl is not null)
                 {
-                    <div class="muted" style="margin-top:.7rem;font-size:.9rem">@L["Then act on it in the emulator — the change arrives here as a webhook and the admin follows."]</div>
-                    <div style="margin-top:.3rem"><a href="@(Model.EmulatorUrl + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></div>
+                    <p class="banner-later">
+                        @L["After that, step 4: act on it in the emulator and the change arrives here as a webhook."]
+                        <a href="@(Model.EmulatorUrl + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a>
+                    </p>
                 }
             </div>
         </div>
