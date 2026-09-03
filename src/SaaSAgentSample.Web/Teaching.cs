@@ -4,39 +4,6 @@ using SaaSAgentSample.Web.Services;
 
 namespace SaaSAgentSample.Web;
 
-/// <summary>Which of the three roles the current page puts the visitor in.</summary>
-public enum DemoRole
-{
-    /// <summary>No single role — e.g. the home page, which is the map of all of them.</summary>
-    None,
-    Microsoft,
-    Publisher,
-    Buyer,
-}
-
-/// <summary>Which of the publisher's three parts the current page is.</summary>
-public enum BuildPart
-{
-    /// <summary>No single part — e.g. the home page.</summary>
-    None,
-
-    /// <summary>The buyer landing page (demo step 2).</summary>
-    Landing,
-
-    /// <summary>The connection webhook — no page of its own; it receives the 4 → 3 arrow.</summary>
-    Webhook,
-
-    /// <summary>The subscription state store, surfaced by the publisher admin (demo step 3).</summary>
-    StateStore,
-}
-
-/// <param name="Current">The role this page puts the visitor in.</param>
-public sealed record RoleBadgeVm(DemoRole Current);
-
-/// <param name="Current">The part this page is, if any.</param>
-/// <param name="Expanded">True for the home page's full panel with descriptions; false for the compact strip.</param>
-public sealed record BuildPartsVm(BuildPart Current, bool Expanded);
-
 /// <param name="Events">Recorded entries for this subscription, newest first. May be empty.</param>
 /// <param name="State">Current state, used to describe the provenance when nothing is recorded.</param>
 /// <param name="Compact">True for the one-line form used in the admin list.</param>

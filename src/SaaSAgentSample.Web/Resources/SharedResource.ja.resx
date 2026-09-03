@@ -118,8 +118,6 @@
 
   <!-- Start-here / demo map (P1 wayfinding) -->
   <data name="Start here" xml:space="preserve"><value>ここから始める</value></data>
-  <data name="A hands-on tour of a Marketplace SaaS purchase — you play all three roles." xml:space="preserve"><value>マーケットプレースでの SaaS 購入を体験するツアーです。あなたが3つの役割すべてを演じます。</value></data>
-  <data name="The flow, end to end" xml:space="preserve"><value>全体の流れ</value></data>
   <data name="Who's who" xml:space="preserve"><value>登場人物</value></data>
   <data name="Microsoft" xml:space="preserve"><value>Microsoft</value></data>
   <data name="Marketplace" xml:space="preserve"><value>マーケットプレース</value></data>
@@ -168,7 +166,6 @@
   <data name="Marketplace handles the money. You build the part that turns the service on and keeps its state — via Resolve/Activate at start and the Webhook during operation." xml:space="preserve"><value>Marketplace は“お金”を扱う。あなたが作るのは“サービスをONにして状態を持ち続ける”側。境目は、起動時の Resolve/Activate と、運用中の Webhook。</value></data>
 
   <!-- The three parts you build -->
-  <data name="The three parts you build" xml:space="preserve"><value>あなたが作る3つの部品</value></data>
   <data name="Landing page" xml:space="preserve"><value>ランディング ページ</value></data>
   <data name="Connection webhook" xml:space="preserve"><value>接続 Webhook</value></data>
   <data name="Your subscription database" xml:space="preserve"><value>自社側の契約状況DB</value></data>
@@ -221,22 +218,13 @@
   <data name="Prepaid capacity" xml:space="preserve"><value>前払いの利用枠</value></data>
   <data name="An allowance the customer pays for up front and draws down as they use the service. Shown here only to illustrate the idea." xml:space="preserve"><value>顧客が前払いし、サービスを使うにつれて減っていく利用枠のことです。ここでは考え方を示すためだけに表示しています。</value></data>
 
-  <!-- Layout / orientation band -->
-  <data name="You are" xml:space="preserve"><value>今の役</value></data>
-  <data name="all three roles" xml:space="preserve"><value>3役すべて</value></data>
-  <data name="Steps 1 and 4 are Microsoft (the emulator); steps 2 and 3 are this app." xml:space="preserve"><value>① と ④ は Microsoft（エミュレーター）、② と ③ はこのアプリです。</value></data>
-  <data name="This screen" xml:space="preserve"><value>この画面</value></data>
 
   <!-- Home -->
   <data name="The emulator plays Microsoft. Buy there, and it sends you back here to activate." xml:space="preserve"><value>エミュレーターが Microsoft 役です。そこで購入すると、有効化のためここに戻されます。</value></data>
   <data name="Runs the marketplace and the billing. The emulator stands in for it here." xml:space="preserve"><value>マーケットプレースと課金を運営します。ここではエミュレーターが代役です。</value></data>
-  <data name="Sells the offer. Builds the three parts above." xml:space="preserve"><value>オファーを販売します。上の3部品を作る側です。</value></data>
 
   <!-- The three parts you build -->
-  <data name="The buyer arrives from the Marketplace, signs in, and activates." xml:space="preserve"><value>購入者がマーケットプレースから着地し、サインインして有効化します。</value></data>
   <data name="Receives renewal, suspend, cancel and plan changes. No page — an endpoint." xml:space="preserve"><value>更新・一時停止・解約・プラン変更を受け取ります。画面はなくエンドポイントです。</value></data>
-  <data name="Who has which subscription. The only thing this app checks before letting a customer in." xml:space="preserve"><value>誰がどのサブスクリプションを持っているか。顧客に使わせる前にこのアプリが見るのはここだけです。</value></data>
-  <data name="Steps 1 and 4 are Microsoft's side. The webhook has no page — it is how step 4 reaches step 3." xml:space="preserve"><value>① と ④ は Microsoft 側です。Webhook に画面はなく、④ が ③ に届くための経路です。</value></data>
 
   <!-- Demo map -->
   <data name="You're the buyer, shopping in Microsoft's marketplace." xml:space="preserve"><value>あなたは購入者。Microsoft のマーケットプレースで買い物をします。</value></data>
@@ -246,7 +234,6 @@
   <data name="One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one." xml:space="preserve"><value>1つのオファーで複数リージョンに展開できます。データのアップロード先はリージョンごとです。本サンプルは1リージョン構成です。</value></data>
 
   <!-- Landing -->
-  <data name="You're the buyer, on the publisher's landing page." xml:space="preserve"><value>あなたは購入者。ここはパブリッシャーのランディング ページです。</value></data>
   <data name="Only this one screen has to be a web page — your desktop or client app stays as it is." xml:space="preserve"><value>ブラウザーで開く必要があるのはこの画面だけ。デスクトップ アプリやクライアント アプリはそのままで構いません。</value></data>
   <data name="Entra single sign-on, required by Microsoft on this page." xml:space="preserve"><value>Entra シングル サインオン。このページでは Microsoft の必須要件です。</value></data>
   <data name="Purchase token traded for the real details — done, shown below." xml:space="preserve"><value>購入トークンを実データに交換します。実行済みで、結果は下に表示されています。</value></data>
@@ -293,4 +280,12 @@
   <data name="Whether the buyer may use the product — decided from the subscription database alone." xml:space="preserve"><value>購入者が製品を使ってよいかどうか。契約状況DBの値だけで決まります。</value></data>
   <data name="The unit a metered plan charges by. This sample is flat-rate, so it has none." xml:space="preserve"><value>従量課金プランが何を単位に課金するか。本サンプルは定額制なのでありません。</value></data>
   <data name="An allowance paid for up front and drawn down with use. Shown here only to illustrate the idea." xml:space="preserve"><value>前払いして、使うにつれて減っていく利用枠です。考え方を示すためだけに表示しています。</value></data>
+
+  <!-- Demo map — who operates each step, and which part it is -->
+  <data name="Operated by" xml:space="preserve"><value>操作するのは</value></data>
+  <data name="You build" xml:space="preserve"><value>あなたが作る</value></data>
+
+  <!-- Home -->
+  <data name="A hands-on tour of a Marketplace SaaS purchase — the map above is the whole demo." xml:space="preserve"><value>マーケットプレースでの SaaS 購入を体験するツアーです。上の地図がデモの全体像です。</value></data>
+  <data name="Sells the offer. Builds steps 2 and 3, plus the webhook that carries step 4 back to step 3." xml:space="preserve"><value>オファーを販売する側です。② と ③、そして ④ を ③ に届ける Webhook を作ります。</value></data>
 </root>

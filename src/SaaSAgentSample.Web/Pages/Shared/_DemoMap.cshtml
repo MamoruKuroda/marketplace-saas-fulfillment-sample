@@ -1,19 +1,71 @@
 @model SaaSAgentSample.Web.DemoMapVm
 @inject Microsoft.Extensions.Configuration.IConfiguration Config
 @{
+    // The single map of the demo, shown on every page. One card per step, carrying everything a
+    // first-time viewer needs about that step: what happens, whose system it is, who operates it,
+    // and — for the two steps that are this app — which of the parts you build it is.
+    //
+    // Merging those facts into the steps is deliberate: they used to be three parallel lists (the
+    // flow, the parts, the cast) that the reader had to line up in their head.
+    //
+    // Only the current step is expanded, so any one page shows exactly one part and one actor.
+    // Steps 1 and 4 live in the emulator and can never be current from inside this app, which is
+    // why they are dashed and open in a new tab.
     var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config);
     var steps = new[]
     {
-        new { N = 1, Label = L["Buy in Marketplace"].Value,  Where = L["Emulator"].Value, Desc = L["You're the buyer, shopping in Microsoft's marketplace."].Value,          Href = emu,                External = true  },
-        new { N = 2, Label = L["Activate"].Value,             Where = L["This app"].Value, Desc = L["The buyer lands here and confirms. Activation starts billing."].Value,             Href = (string?)"/",       External = false },
-        new { N = 3, Label = L["Manage"].Value,               Where = L["This app"].Value, Desc = L["The publisher's own subscription database — what this app checks before letting a customer in."].Value, Href = (string?)"/admin",  External = false },
-        new { N = 4, Label = L["Lifecycle events"].Value,     Where = L["Emulator"].Value, Desc = L["Suspend, change, or cancel from the emulator; webhooks update the state here."].Value, Href = emu,                External = true  },
+        new
+        {
+            N = 1,
+            Label = L["Buy in Marketplace"].Value,
+            Where = L["Emulator"].Value,
+            Desc = L["You're the buyer, shopping in Microsoft's marketplace."].Value,
+            Who = L["Buyer"].Value,
+            Part = (string?)null,
+            Href = emu,
+            External = true,
+        },
+        new
+        {
+            N = 2,
+            Label = L["Activate"].Value,
+            Where = L["This app"].Value,
+            Desc = L["The buyer lands here and confirms. Activation starts billing."].Value,
+            Who = L["Buyer"].Value,
+            Part = (string?)L["Landing page"].Value,
+            Href = (string?)"/",
+            External = false,
+        },
+        new
+        {
+            N = 3,
+            Label = L["Manage"].Value,
+            Where = L["This app"].Value,
+            Desc = L["The publisher's own subscription database — what this app checks before letting a customer in."].Value,
+            Who = L["Publisher (you)"].Value,
+            Part = (string?)L["Your subscription database"].Value,
+            Href = (string?)"/admin",
+            External = false,
+        },
+        new
+        {
+            N = 4,
+            Label = L["Lifecycle events"].Value,
+            Where = L["Emulator"].Value,
+            Desc = L["Suspend, change, or cancel from the emulator; webhooks update the state here."].Value,
+            Who = L["Microsoft"].Value,
+            Part = (string?)null,
+            Href = emu,
+            External = true,
+        },
     };
+    var all = Model.Detail == SaaSAgentSample.Web.DemoMapDetail.All;
 }
-<nav class="stepper @(Model.Expanded ? "expanded" : "compact")" aria-label="@L["Demo steps"]">
+<nav class="stepper" aria-label="@L["Demo steps"]">
     @foreach (var s in steps)
     {
-        <div class="step @(s.External ? "external" : null) @(Model.Current == s.N ? "current" : null)" aria-current="@(Model.Current == s.N ? "step" : null)">
+        var current = Model.Current == s.N;
+        <div class="step @(s.External ? "external" : null) @(current ? "current" : null)" aria-current="@(current ? "step" : null)">
             @if (s.Href is not null)
             {
                 <a class="step-head" href="@s.Href" target="@(s.External ? "_blank" : null)" rel="@(s.External ? "noopener" : null)">
@@ -28,14 +80,29 @@
                     <span class="lbl">@s.Label<small>@s.Where</small></span>
                 </span>
             }
-            @if (Model.Expanded)
+            @if (all || current)
             {
                 <p class="desc">@s.Desc</p>
+                <dl class="step-meta">
+                    <dt>@L["Operated by"]</dt>
+                    <dd>@s.Who</dd>
+                    @if (s.Part is not null)
+                    {
+                        <dt>@L["You build"]</dt>
+                        <dd class="is-part">@s.Part</dd>
+                    }
+                </dl>
             }
         </div>
     }
 </nav>
-@if (Model.Expanded)
+<p class="return-path">
+    <span class="rp-n">4&#8594;3</span>
+    <span class="rp-cap">@L["You build"]</span>
+    <strong class="is-part">@L["Connection webhook"]</strong>
+    <span>@L["Receives renewal, suspend, cancel and plan changes. No page — an endpoint."]</span>
+</p>
+@if (all)
 {
     <p class="stepper-legend">
         <span class="sl-item"><span class="sl-key app" aria-hidden="true"></span>@L["2 & 3 — this app, and what you build"]</span>
