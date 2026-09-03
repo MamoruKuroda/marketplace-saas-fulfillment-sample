@@ -117,9 +117,12 @@ footer.site-footer a { color:var(--text-2); }
 @media (max-width:720px){ .substeps { grid-template-columns:1fr; } }
 .substeps li { display:flex; gap:.6rem; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); padding:.85rem .95rem; }
 .substeps li.now { border-color:var(--brand); }
-.substeps .ss-n { flex:none; width:1.4rem; height:1.4rem; border-radius:999px; display:grid; place-items:center; font-size:.75rem; font-weight:700; background:#f3f2f1; color:var(--text-2); }
+.substeps .ss-n { flex:none; width:1.25rem; height:1.25rem; margin-top:.1rem; border-radius:999px; display:grid; place-items:center; font-size:.7rem; font-weight:700; background:#f3f2f1; color:var(--text-2); }
+.substeps .ss-n::before { content:"\25CB"; }
 .substeps li.done .ss-n { background:#dff6dd; color:#0e700e; }
+.substeps li.done .ss-n::before { content:"\2713"; }
 .substeps li.now .ss-n { background:var(--brand); color:#fff; }
+.substeps li.now .ss-n::before { content:"\25CF"; }
 .substeps strong { font-size:.9rem; }
 .substeps p { margin:.3rem 0 0; font-size:.82rem; color:var(--text-2); }
 .substeps .ss-link { margin-top:.45rem; padding-top:.45rem; border-top:1px dashed var(--border); color:var(--text); }
@@ -199,7 +202,7 @@ td.nowrap { white-space:nowrap; }
 /* ── The demo map (shared _DemoMap partial) ────────────────────────────────────
    One card per step. Only the current step expands, so a page shows exactly one
    actor and one part. Steps 1 and 4 are the emulator, so they are dashed. */
-.stepper { display:flex; flex-wrap:wrap; gap:.55rem; align-items:stretch; }
+.stepper { display:flex; flex-wrap:wrap; gap:.55rem; align-items:flex-start; }
 .stepper .step { flex:1 1 0; min-width:11rem; display:flex; flex-direction:column; position:relative; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); padding:.55rem .7rem; }
 .stepper .step + .step::before { content:"→"; position:absolute; left:-.55rem; top:.85rem; color:#c8c6c4; font-size:.8rem; }
 .stepper .step.external { border-style:dashed; background:#faf9f8; }
@@ -223,7 +226,9 @@ td.nowrap { white-space:nowrap; }
 /* The webhook is the return path from step 4 to step 3 — a part you build, with no page. */
 .return-path { display:flex; align-items:baseline; gap:.45rem; flex-wrap:wrap; margin:.5rem 0 0; font-size:.78rem; color:var(--text-2); }
 .return-path .rp-n { font-weight:700; font-size:.7rem; color:var(--text-2); background:#f3f2f1; border-radius:999px; padding:.05rem .45rem; }
-.return-path strong { color:var(--text); }
+/* Same caption-then-value order as the cards' "You build" row, so the webhook reads as
+   the third part rather than as a stray link. */
+.return-path .rp-cap { color:var(--text-2); font-size:.74rem; }
 .return-path .is-part { color:var(--brand); font-weight:600; }
 
 .stepper-legend { display:flex; flex-wrap:wrap; gap:.3rem 1.5rem; margin:.6rem 0 .3rem; font-size:.78rem; color:var(--text-2); }

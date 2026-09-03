@@ -78,23 +78,25 @@ else
     {
         <p class="notice">@L["Only this one screen has to be a web page — your desktop or client app stays as it is."]</p>
 
+        @* Markers are status, not numbers: the map above already owns the numbering, and a second
+           1-2-3 next to it was exactly the kind of double scheme that made this confusing. *@
         <ol class="substeps">
             <li class="@(signedIn ? "done" : null)">
-                <span class="ss-n">1</span>
+                <span class="ss-n" aria-hidden="true"></span>
                 <div>
                     <strong>@L["Sign in"]</strong>
                     <p>@L["Entra single sign-on, required by Microsoft on this page."]</p>
                 </div>
             </li>
             <li class="done">
-                <span class="ss-n">2</span>
+                <span class="ss-n" aria-hidden="true"></span>
                 <div>
                     <strong>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Resolve(L)))</strong>
                     <p>@L["Purchase token traded for the real details — done, shown below."]</p>
                 </div>
             </li>
             <li class="now">
-                <span class="ss-n">3</span>
+                <span class="ss-n" aria-hidden="true"></span>
                 <div>
                     <strong>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Activate(L)))</strong>
                     <p>@L["Tells Microsoft fulfillment is done, which starts billing."]</p>
