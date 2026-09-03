@@ -221,7 +221,9 @@ td.nowrap { white-space:nowrap; }
 .stepper .step.done .n { background:#dff6dd; color:#0e700e; }
 .stepper .step.done .lbl { color:var(--text-2); }
 .stepper .step.done.current .lbl { color:var(--brand); }
-.stepper .step.next { border-color:var(--brand); border-style:dashed; background:#f7fbff; }
+/* "Next" must not touch the border style: dashed already means "the other system", and step 3
+   is this app. The tint and the label carry it instead. */
+.stepper .step.next { border-color:#bcd9f5; background:#f7fbff; }
 .stepper .step.next .n { background:#eff6fc; color:var(--brand); }
 .step-next { margin:.4rem 0 0; font-size:.74rem; font-weight:700; color:var(--brand); }
 
