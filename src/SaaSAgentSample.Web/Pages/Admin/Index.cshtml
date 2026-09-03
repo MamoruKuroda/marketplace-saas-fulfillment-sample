@@ -13,6 +13,15 @@
         _ => "pending",
     };
     var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config);
+
+    // What the map may tick off. A stored subscription proves step 1 happened; one that has left
+    // PendingFulfillmentStart proves step 2 did, and this page is step 3 — so the tour's next stop
+    // is step 4, in the emulator.
+    if (Model.Subscriptions.Count > 0)
+    {
+        ViewData["DemoCompletedThrough"] =
+            Model.Subscriptions.Any(s => s.State != SubscriptionState.PendingFulfillmentStart) ? 3 : 1;
+    }
 }
 @* The data comes first. Everything explanatory sits below it, behind one summary. *@
 <h1 class="page-title">@L["Subscriptions"]</h1>
@@ -62,7 +71,7 @@ else
 {
     <p class="next-line">
         <span class="ico" aria-hidden="true">&#8644;</span>
-        @L["Change, suspend or cancel in the emulator — it arrives here as a webhook. Reload to see it."]
+        @L["Step 4 — change, suspend or cancel in the emulator. It arrives here as a webhook; reload to see it."]
         <a href="@(emu + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator →"]</a>
     </p>
 }

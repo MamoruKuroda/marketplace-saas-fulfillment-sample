@@ -216,6 +216,16 @@ td.nowrap { white-space:nowrap; }
 .stepper .step.current .n { background:var(--brand); color:#fff; }
 .stepper .step.current .lbl { color:var(--brand); }
 .stepper .desc { margin:.5rem 0 0; font-size:.8rem; line-height:1.45; color:var(--text-2); }
+/* Progress: a finished step is ticked, and the one to go to next says so. Both are set only
+   from evidence the page has — see the pages for what counts as proof. */
+.stepper .step.done .n { background:#dff6dd; color:#0e700e; }
+.stepper .step.done .lbl { color:var(--text-2); }
+.stepper .step.done.current .lbl { color:var(--brand); }
+/* "Next" must not touch the border style: dashed already means "the other system", and step 3
+   is this app. The tint and the label carry it instead. */
+.stepper .step.next { border-color:#bcd9f5; background:#f7fbff; }
+.stepper .step.next .n { background:#eff6fc; color:var(--brand); }
+.step-next { margin:.4rem 0 0; font-size:.74rem; font-weight:700; color:var(--brand); }
 
 /* Who operates the step, and which part of the app it is. */
 .step-meta { display:grid; grid-template-columns:auto 1fr; gap:.15rem .5rem; margin:.5rem 0 0; padding-top:.45rem; border-top:1px solid var(--border); font-size:.74rem; }
@@ -246,3 +256,11 @@ td.nowrap { white-space:nowrap; }
 @media (max-width:640px){ .glossary { grid-template-columns:1fr; gap:.1rem 0; } .glossary dt { margin-top:.6rem; } }
 .glossary dt { font-weight:600; color:var(--text); }
 .glossary dd { margin:0; color:var(--text-2); }
+
+/* Activated banner: a single primary action for the next step, and the step after it demoted
+   to a note. Two same-weight links left it unclear which to press. */
+.banner-next { margin:.55rem 0 0; font-size:.9rem; }
+.banner-cta { margin:.7rem 0 0; }
+.banner-cta .btn { background:#0e5a0e; }
+.banner-cta .btn:hover { background:#0b4a0b; }
+.banner-later { margin:.85rem 0 0; padding-top:.7rem; border-top:1px solid #b7e0b4; font-size:.85rem; }

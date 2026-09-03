@@ -14,6 +14,13 @@
         SubscriptionState.Unsubscribed => "unsubscribed",
         _ => "pending",
     };
+
+    // Same evidence as the list: a stored subscription means step 1 happened, and one past
+    // PendingFulfillmentStart means step 2 did — which puts the tour's next stop at step 4.
+    if (s is not null)
+    {
+        ViewData["DemoCompletedThrough"] = s.State == SubscriptionState.PendingFulfillmentStart ? 1 : 3;
+    }
 }
 <p><a class="back-link" href="/admin">@L["← All subscriptions"]</a></p>
 <h1 class="page-title">@L["Subscription detail"]</h1>
