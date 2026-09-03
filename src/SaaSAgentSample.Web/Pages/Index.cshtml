@@ -11,6 +11,18 @@
     <h1 class="page-title">@L["Start here"]</h1>
     <p class="subtitle">@L["A hands-on tour of a Marketplace SaaS purchase — you play all three roles."]</p>
 
+    @if (Model.EmulatorUrl is not null)
+    {
+        <p class="cta-line">
+            <a class="btn primary" href="@Model.EmulatorUrl" target="_blank" rel="noopener">@L["Step 1 — buy in the Marketplace (opens the emulator) →"]</a>
+            <span class="hint">@L["The emulator plays Microsoft. Buy there, and it sends you back here to activate."]</span>
+        </p>
+    }
+    else
+    {
+        <p class="notice">@L["To begin, open your Fulfillment API Emulator and use its Marketplace tab."]</p>
+    }
+
     <h2 class="section-h">@L["The flow, end to end"]</h2>
     @(await Html.PartialAsync("_DemoMap", new SaaSAgentSample.Web.DemoMapVm(null, true)))
 
@@ -22,12 +34,12 @@
         <div class="actor">
             <span class="who ms">@L["Marketplace"]</span>
             <h3>@L["Microsoft"]</h3>
-            <p>@L["Runs the marketplace and billing. The Fulfillment API Emulator stands in for Microsoft in this demo."]</p>
+            <p>@L["Runs the marketplace and the billing. The emulator stands in for it here."]</p>
         </div>
         <div class="actor">
             <span class="who pub">@L["This app"]</span>
             <h3>@L["Publisher (you)"]</h3>
-            <p>@L["Sells the SaaS offer. This app is the publisher side: the buyer landing, the connection webhook, and the subscription database."]</p>
+            <p>@L["Sells the offer. Builds the three parts above."]</p>
         </div>
         <div class="actor">
             <span class="who buyer">@L["Different tenant"]</span>
@@ -36,23 +48,12 @@
         </div>
     </div>
 
-    <div class="cta-row">
-        @if (Model.EmulatorUrl is not null)
-        {
-            <a class="btn primary" href="@Model.EmulatorUrl" target="_blank" rel="noopener">@L["Step 1 — buy in the Marketplace (opens the emulator) →"]</a>
-        }
-        else
-        {
-            <p class="notice">@L["To begin, open your Fulfillment API Emulator and use its Marketplace tab."]</p>
-        }
-        <p class="hint">@L["The emulator plays Microsoft: buy an offer there, and it sends you back here to activate."]</p>
-    </div>
-
-    <h2 class="section-h">@L["What the menu items mean"]</h2>
-    <dl class="glossary">
-        <dt>@L["Home"]</dt><dd>@L["This page — the demo map and starting point."]</dd>
-        <dt>@L["Publisher admin"]</dt><dd>@L["Your subscription database: view subscriptions and, when one is pending, confirm Activate."]</dd>
-    </dl>
+    <details class="explainer learn">
+        <summary>@L["How this works"]</summary>
+        <div class="body">
+            @(await Html.PartialAsync("_KeyTerms"))
+        </div>
+    </details>
 }
 else
 {
@@ -70,11 +71,11 @@ else
             <span class="ico">&#10003;</span>
             <div>
                 <strong>@(Model.IsActivated ? L["Activated."] : L["Already active."])</strong> @Model.Message
-                <div class="muted" style="margin-top:.55rem;font-size:.9rem">@L["Next step (step 3, Manage): open the publisher admin and confirm the status now reads Subscribed — that database is what this app consults to decide whether a customer may use the product."]</div>
+                <div class="muted" style="margin-top:.55rem;font-size:.9rem">@L["Next: open the publisher admin and confirm the status now reads Subscribed."]</div>
                 <div style="margin-top:.3rem"><a href="/admin">@L["View all subscriptions in the publisher admin →"]</a></div>
                 @if (Model.EmulatorUrl is not null)
                 {
-                    <div class="muted" style="margin-top:.7rem;font-size:.9rem">@L["Then (step 4, Lifecycle events — the 3⇄4 loop): act on this subscription in the emulator's Subscriptions tab; the change arrives here as a webhook, and the admin's state follows when you refresh."]</div>
+                    <div class="muted" style="margin-top:.7rem;font-size:.9rem">@L["Then act on it in the emulator — the change arrives here as a webhook and the admin follows."]</div>
                     <div style="margin-top:.3rem"><a href="@(Model.EmulatorUrl + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></div>
                 }
             </div>
@@ -82,10 +83,9 @@ else
     }
     else if (r is not null)
     {
-        <p class="notice">@L["You're the buyer. This is the publisher's landing page — confirm to activate your subscription."]</p>
-
-        <p class="browser-note">
-            @L["You do not have to rewrite your desktop or client app for this. Only this one purchase-and-activation screen has to be a web page — Microsoft opens it with the purchase token. Show it in a browser, or inside your app's embedded browser."]
+        <p class="notice">
+            @L["You're the buyer, on the publisher's landing page."]
+            <span class="muted">@L["Only this one screen has to be a web page — your desktop or client app stays as it is."]</span>
         </p>
 
         <ol class="substeps">
@@ -93,14 +93,14 @@ else
                 <span class="ss-n">1</span>
                 <div>
                     <strong>@L["Sign in"]</strong>
-                    <p>@L["Proves who the person in front of you is. Microsoft requires Entra single sign-on on this page."]</p>
+                    <p>@L["Entra single sign-on, required by Microsoft on this page."]</p>
                 </div>
             </li>
             <li class="done">
                 <span class="ss-n">2</span>
                 <div>
                     <strong>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Resolve(L)))</strong>
-                    <p>@L["Trades the purchase token for the real details — which subscription, which offer, which plan. Already done: that is what you see below."]</p>
+                    <p>@L["Purchase token traded for the real details — done, shown below."]</p>
                 </div>
             </li>
             <li class="now">
@@ -108,14 +108,13 @@ else
                 <div>
                     <strong>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Activate(L)))</strong>
                     <p>@L["Tells Microsoft fulfillment is done, which starts billing."]</p>
-                    <p class="ss-link">@L["This is also where you link the Marketplace subscription to your own company account or user — the record Microsoft cannot hold for you. From here on, the right to use the product hangs off that account of yours, not off the sign-in."]</p>
+                    <p class="ss-link">@L["Also where you link this subscription to your own company account — Microsoft cannot hold that."]</p>
                 </div>
             </li>
         </ol>
 
         <div class="card">
             <h2>@L["Confirm activation"]</h2>
-            <p class="hint">@L["Resolved from your marketplace purchase token."]</p>
             <dl class="kv">
                 <dt>@L["Subscription"]</dt><dd>@(r.SubscriptionName ?? sub?.Name)</dd>
                 <dt>@L["Offer"]</dt><dd>@(r.OfferId ?? sub?.OfferId)</dd>
@@ -133,9 +132,13 @@ else
                 }
                 <button type="submit" class="btn primary">@L["Activate subscription"]</button>
             </form>
-            <p class="hint" style="margin-top:.9rem">@L["Activation is the publisher's fulfillment step — confirming here has the app call the Fulfillment Activate API. Offers can also be set to auto-activate, skipping this page."]</p>
+            <p class="hint" style="margin:.9rem 0 0">@L["Offers can also auto-activate, skipping this page."]</p>
         </div>
-        @(await Html.PartialAsync("_KeyTerms"))
+
+        <details class="explainer learn">
+            <summary>@L["How this works"]</summary>
+            <div class="body">@(await Html.PartialAsync("_KeyTerms"))</div>
+        </details>
     }
     else
     {

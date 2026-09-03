@@ -1,22 +1,16 @@
 @model SaaSAgentSample.Web.RoleBadgeVm
 @{
-    // Element 3: who you are on this page. Deliberately consistent with the step map: steps 1 and 4
-    // are Microsoft's (the emulator, a separate system), steps 2 and 3 are this app — which is why
-    // the Microsoft badge is never the active one while you are inside this app.
-    var roles = new[]
+    // Element 3: who you are on this page. One chip, not three — the full three-role mapping is
+    // taught once on the home page, so repeating it on every screen was noise. The mapping stays
+    // reachable on hover/focus.
+    var (css, label) = Model.Current switch
     {
-        new { Role = SaaSAgentSample.Web.DemoRole.Microsoft, Css = "ms",    Label = L["Microsoft"].Value,        Where = L["Steps 1 & 4 — the emulator"].Value },
-        new { Role = SaaSAgentSample.Web.DemoRole.Publisher, Css = "pub",   Label = L["Publisher (you)"].Value,  Where = L["Steps 2 & 3 — this app"].Value },
-        new { Role = SaaSAgentSample.Web.DemoRole.Buyer,     Css = "buyer", Label = L["Buyer"].Value,            Where = L["A different tenant"].Value },
+        SaaSAgentSample.Web.DemoRole.Microsoft => ("ms", L["Microsoft"].Value),
+        SaaSAgentSample.Web.DemoRole.Publisher => ("pub", L["Publisher (you)"].Value),
+        SaaSAgentSample.Web.DemoRole.Buyer => ("buyer", L["Buyer"].Value),
+        _ => ("all", L["all three roles"].Value),
     };
 }
-<div class="role-badges" role="group" aria-label="@L["Roles"]">
-    <span class="rb-caption">@L["You are:"]</span>
-    @foreach (var r in roles)
-    {
-        var on = Model.Current == r.Role;
-        <span class="rb @r.Css @(on ? "on" : null)" title="@r.Where" aria-current="@(on ? "true" : null)">
-            @r.Label<small>@r.Where</small>
-        </span>
-    }
-</div>
+<span class="rb @css" title="@L["Steps 1 and 4 are Microsoft (the emulator); steps 2 and 3 are this app."]">
+    <span class="chip-cap">@L["You are"]</span>@label
+</span>

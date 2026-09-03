@@ -4,6 +4,8 @@
     // step numbers instead of introducing a second numbering scheme — the three parts ARE steps 2
     // and 3 plus the 4 → 3 arrow. The webhook has no page of its own, which is why it is never the
     // highlighted one: it is the receiving end of an arrow, not a screen you can visit.
+    //
+    // Compact mode shows only where you are; the full set is taught once, on the home page.
     var parts = new[]
     {
         new
@@ -11,51 +13,46 @@
             Part = SaaSAgentSample.Web.BuildPart.Landing,
             Step = "2",
             Label = L["Landing page"].Value,
-            Desc = L["The buyer arrives here from the Marketplace, signs in, and the subscription is activated."].Value,
-            Href = (string?)"/",
+            Desc = L["The buyer arrives from the Marketplace, signs in, and activates."].Value,
         },
         new
         {
             Part = SaaSAgentSample.Web.BuildPart.Webhook,
             Step = "4→3",
             Label = L["Connection webhook"].Value,
-            Desc = L["Receives renewals, suspensions, cancellations and plan or quantity changes. No page — it is an endpoint (POST /api/webhook)."].Value,
-            Href = (string?)null,
+            Desc = L["Receives renewal, suspend, cancel and plan changes. No page — an endpoint."].Value,
         },
         new
         {
             Part = SaaSAgentSample.Web.BuildPart.StateStore,
             Step = "3",
             Label = L["Your subscription database"].Value,
-            Desc = L["Who has which subscription, on your side. The only thing this app consults to decide whether a customer may use the product."].Value,
-            Href = (string?)"/admin",
+            Desc = L["Who has which subscription. The only thing this app checks before letting a customer in."].Value,
         },
     };
 }
-<div class="build-parts @(Model.Expanded ? "expanded" : "compact")" aria-label="@L["The three parts you build"]">
-    <span class="bp-caption">@L["You build:"]</span>
-    <div class="bp-items">
-        @foreach (var p in parts)
-        {
-            var on = Model.Current == p.Part;
-            <div class="bp @(on ? "on" : null)" aria-current="@(on ? "true" : null)">
-                @if (p.Href is not null)
-                {
-                    <a class="bp-head" href="@p.Href"><span class="n">@p.Step</span><span class="lbl">@p.Label</span></a>
-                }
-                else
-                {
-                    <span class="bp-head"><span class="n">@p.Step</span><span class="lbl">@p.Label</span></span>
-                }
-                @if (Model.Expanded)
-                {
-                    <p class="desc">@p.Desc</p>
-                }
-            </div>
-        }
-    </div>
-</div>
 @if (Model.Expanded)
 {
-    <p class="bp-note">@L["Steps 1 and 4 are Microsoft's side (the emulator in this demo). The webhook has no page of its own — it is how step 4 reaches step 3."]</p>
+    <div class="build-parts expanded">
+        <div class="bp-items">
+            @foreach (var p in parts)
+            {
+                <div class="bp">
+                    <span class="bp-head"><span class="n">@p.Step</span><span class="lbl">@p.Label</span></span>
+                    <p class="desc">@p.Desc</p>
+                </div>
+            }
+        </div>
+    </div>
+    <p class="bp-note">@L["Steps 1 and 4 are Microsoft's side. The webhook has no page — it is how step 4 reaches step 3."]</p>
+}
+else
+{
+    var here = parts.FirstOrDefault(p => p.Part == Model.Current);
+    if (here is not null)
+    {
+        <span class="bp-here" aria-current="true">
+            <span class="chip-cap">@L["This screen"]</span><span class="n">@here.Step</span>@here.Label
+        </span>
+    }
 }

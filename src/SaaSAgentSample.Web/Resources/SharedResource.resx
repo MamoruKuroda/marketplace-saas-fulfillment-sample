@@ -77,7 +77,6 @@
   <data name="Activated." xml:space="preserve"><value>Activated.</value></data>
   <data name="View all subscriptions in the publisher admin →" xml:space="preserve"><value>View all subscriptions in the publisher admin →</value></data>
   <data name="Confirm activation" xml:space="preserve"><value>Confirm activation</value></data>
-  <data name="Resolved from your marketplace purchase token." xml:space="preserve"><value>Resolved from your marketplace purchase token.</value></data>
   <data name="Subscription" xml:space="preserve"><value>Subscription</value></data>
   <data name="Offer" xml:space="preserve"><value>Offer</value></data>
   <data name="Plan" xml:space="preserve"><value>Plan</value></data>
@@ -85,7 +84,6 @@
   <data name="Status" xml:space="preserve"><value>Status</value></data>
   <data name="Activate subscription" xml:space="preserve"><value>Activate subscription</value></data>
   <data name="Nothing to show." xml:space="preserve"><value>Nothing to show.</value></data>
-  <data name="No purchase token was provided. Open this page from the Marketplace 'Configure account' link." xml:space="preserve"><value>No purchase token was provided. Open this page from the Marketplace 'Configure account' link.</value></data>
   <data name="The purchase could not be resolved." xml:space="preserve"><value>The purchase could not be resolved.</value></data>
   <data name="The purchase could not be resolved (the token may be invalid or expired)." xml:space="preserve"><value>The purchase could not be resolved (the token may be invalid or expired).</value></data>
   <data name="Missing subscription details." xml:space="preserve"><value>Missing subscription details.</value></data>
@@ -96,17 +94,12 @@
   <!-- Admin list -->
   <data name="Publisher admin — subscriptions" xml:space="preserve"><value>Publisher admin — subscriptions</value></data>
   <data name="Subscriptions" xml:space="preserve"><value>Subscriptions</value></data>
-  <data name="How the subscription lifecycle works" xml:space="preserve"><value>How the subscription lifecycle works</value></data>
   <data name="Publisher-initiated" xml:space="preserve"><value>Publisher-initiated</value></data>
-  <data name="This app calls the Fulfillment API." xml:space="preserve"><value>This app calls the Fulfillment API.</value></data>
   <data name="Resolve → Activate — confirmed here, only from PendingFulfillmentStart. Starts billing." xml:space="preserve"><value>Resolve → Activate — confirmed here, only from PendingFulfillmentStart. Starts billing.</value></data>
   <data name="Microsoft-initiated (webhook)" xml:space="preserve"><value>Microsoft-initiated (webhook)</value></data>
-  <data name="Arrive as a connection webhook; this app validates it, then updates state." xml:space="preserve"><value>Arrive as a connection webhook; this app validates it, then updates state.</value></data>
   <data name="Change plan / quantity" xml:space="preserve"><value>Change plan / quantity</value></data>
   <data name="Suspend / Reinstate (e.g. payment failure / recovery)" xml:space="preserve"><value>Suspend / Reinstate (e.g. payment failure / recovery)</value></data>
   <data name="Unsubscribe (terminal)" xml:space="preserve"><value>Unsubscribe (terminal)</value></data>
-  <data name="In this demo the Fulfillment API Emulator plays Microsoft — the source of the webhook events above." xml:space="preserve"><value>In this demo the Fulfillment API Emulator plays Microsoft — the source of the webhook events above.</value></data>
-  <data name="The 3⇄4 loop" xml:space="preserve"><value>The 3⇄4 loop</value></data>
   <data name="Lifecycle reference" xml:space="preserve"><value>Lifecycle reference</value></data>
   <data name="Marketplace subscription" xml:space="preserve"><value>Marketplace subscription</value></data>
   <data name="Name" xml:space="preserve"><value>Name</value></data>
@@ -121,7 +114,6 @@
   <data name="Created (UTC)" xml:space="preserve"><value>Created (UTC)</value></data>
   <data name="Activation calls the Fulfillment Activate API and starts billing. Confirm before proceeding." xml:space="preserve"><value>Activation calls the Fulfillment Activate API and starts billing. Confirm before proceeding.</value></data>
   <data name="No publisher actions available from the current state ({0})." xml:space="preserve"><value>No publisher actions available from the current state ({0}).</value></data>
-  <data name="From here, changes (Suspend, Reinstate, Change plan, Unsubscribe) are Microsoft-initiated and arrive as a connection webhook — this app validates it and updates state. In this demo, trigger them from the emulator's Subscriptions tab, then refresh this page." xml:space="preserve"><value>From here, changes (Suspend, Reinstate, Change plan, Unsubscribe) are Microsoft-initiated and arrive as a connection webhook — this app validates it and updates state. In this demo, trigger them from the emulator's Subscriptions tab, then refresh this page.</value></data>
   <data name="Subscription activated." xml:space="preserve"><value>Subscription activated.</value></data>
   <data name="Subscription was already active." xml:space="preserve"><value>Subscription was already active.</value></data>
   <data name="Subscription not found." xml:space="preserve"><value>Subscription not found.</value></data>
@@ -136,22 +128,16 @@
   <data name="Who's who" xml:space="preserve"><value>Who's who</value></data>
   <data name="Microsoft" xml:space="preserve"><value>Microsoft</value></data>
   <data name="Marketplace" xml:space="preserve"><value>Marketplace</value></data>
-  <data name="Runs the marketplace and billing. The Fulfillment API Emulator stands in for Microsoft in this demo." xml:space="preserve"><value>Runs the marketplace and billing. The Fulfillment API Emulator stands in for Microsoft in this demo.</value></data>
   <data name="This app" xml:space="preserve"><value>This app</value></data>
   <data name="Publisher (you)" xml:space="preserve"><value>Publisher (you)</value></data>
   <data name="Different tenant" xml:space="preserve"><value>Different tenant</value></data>
   <data name="Buyer" xml:space="preserve"><value>Buyer</value></data>
   <data name="Purchases from the Marketplace, then signs in on the landing page to activate." xml:space="preserve"><value>Purchases from the Marketplace, then signs in on the landing page to activate.</value></data>
   <data name="To begin, open your Fulfillment API Emulator and use its Marketplace tab." xml:space="preserve"><value>To begin, open your Fulfillment API Emulator and use its Marketplace tab.</value></data>
-  <data name="The emulator plays Microsoft: buy an offer there, and it sends you back here to activate." xml:space="preserve"><value>The emulator plays Microsoft: buy an offer there, and it sends you back here to activate.</value></data>
-  <data name="What the menu items mean" xml:space="preserve"><value>What the menu items mean</value></data>
-  <data name="This page — the demo map and starting point." xml:space="preserve"><value>This page — the demo map and starting point.</value></data>
   <data name="The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features." xml:space="preserve"><value>The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features.</value></data>
   <data name="Demo steps" xml:space="preserve"><value>Demo steps</value></data>
-  <data name="The current-step highlight applies only to this app's steps (2 and 3). Steps 1 and 4 run in the emulator — a separate system — and open in a new tab." xml:space="preserve"><value>The current-step highlight applies only to this app's steps (2 and 3). Steps 1 and 4 run in the emulator — a separate system — and open in a new tab.</value></data>
   <data name="Buy in Marketplace" xml:space="preserve"><value>Buy in Marketplace</value></data>
   <data name="Emulator" xml:space="preserve"><value>Emulator</value></data>
-  <data name="You're the buyer, shopping in Microsoft's marketplace — pick an offer and continue." xml:space="preserve"><value>You're the buyer, shopping in Microsoft's marketplace — pick an offer and continue.</value></data>
   <data name="Activate" xml:space="preserve"><value>Activate</value></data>
   <data name="The buyer lands here and confirms. Activation starts billing." xml:space="preserve"><value>The buyer lands here and confirms. Activation starts billing.</value></data>
   <data name="Manage" xml:space="preserve"><value>Manage</value></data>
@@ -168,7 +154,6 @@
   <data name="Webhook (connection)" xml:space="preserve"><value>Webhook (connection)</value></data>
   <data name="Microsoft's notification of a plan/quantity change, suspend/reinstate, or cancel. The app validates it before updating state." xml:space="preserve"><value>Microsoft's notification of a plan/quantity change, suspend/reinstate, or cancel. The app validates it before updating state.</value></data>
   <data name="Entitlement" xml:space="preserve"><value>Entitlement</value></data>
-  <data name="You're the buyer. This is the publisher's landing page — confirm to activate your subscription." xml:space="preserve"><value>You're the buyer. This is the publisher's landing page — confirm to activate your subscription.</value></data>
 
   <!-- Front-door framing (masthead label + step-1 CTA) -->
   <data name="Publisher-side app" xml:space="preserve"><value>Publisher-side app</value></data>
@@ -177,10 +162,8 @@
   <!-- Landing: activation state + fulfillment note -->
   <data name="Already active." xml:space="preserve"><value>Already active.</value></data>
   <data name="This subscription is already active." xml:space="preserve"><value>This subscription is already active.</value></data>
-  <data name="Activation is the publisher's fulfillment step — confirming here has the app call the Fulfillment Activate API. Offers can also be set to auto-activate, skipping this page." xml:space="preserve"><value>Activation is the publisher's fulfillment step — confirming here has the app call the Fulfillment Activate API. Offers can also be set to auto-activate, skipping this page.</value></data>
 
   <!-- Hand-off deep links (wayfinding v2) -->
-  <data name="Then (step 4, Lifecycle events — the 3⇄4 loop): act on this subscription in the emulator's Subscriptions tab; the change arrives here as a webhook, and the admin's state follows when you refresh." xml:space="preserve"><value>Then (step 4, Lifecycle events — the 3⇄4 loop): act on this subscription in the emulator's Subscriptions tab; the change arrives here as a webhook, and the admin's state follows when you refresh.</value></data>
   <data name="Open the emulator's Subscriptions tab →" xml:space="preserve"><value>Open the emulator's Subscriptions tab →</value></data>
 
   <!-- Accessibility labels -->
@@ -188,63 +171,31 @@
 
   <!-- Layout / hero -->
   <data name="Marketplace handles the money. You build the part that turns the service on and keeps its state — via Resolve/Activate at start and the Webhook during operation." xml:space="preserve"><value>Marketplace handles the money. You build the part that turns the service on and keeps its state — via Resolve/Activate at start and the Webhook during operation.</value></data>
-  <data name="Roles" xml:space="preserve"><value>Roles</value></data>
-  <data name="You are:" xml:space="preserve"><value>You are:</value></data>
-  <data name="Steps 1 &amp; 4 — the emulator" xml:space="preserve"><value>Steps 1 &amp; 4 — the emulator</value></data>
-  <data name="Steps 2 &amp; 3 — this app" xml:space="preserve"><value>Steps 2 &amp; 3 — this app</value></data>
-  <data name="A different tenant" xml:space="preserve"><value>A different tenant</value></data>
 
   <!-- The three parts you build -->
   <data name="The three parts you build" xml:space="preserve"><value>The three parts you build</value></data>
-  <data name="You build:" xml:space="preserve"><value>You build:</value></data>
   <data name="Landing page" xml:space="preserve"><value>Landing page</value></data>
-  <data name="The buyer arrives here from the Marketplace, signs in, and the subscription is activated." xml:space="preserve"><value>The buyer arrives here from the Marketplace, signs in, and the subscription is activated.</value></data>
   <data name="Connection webhook" xml:space="preserve"><value>Connection webhook</value></data>
-  <data name="Receives renewals, suspensions, cancellations and plan or quantity changes. No page — it is an endpoint (POST /api/webhook)." xml:space="preserve"><value>Receives renewals, suspensions, cancellations and plan or quantity changes. No page — it is an endpoint (POST /api/webhook).</value></data>
   <data name="Your subscription database" xml:space="preserve"><value>Your subscription database</value></data>
-  <data name="Who has which subscription, on your side. The only thing this app consults to decide whether a customer may use the product." xml:space="preserve"><value>Who has which subscription, on your side. The only thing this app consults to decide whether a customer may use the product.</value></data>
-  <data name="Steps 1 and 4 are Microsoft's side (the emulator in this demo). The webhook has no page of its own — it is how step 4 reaches step 3." xml:space="preserve"><value>Steps 1 and 4 are Microsoft's side (the emulator in this demo). The webhook has no page of its own — it is how step 4 reaches step 3.</value></data>
 
-  <!-- Demo map legend and region note -->
-  <data name="Steps 2 &amp; 3 — this app. This is what you build." xml:space="preserve"><value>Steps 2 &amp; 3 — this app. This is what you build.</value></data>
-  <data name="Steps 1 &amp; 4 — Microsoft's side. The emulator stands in for it and opens in a new tab." xml:space="preserve"><value>Steps 1 &amp; 4 — Microsoft's side. The emulator stands in for it and opens in a new tab.</value></data>
-  <data name="One offer can serve several regions: where a customer's data is uploaded is chosen per region — US users to a US region, and so on. This sample deploys one region; the fulfillment plane above is the same in each." xml:space="preserve"><value>One offer can serve several regions: where a customer's data is uploaded is chosen per region — US users to a US region, and so on. This sample deploys one region; the fulfillment plane above is the same in each.</value></data>
-  <data name="The publisher checks the subscription database. It is what this app consults to decide whether a customer may use the product." xml:space="preserve"><value>The publisher checks the subscription database. It is what this app consults to decide whether a customer may use the product.</value></data>
 
   <!-- Landing sub-steps -->
-  <data name="You do not have to rewrite your desktop or client app for this. Only this one purchase-and-activation screen has to be a web page — Microsoft opens it with the purchase token. Show it in a browser, or inside your app's embedded browser." xml:space="preserve"><value>You do not have to rewrite your desktop or client app for this. Only this one purchase-and-activation screen has to be a web page — Microsoft opens it with the purchase token. Show it in a browser, or inside your app's embedded browser.</value></data>
   <data name="Sign in" xml:space="preserve"><value>Sign in</value></data>
-  <data name="Proves who the person in front of you is. Microsoft requires Entra single sign-on on this page." xml:space="preserve"><value>Proves who the person in front of you is. Microsoft requires Entra single sign-on on this page.</value></data>
-  <data name="Trades the purchase token for the real details — which subscription, which offer, which plan. Already done: that is what you see below." xml:space="preserve"><value>Trades the purchase token for the real details — which subscription, which offer, which plan. Already done: that is what you see below.</value></data>
   <data name="Tells Microsoft fulfillment is done, which starts billing." xml:space="preserve"><value>Tells Microsoft fulfillment is done, which starts billing.</value></data>
-  <data name="This is also where you link the Marketplace subscription to your own company account or user — the record Microsoft cannot hold for you. From here on, the right to use the product hangs off that account of yours, not off the sign-in." xml:space="preserve"><value>This is also where you link the Marketplace subscription to your own company account or user — the record Microsoft cannot hold for you. From here on, the right to use the product hangs off that account of yours, not off the sign-in.</value></data>
-  <data name="Sells the SaaS offer. This app is the publisher side: the buyer landing, the connection webhook, and the subscription database." xml:space="preserve"><value>Sells the SaaS offer. This app is the publisher side: the buyer landing, the connection webhook, and the subscription database.</value></data>
-  <data name="Your subscription database: view subscriptions and, when one is pending, confirm Activate." xml:space="preserve"><value>Your subscription database: view subscriptions and, when one is pending, confirm Activate.</value></data>
-  <data name="Next step (step 3, Manage): open the publisher admin and confirm the status now reads Subscribed — that database is what this app consults to decide whether a customer may use the product." xml:space="preserve"><value>Next step (step 3, Manage): open the publisher admin and confirm the status now reads Subscribed — that database is what this app consults to decide whether a customer may use the product.</value></data>
 
   <!-- Admin list -->
-  <data name="Your subscription database — read-only here. State changes require explicit confirmation on the detail page." xml:space="preserve"><value>Your subscription database — read-only here. State changes require explicit confirmation on the detail page.</value></data>
-  <data name="Step 4 (Lifecycle events): trigger a change in the emulator — suspend, change plan, or cancel — and it arrives here as a connection webhook. Reload this page (step 3) and the database follows." xml:space="preserve"><value>Step 4 (Lifecycle events): trigger a change in the emulator — suspend, change plan, or cancel — and it arrives here as a connection webhook. Reload this page (step 3) and the database follows.</value></data>
-  <data name="Microsoft Marketplace drives the lifecycle. This app is the publisher side: it activates a purchase, then keeps its database in sync with events Microsoft sends. It never invents state." xml:space="preserve"><value>Microsoft Marketplace drives the lifecycle. This app is the publisher side: it activates a purchase, then keeps its database in sync with events Microsoft sends. It never invents state.</value></data>
   <data name="What changed it" xml:space="preserve"><value>What changed it</value></data>
   <data name="Remaining allowance" xml:space="preserve"><value>Remaining allowance</value></data>
 
   <!-- Why keep your own database (two layers of truth) -->
-  <data name="Microsoft also holds the subscription — so why keep your own database?" xml:space="preserve"><value>Microsoft also holds the subscription — so why keep your own database?</value></data>
   <data name="The commercial fact" xml:space="preserve"><value>The commercial fact</value></data>
   <data name="Purchased, active, suspended, cancelled" xml:space="preserve"><value>Purchased, active, suspended, cancelled</value></data>
   <data name="Plan and quantity" xml:space="preserve"><value>Plan and quantity</value></data>
   <data name="Invoicing the customer" xml:space="preserve"><value>Invoicing the customer</value></data>
-  <data name="Microsoft is upstream here. You can always re-read it: GET /subscriptions/{id}." xml:space="preserve"><value>Microsoft is upstream here. You can always re-read it: GET /subscriptions/{id}.</value></data>
   <data name="at start: Resolve / Activate" xml:space="preserve"><value>at start: Resolve / Activate</value></data>
   <data name="in operation: Webhook" xml:space="preserve"><value>in operation: Webhook</value></data>
   <data name="re-read any time" xml:space="preserve"><value>re-read any time</value></data>
   <data name="Your own side" xml:space="preserve"><value>Your own side</value></data>
-  <data name="A synced copy of the commercial state above" xml:space="preserve"><value>A synced copy of the commercial state above</value></data>
-  <data name="The link to your existing company account and users" xml:space="preserve"><value>The link to your existing company account and users</value></data>
-  <data name="What you provisioned, their settings, their data" xml:space="preserve"><value>What you provisioned, their settings, their data</value></data>
-  <data name="Microsoft cannot hold this. That link is why you need a database of your own." xml:space="preserve"><value>Microsoft cannot hold this. That link is why you need a database of your own.</value></data>
-  <data name="Because Microsoft is upstream, this app never takes a webhook at face value: it checks the notification against Microsoft's Operations API before writing anything. Your database then answers exactly one question — may this customer use the product?" xml:space="preserve"><value>Because Microsoft is upstream, this app never takes a webhook at face value: it checks the notification against Microsoft's Operations API before writing anything. Your database then answers exactly one question — may this customer use the product?</value></data>
 
   <!-- Provenance (display only) -->
   <data name="What changed this, and when" xml:space="preserve"><value>What changed this, and when</value></data>
@@ -253,25 +204,15 @@
   <data name="4→3 · Webhook (in operation)" xml:space="preserve"><value>4→3 · Webhook (in operation)</value></data>
   <data name="Activate at start, or a webhook in operation" xml:space="preserve"><value>Activate at start, or a webhook in operation</value></data>
   <data name="inferred" xml:space="preserve"><value>inferred</value></data>
-  <data name="Nothing recorded in this process yet, so this is inferred from the current state:" xml:space="preserve"><value>Nothing recorded in this process yet, so this is inferred from the current state:</value></data>
-  <data name="This list is display only and clears when the app restarts. The durable record is the subscription database itself, plus the application log." xml:space="preserve"><value>This list is display only and clears when the app restarts. The durable record is the subscription database itself, plus the application log.</value></data>
 
   <!-- Illustrative prepaid capacity (not metered, not billed) -->
   <data name="Illustrative only" xml:space="preserve"><value>Illustrative only</value></data>
   <data name="units" xml:space="preserve"><value>units</value></data>
-  <data name="Not measured and not billed. This sample is flat-rate and does no metering; the numbers are made up from the subscription and plan ids so the bar stays put between reloads — and visibly moves when the plan changes." xml:space="preserve"><value>Not measured and not billed. This sample is flat-rate and does no metering; the numbers are made up from the subscription and plan ids so the bar stays put between reloads — and visibly moves when the plan changes.</value></data>
 
   <!-- Plan change figure -->
-  <data name="What a plan change actually means for you" xml:space="preserve"><value>What a plan change actually means for you</value></data>
-  <data name="One subscription before the change, one subscription after it — only the plan differs." xml:space="preserve"><value>One subscription before the change, one subscription after it — only the plan differs.</value></data>
   <data name="Before" xml:space="preserve"><value>Before</value></data>
   <data name="ChangePlan webhook" xml:space="preserve"><value>ChangePlan webhook</value></data>
   <data name="After" xml:space="preserve"><value>After</value></data>
-  <data name="Still one subscription. The id does not change and no second subscription is created — a plan change is an update, not a new purchase." xml:space="preserve"><value>Still one subscription. The id does not change and no second subscription is created — a plan change is an update, not a new purchase.</value></data>
-  <data name="Only an active subscription can be updated; it stays active throughout." xml:space="preserve"><value>Only an active subscription can be updated; it stays active throughout.</value></data>
-  <data name="Your job is two things: switch the features to match the new plan, and reply to the Operations API within 10 seconds. No reply within 10 seconds and Microsoft records it as a success anyway." xml:space="preserve"><value>Your job is two things: switch the features to match the new plan, and reply to the Operations API within 10 seconds. No reply within 10 seconds and Microsoft records it as a success anyway.</value></data>
-  <data name="Pricing, proration and invoicing for the change are handled on Microsoft's side. This app never calculates money." xml:space="preserve"><value>Pricing, proration and invoicing for the change are handled on Microsoft's side. This app never calculates money.</value></data>
-  <data name="Try it: trigger ChangePlan in the emulator and watch the plan, the provenance and the illustrative allowance below all move together." xml:space="preserve"><value>Try it: trigger ChangePlan in the emulator and watch the plan, the provenance and the illustrative allowance below all move together.</value></data>
   <data name="Operations API reference" xml:space="preserve"><value>Operations API reference</value></data>
 
   <!-- Key terms (added) -->
@@ -280,9 +221,81 @@
   <data name="The buyer moves to a different plan on the same subscription. It stays one subscription; Microsoft handles the pricing side." xml:space="preserve"><value>The buyer moves to a different plan on the same subscription. It stays one subscription; Microsoft handles the pricing side.</value></data>
   <data name="State store" xml:space="preserve"><value>State store</value></data>
   <data name="The publisher's own database of who has which subscription. The only thing this app consults to decide whether a customer may use the product." xml:space="preserve"><value>The publisher's own database of who has which subscription. The only thing this app consults to decide whether a customer may use the product.</value></data>
-  <data name="Whether the buyer may use the product — decided from the subscription database alone, never invented by the app or a model." xml:space="preserve"><value>Whether the buyer may use the product — decided from the subscription database alone, never invented by the app or a model.</value></data>
   <data name="Dimension (billing unit)" xml:space="preserve"><value>Dimension (billing unit)</value></data>
   <data name="The unit a metered plan charges by — API calls, gigabytes, jobs. This sample is flat-rate only, so it has none." xml:space="preserve"><value>The unit a metered plan charges by — API calls, gigabytes, jobs. This sample is flat-rate only, so it has none.</value></data>
   <data name="Prepaid capacity" xml:space="preserve"><value>Prepaid capacity</value></data>
   <data name="An allowance the customer pays for up front and draws down as they use the service. Shown here only to illustrate the idea." xml:space="preserve"><value>An allowance the customer pays for up front and draws down as they use the service. Shown here only to illustrate the idea.</value></data>
+
+  <!-- Layout / orientation band -->
+  <data name="You are" xml:space="preserve"><value>You are</value></data>
+  <data name="all three roles" xml:space="preserve"><value>all three roles</value></data>
+  <data name="Steps 1 and 4 are Microsoft (the emulator); steps 2 and 3 are this app." xml:space="preserve"><value>Steps 1 and 4 are Microsoft (the emulator); steps 2 and 3 are this app.</value></data>
+  <data name="This screen" xml:space="preserve"><value>This screen</value></data>
+
+  <!-- Home -->
+  <data name="The emulator plays Microsoft. Buy there, and it sends you back here to activate." xml:space="preserve"><value>The emulator plays Microsoft. Buy there, and it sends you back here to activate.</value></data>
+  <data name="Runs the marketplace and the billing. The emulator stands in for it here." xml:space="preserve"><value>Runs the marketplace and the billing. The emulator stands in for it here.</value></data>
+  <data name="Sells the offer. Builds the three parts above." xml:space="preserve"><value>Sells the offer. Builds the three parts above.</value></data>
+
+  <!-- The three parts you build -->
+  <data name="The buyer arrives from the Marketplace, signs in, and activates." xml:space="preserve"><value>The buyer arrives from the Marketplace, signs in, and activates.</value></data>
+  <data name="Receives renewal, suspend, cancel and plan changes. No page — an endpoint." xml:space="preserve"><value>Receives renewal, suspend, cancel and plan changes. No page — an endpoint.</value></data>
+  <data name="Who has which subscription. The only thing this app checks before letting a customer in." xml:space="preserve"><value>Who has which subscription. The only thing this app checks before letting a customer in.</value></data>
+  <data name="Steps 1 and 4 are Microsoft's side. The webhook has no page — it is how step 4 reaches step 3." xml:space="preserve"><value>Steps 1 and 4 are Microsoft's side. The webhook has no page — it is how step 4 reaches step 3.</value></data>
+
+  <!-- Demo map -->
+  <data name="You're the buyer, shopping in Microsoft's marketplace." xml:space="preserve"><value>You're the buyer, shopping in Microsoft's marketplace.</value></data>
+  <data name="The publisher's own subscription database — what this app checks before letting a customer in." xml:space="preserve"><value>The publisher's own subscription database — what this app checks before letting a customer in.</value></data>
+  <data name="2 &amp; 3 — this app, and what you build" xml:space="preserve"><value>2 &amp; 3 — this app, and what you build</value></data>
+  <data name="1 &amp; 4 — Microsoft's side, via the emulator, in a new tab" xml:space="preserve"><value>1 &amp; 4 — Microsoft's side, via the emulator, in a new tab</value></data>
+  <data name="One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one." xml:space="preserve"><value>One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one.</value></data>
+
+  <!-- Landing -->
+  <data name="You're the buyer, on the publisher's landing page." xml:space="preserve"><value>You're the buyer, on the publisher's landing page.</value></data>
+  <data name="Only this one screen has to be a web page — your desktop or client app stays as it is." xml:space="preserve"><value>Only this one screen has to be a web page — your desktop or client app stays as it is.</value></data>
+  <data name="Entra single sign-on, required by Microsoft on this page." xml:space="preserve"><value>Entra single sign-on, required by Microsoft on this page.</value></data>
+  <data name="Purchase token traded for the real details — done, shown below." xml:space="preserve"><value>Purchase token traded for the real details — done, shown below.</value></data>
+  <data name="Also where you link this subscription to your own company account — Microsoft cannot hold that." xml:space="preserve"><value>Also where you link this subscription to your own company account — Microsoft cannot hold that.</value></data>
+  <data name="Offers can also auto-activate, skipping this page." xml:space="preserve"><value>Offers can also auto-activate, skipping this page.</value></data>
+  <data name="Next: open the publisher admin and confirm the status now reads Subscribed." xml:space="preserve"><value>Next: open the publisher admin and confirm the status now reads Subscribed.</value></data>
+  <data name="Then act on it in the emulator — the change arrives here as a webhook and the admin follows." xml:space="preserve"><value>Then act on it in the emulator — the change arrives here as a webhook and the admin follows.</value></data>
+
+  <!-- Publisher admin -->
+  <data name="Your subscription database. Read-only here." xml:space="preserve"><value>Your subscription database. Read-only here.</value></data>
+  <data name="Change, suspend or cancel in the emulator — it arrives here as a webhook. Reload to see it." xml:space="preserve"><value>Change, suspend or cancel in the emulator — it arrives here as a webhook. Reload to see it.</value></data>
+  <data name="Open the emulator →" xml:space="preserve"><value>Open the emulator →</value></data>
+  <data name="How this works" xml:space="preserve"><value>How this works</value></data>
+  <data name="Who drives the lifecycle" xml:space="preserve"><value>Who drives the lifecycle</value></data>
+  <data name="Microsoft drives it. This app activates a purchase, then keeps its database in sync with the events Microsoft sends. It never invents state." xml:space="preserve"><value>Microsoft drives it. This app activates a purchase, then keeps its database in sync with the events Microsoft sends. It never invents state.</value></data>
+  <data name="Suspend, Reinstate, Change plan and Unsubscribe are Microsoft-initiated and arrive as a webhook. Trigger them in the emulator, then refresh." xml:space="preserve"><value>Suspend, Reinstate, Change plan and Unsubscribe are Microsoft-initiated and arrive as a webhook. Trigger them in the emulator, then refresh.</value></data>
+
+  <!-- Why keep your own database -->
+  <data name="Microsoft holds the subscription too — so why keep your own?" xml:space="preserve"><value>Microsoft holds the subscription too — so why keep your own?</value></data>
+  <data name="Upstream. Re-read it any time with GET /subscriptions/{id}." xml:space="preserve"><value>Upstream. Re-read it any time with GET /subscriptions/{id}.</value></data>
+  <data name="A synced copy of the commercial state" xml:space="preserve"><value>A synced copy of the commercial state</value></data>
+  <data name="The link to your company account and users" xml:space="preserve"><value>The link to your company account and users</value></data>
+  <data name="What you provisioned, and their data" xml:space="preserve"><value>What you provisioned, and their data</value></data>
+  <data name="Microsoft cannot hold this. That link is why you need your own." xml:space="preserve"><value>Microsoft cannot hold this. That link is why you need your own.</value></data>
+  <data name="Microsoft is upstream, so this app checks every webhook against the Operations API before writing. Your database then answers one question: may this customer use the product?" xml:space="preserve"><value>Microsoft is upstream, so this app checks every webhook against the Operations API before writing. Your database then answers one question: may this customer use the product?</value></data>
+
+  <!-- Plan change -->
+  <data name="What a plan change means for you" xml:space="preserve"><value>What a plan change means for you</value></data>
+  <data name="One subscription before the change, one after — only the plan differs." xml:space="preserve"><value>One subscription before the change, one after — only the plan differs.</value></data>
+  <data name="Still one subscription — same id. A plan change is an update, not a new purchase." xml:space="preserve"><value>Still one subscription — same id. A plan change is an update, not a new purchase.</value></data>
+  <data name="Only an active subscription can change plan, and it stays active throughout." xml:space="preserve"><value>Only an active subscription can change plan, and it stays active throughout.</value></data>
+  <data name="Your job: switch the features, then answer the Operations API within 10 seconds." xml:space="preserve"><value>Your job: switch the features, then answer the Operations API within 10 seconds.</value></data>
+  <data name="Pricing and invoicing stay on Microsoft's side. This app never calculates money." xml:space="preserve"><value>Pricing and invoicing stay on Microsoft's side. This app never calculates money.</value></data>
+  <data name="Try it: change the plan in the emulator and watch the plan, provenance and allowance move together." xml:space="preserve"><value>Try it: change the plan in the emulator and watch the plan, provenance and allowance move together.</value></data>
+
+  <!-- Provenance and allowance -->
+  <data name="Nothing recorded in this process yet — inferred from the current state:" xml:space="preserve"><value>Nothing recorded in this process yet — inferred from the current state:</value></data>
+  <data name="Display only — clears on restart. The durable record is the database itself, plus the application log." xml:space="preserve"><value>Display only — clears on restart. The durable record is the database itself, plus the application log.</value></data>
+  <data name="Not measured, not billed. This sample is flat-rate; the numbers come from the subscription and plan ids, so the bar holds still between reloads and moves when the plan changes." xml:space="preserve"><value>Not measured, not billed. This sample is flat-rate; the numbers come from the subscription and plan ids, so the bar holds still between reloads and moves when the plan changes.</value></data>
+
+  <!-- Key terms -->
+  <data name="The page Microsoft opens after a purchase, carrying the purchase token." xml:space="preserve"><value>The page Microsoft opens after a purchase, carrying the purchase token.</value></data>
+  <data name="The publisher's own database of who has which subscription." xml:space="preserve"><value>The publisher's own database of who has which subscription.</value></data>
+  <data name="Whether the buyer may use the product — decided from the subscription database alone." xml:space="preserve"><value>Whether the buyer may use the product — decided from the subscription database alone.</value></data>
+  <data name="The unit a metered plan charges by. This sample is flat-rate, so it has none." xml:space="preserve"><value>The unit a metered plan charges by. This sample is flat-rate, so it has none.</value></data>
+  <data name="An allowance paid for up front and drawn down with use. Shown here only to illustrate the idea." xml:space="preserve"><value>An allowance paid for up front and drawn down with use. Shown here only to illustrate the idea.</value></data>
 </root>
