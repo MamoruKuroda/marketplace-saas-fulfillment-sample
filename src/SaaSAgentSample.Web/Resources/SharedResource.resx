@@ -135,7 +135,6 @@
   <data name="The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features." xml:space="preserve"><value>The plumbing that fulfils a purchase — Resolve, Activate, and connection webhooks — as opposed to your product's own features.</value></data>
   <data name="Demo steps" xml:space="preserve"><value>Demo steps</value></data>
   <data name="Buy in Marketplace" xml:space="preserve"><value>Buy in Marketplace</value></data>
-  <data name="Emulator" xml:space="preserve"><value>Emulator</value></data>
   <data name="Activate" xml:space="preserve"><value>Activate</value></data>
   <data name="The buyer lands here and confirms. Activation starts billing." xml:space="preserve"><value>The buyer lands here and confirms. Activation starts billing.</value></data>
   <data name="Manage" xml:space="preserve"><value>Manage</value></data>
@@ -234,8 +233,6 @@
   <!-- Demo map -->
   <data name="You're the buyer, shopping in Microsoft's marketplace." xml:space="preserve"><value>You're the buyer, shopping in Microsoft's marketplace.</value></data>
   <data name="The publisher's own subscription database — what this app checks before letting a customer in." xml:space="preserve"><value>The publisher's own subscription database — what this app checks before letting a customer in.</value></data>
-  <data name="2 &amp; 3 — this app, and what you build" xml:space="preserve"><value>2 &amp; 3 — this app, and what you build</value></data>
-  <data name="1 &amp; 4 — Microsoft's side, via the emulator, in a new tab" xml:space="preserve"><value>1 &amp; 4 — Microsoft's side, via the emulator, in a new tab</value></data>
   <data name="One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one." xml:space="preserve"><value>One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one.</value></data>
 
   <!-- Landing -->
@@ -293,4 +290,10 @@
   <!-- Home -->
   <data name="A hands-on tour of a Marketplace SaaS purchase — the map above is the whole demo." xml:space="preserve"><value>A hands-on tour of a Marketplace SaaS purchase — the map above is the whole demo.</value></data>
   <data name="Sells the offer. Builds steps 2 and 3, plus the webhook that carries step 4 back to step 3." xml:space="preserve"><value>Sells the offer. Builds steps 2 and 3, plus the webhook that carries step 4 back to step 3.</value></data>
+
+  <!-- Demo map — the same map the emulator shows, so "you are here" works on both sides -->
+  <data name="Publisher app" xml:space="preserve"><value>Publisher app</value></data>
+  <data name="Emulator (Microsoft)" xml:space="preserve"><value>Emulator (Microsoft)</value></data>
+  <data name="Solid — the system you are in now" xml:space="preserve"><value>Solid — the system you are in now</value></data>
+  <data name="Dashed — the other system, opens in a new tab" xml:space="preserve"><value>Dashed — the other system, opens in a new tab</value></data>
 </root>
