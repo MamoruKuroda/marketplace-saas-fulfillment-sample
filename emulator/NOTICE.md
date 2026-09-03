@@ -23,6 +23,14 @@ Changes we made on top of the upstream snapshot:
 - **UI restyle** — the client assets under `src/client/` (`core.css` and the per-page CSS/HTML)
   are restyled to match this sample's app (`SaaSAgentSample.Web`) for a visually consistent demo.
   The emulator's **behavior / API surface is unchanged** — only presentation.
+- **Localization** — `src/client/i18n.js` adds an EN / 日本語 catalogue and applies it to the
+  existing markup through `data-i18n` attributes.
+- **Demo map** — `src/client/demo-map.js` injects the same four-step map the publisher app
+  shows, with the current step expanded. Steps 1 and 4 happen in this emulator, so without it
+  the map could never highlight them and the app had to explain the gap in prose. The
+  convention is shared: a solid card is the system you are in, a dashed one is the other side
+  and opens in a new tab. Pure presentation — it reads `/api/util/config` only to find the
+  publisher app's URL, and falls back to unlinked cards if that call fails.
 
 ## Maintenance notes
 

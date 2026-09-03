@@ -18,7 +18,7 @@
         {
             N = 1,
             Label = L["Buy in Marketplace"].Value,
-            Where = L["Emulator"].Value,
+            Where = L["Emulator (Microsoft)"].Value,
             Desc = L["You're the buyer, shopping in Microsoft's marketplace."].Value,
             Who = L["Buyer"].Value,
             Part = (string?)null,
@@ -29,7 +29,7 @@
         {
             N = 2,
             Label = L["Activate"].Value,
-            Where = L["This app"].Value,
+            Where = L["Publisher app"].Value,
             Desc = L["The buyer lands here and confirms. Activation starts billing."].Value,
             Who = L["Buyer"].Value,
             Part = (string?)L["Landing page"].Value,
@@ -40,7 +40,7 @@
         {
             N = 3,
             Label = L["Manage"].Value,
-            Where = L["This app"].Value,
+            Where = L["Publisher app"].Value,
             Desc = L["The publisher's own subscription database — what this app checks before letting a customer in."].Value,
             Who = L["Publisher (you)"].Value,
             Part = (string?)L["Your subscription database"].Value,
@@ -51,7 +51,7 @@
         {
             N = 4,
             Label = L["Lifecycle events"].Value,
-            Where = L["Emulator"].Value,
+            Where = L["Emulator (Microsoft)"].Value,
             Desc = L["Suspend, change, or cancel from the emulator; webhooks update the state here."].Value,
             Who = L["Microsoft"].Value,
             Part = (string?)null,
@@ -105,8 +105,8 @@
 @if (all)
 {
     <p class="stepper-legend">
-        <span class="sl-item"><span class="sl-key app" aria-hidden="true"></span>@L["2 & 3 — this app, and what you build"]</span>
-        <span class="sl-item"><span class="sl-key ext" aria-hidden="true"></span>@L["1 & 4 — Microsoft's side, via the emulator, in a new tab"]</span>
+        <span class="sl-item"><span class="sl-key app" aria-hidden="true"></span>@L["Solid — the system you are in now"]</span>
+        <span class="sl-item"><span class="sl-key ext" aria-hidden="true"></span>@L["Dashed — the other system, opens in a new tab"]</span>
     </p>
     <p class="stepper-note">@L["One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one."]</p>
 }
