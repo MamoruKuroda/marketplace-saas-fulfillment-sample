@@ -14,57 +14,9 @@
     };
     var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config);
 }
+@* The data comes first. Everything explanatory sits below it, behind one summary. *@
 <h1 class="page-title">@L["Subscriptions"]</h1>
-<p class="subtitle">@L["Your subscription database — read-only here. State changes require explicit confirmation on the detail page."]</p>
-
-@if (emu is not null)
-{
-    <div class="banner" style="max-width:760px;margin:0 0 1.25rem">
-        <span class="ico">&#8644;</span>
-        <div>
-            <strong>@L["The 3⇄4 loop"]</strong>
-            <div style="margin-top:.25rem">@L["Step 4 (Lifecycle events): trigger a change in the emulator — suspend, change plan, or cancel — and it arrives here as a connection webhook. Reload this page (step 3) and the database follows."]</div>
-            <div style="margin-top:.4rem"><a href="@(emu + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></div>
-        </div>
-    </div>
-}
-
-<details class="explainer" open>
-    <summary>@L["How the subscription lifecycle works"]</summary>
-    <div class="body">
-        <p class="muted" style="margin:.2rem 0 1rem">
-            @L["Microsoft Marketplace drives the lifecycle. This app is the publisher side: it activates a purchase, then keeps its database in sync with events Microsoft sends. It never invents state."]
-        </p>
-        <div class="lc-cols">
-            <div class="lc-group">
-                <span class="who pub">@L["Publisher-initiated"]</span>
-                <p class="muted" style="margin:0 0 .4rem;font-size:.85rem">@L["This app calls the Fulfillment API."]</p>
-                <ul>
-                    <li>@L["Resolve → Activate — confirmed here, only from PendingFulfillmentStart. Starts billing."]</li>
-                </ul>
-            </div>
-            <div class="lc-group">
-                <span class="who ms">@L["Microsoft-initiated (webhook)"]</span>
-                <p class="muted" style="margin:0 0 .4rem;font-size:.85rem">@L["Arrive as a connection webhook; this app validates it, then updates state."]</p>
-                <ul>
-                    <li>@L["Change plan / quantity"]</li>
-                    <li>@L["Suspend / Reinstate (e.g. payment failure / recovery)"]</li>
-                    <li>@L["Unsubscribe (terminal)"]</li>
-                </ul>
-            </div>
-        </div>
-        <p class="foot">
-            @L["In this demo the Fulfillment API Emulator plays Microsoft — the source of the webhook events above."]
-            <a href="https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle" target="_blank" rel="noopener">@L["Lifecycle reference"]</a>.
-        </p>
-    </div>
-</details>
-
-@(await Html.PartialAsync("_TruthLayers"))
-
-@(await Html.PartialAsync("_PlanChangeFigure"))
-
-@(await Html.PartialAsync("_KeyTerms"))
+<p class="subtitle">@L["Your subscription database. Read-only here."]</p>
 
 @if (Model.Subscriptions.Count == 0)
 {
@@ -77,8 +29,6 @@ else
             <thead>
                 <tr>
                     <th>@L["Marketplace subscription"]</th>
-                    <th>@L["Name"]</th>
-                    <th>@L["Offer"]</th>
                     <th>@L["Plan"]</th>
                     <th>@L["State"]</th>
                     <th>@L["What changed it"]</th>
@@ -91,14 +41,15 @@ else
                 @foreach (var s in Model.Subscriptions)
                 {
                     <tr>
-                        <td><code>@s.MarketplaceSubscriptionId</code></td>
-                        <td>@(string.IsNullOrEmpty(s.Name) ? "—" : s.Name)</td>
-                        <td>@s.OfferId</td>
+                        <td>
+                            <code>@s.MarketplaceSubscriptionId</code>
+                            <span class="cell-sub">@(string.IsNullOrEmpty(s.Name) ? s.OfferId : s.Name)</span>
+                        </td>
                         <td>@s.PlanId</td>
                         <td><span class="badge @BadgeClass(s.State)">@s.State</span></td>
                         <td>@(await Html.PartialAsync("_Provenance", new SaaSAgentSample.Web.ProvenanceVm(Events.For(s.MarketplaceSubscriptionId), s.State, true)))</td>
                         <td>@(await Html.PartialAsync("_CapacityBar", new SaaSAgentSample.Web.CapacityVm(s.MarketplaceSubscriptionId, s.PlanId, true)))</td>
-                        <td class="muted">@s.UpdatedAt.UtcDateTime.ToString("u")</td>
+                        <td class="muted nowrap">@s.UpdatedAt.UtcDateTime.ToString("u")</td>
                         <td><a href="/admin/@s.Id">@L["Details"]</a></td>
                     </tr>
                 }
@@ -106,3 +57,40 @@ else
         </table>
     </div>
 }
+
+@if (emu is not null)
+{
+    <p class="next-line">
+        <span class="ico" aria-hidden="true">&#8644;</span>
+        @L["Change, suspend or cancel in the emulator — it arrives here as a webhook. Reload to see it."]
+        <a href="@(emu + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator →"]</a>
+    </p>
+}
+
+<details class="explainer learn">
+    <summary>@L["How this works"]</summary>
+    <div class="body">
+        <h3 class="learn-h">@L["Who drives the lifecycle"]</h3>
+        <p class="learn-lead">@L["Microsoft drives it. This app activates a purchase, then keeps its database in sync with the events Microsoft sends. It never invents state."]</p>
+        <div class="lc-cols">
+            <div class="lc-group">
+                <span class="who pub">@L["Publisher-initiated"]</span>
+                <ul>
+                    <li>@L["Resolve → Activate — confirmed here, only from PendingFulfillmentStart. Starts billing."]</li>
+                </ul>
+            </div>
+            <div class="lc-group">
+                <span class="who ms">@L["Microsoft-initiated (webhook)"]</span>
+                <ul>
+                    <li>@L["Change plan / quantity"]</li>
+                    <li>@L["Suspend / Reinstate (e.g. payment failure / recovery)"]</li>
+                    <li>@L["Unsubscribe (terminal)"]</li>
+                </ul>
+            </div>
+        </div>
+
+        @(await Html.PartialAsync("_TruthLayers"))
+        @(await Html.PartialAsync("_PlanChangeFigure"))
+        @(await Html.PartialAsync("_KeyTerms"))
+    </div>
+</details>

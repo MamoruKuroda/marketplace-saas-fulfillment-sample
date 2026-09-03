@@ -55,7 +55,7 @@ else
         @if (inferred)
         {
             <p class="muted prov-empty">
-                @L["Nothing recorded in this process yet, so this is inferred from the current state:"]
+                @L["Nothing recorded in this process yet — inferred from the current state:"]
                 <span class="prov-src">@fallbackSource</span> <span class="prov-act">@fallbackAction</span>
             </p>
         }
@@ -76,6 +76,6 @@ else
                 }
             </ol>
         }
-        <p class="prov-note">@L["This list is display only and clears when the app restarts. The durable record is the subscription database itself, plus the application log."]</p>
+        <p class="prov-note">@L["Display only — clears on restart. The durable record is the database itself, plus the application log."]</p>
     </div>
 }

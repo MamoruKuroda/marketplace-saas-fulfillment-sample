@@ -1,42 +1,35 @@
 @{
-    // Element 7: what a plan change actually means for the publisher.
+    // Element 7: what a plan change actually means for the publisher. Renders bare.
     //
     // Deliberately does NOT state proration or refund mechanics. Those are Microsoft's billing
     // behaviour and are not documented in the fulfillment reference, so asserting them in a
-    // teaching sample would be inventing detail. Everything below is from the lifecycle and
-    // operations references linked at the foot.
+    // teaching sample would be inventing detail.
 }
-<details class="explainer">
-    <summary>@L["What a plan change actually means for you"]</summary>
-    <div class="body">
-        <div class="pc-figure" role="img" aria-label="@L["One subscription before the change, one subscription after it — only the plan differs."]">
-            <div class="pc-box">
-                <span class="pc-cap">@L["Before"]</span>
-                <code>sub-0001</code>
-                <span class="badge subscribed">Subscribed</span>
-                <span class="pc-plan">plan: <code>silver</code></span>
-            </div>
-            <div class="pc-arrow">
-                <span class="pc-arrow-line" aria-hidden="true">&#8594;</span>
-                <span class="pc-arrow-lbl">@L["ChangePlan webhook"]</span>
-            </div>
-            <div class="pc-box">
-                <span class="pc-cap">@L["After"]</span>
-                <code>sub-0001</code>
-                <span class="badge subscribed">Subscribed</span>
-                <span class="pc-plan">plan: <code>gold</code></span>
-            </div>
-        </div>
-        <ul class="pc-points">
-            <li>@L["Still one subscription. The id does not change and no second subscription is created — a plan change is an update, not a new purchase."]</li>
-            <li>@L["Only an active subscription can be updated; it stays active throughout."]</li>
-            <li>@L["Your job is two things: switch the features to match the new plan, and reply to the Operations API within 10 seconds. No reply within 10 seconds and Microsoft records it as a success anyway."]</li>
-            <li>@L["Pricing, proration and invoicing for the change are handled on Microsoft's side. This app never calculates money."]</li>
-        </ul>
-        <p class="foot">
-            @L["Try it: trigger ChangePlan in the emulator and watch the plan, the provenance and the illustrative allowance below all move together."]
-            <a href="https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle" target="_blank" rel="noopener">@L["Lifecycle reference"]</a>,
-            <a href="https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-operations-api" target="_blank" rel="noopener">@L["Operations API reference"]</a>.
-        </p>
+<h3 class="learn-h">@L["What a plan change means for you"]</h3>
+<div class="pc-figure" role="img" aria-label="@L["One subscription before the change, one after — only the plan differs."]">
+    <div class="pc-box">
+        <span class="pc-cap">@L["Before"]</span>
+        <code>sub-0001</code>
+        <span class="pc-plan">plan: <code>silver</code></span>
     </div>
-</details>
+    <div class="pc-arrow">
+        <span class="pc-arrow-line" aria-hidden="true">&#8594;</span>
+        <span class="pc-arrow-lbl">@L["ChangePlan webhook"]</span>
+    </div>
+    <div class="pc-box">
+        <span class="pc-cap">@L["After"]</span>
+        <code>sub-0001</code>
+        <span class="pc-plan">plan: <code>gold</code></span>
+    </div>
+</div>
+<ul class="pc-points">
+    <li>@L["Still one subscription — same id. A plan change is an update, not a new purchase."]</li>
+    <li>@L["Only an active subscription can change plan, and it stays active throughout."]</li>
+    <li>@L["Your job: switch the features, then answer the Operations API within 10 seconds."]</li>
+    <li>@L["Pricing and invoicing stay on Microsoft's side. This app never calculates money."]</li>
+</ul>
+<p class="learn-foot">
+    @L["Try it: change the plan in the emulator and watch the plan, provenance and allowance move together."]
+    <a href="https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle" target="_blank" rel="noopener">@L["Lifecycle reference"]</a>,
+    <a href="https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-operations-api" target="_blank" rel="noopener">@L["Operations API reference"]</a>.
+</p>
