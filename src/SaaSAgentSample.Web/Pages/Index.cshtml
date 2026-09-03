@@ -9,7 +9,7 @@
 @if (Model.ShowHome)
 {
     <h1 class="page-title">@L["Start here"]</h1>
-    <p class="subtitle">@L["A hands-on tour of a Marketplace SaaS purchase — you play all three roles."]</p>
+    <p class="subtitle">@L["A hands-on tour of a Marketplace SaaS purchase — the map above is the whole demo."]</p>
 
     @if (Model.EmulatorUrl is not null)
     {
@@ -23,34 +23,27 @@
         <p class="notice">@L["To begin, open your Fulfillment API Emulator and use its Marketplace tab."]</p>
     }
 
-    <h2 class="section-h">@L["The flow, end to end"]</h2>
-    @(await Html.PartialAsync("_DemoMap", new SaaSAgentSample.Web.DemoMapVm(null, true)))
-
-    <h2 class="section-h">@L["The three parts you build"]</h2>
-    @(await Html.PartialAsync("_BuildParts", new SaaSAgentSample.Web.BuildPartsVm(SaaSAgentSample.Web.BuildPart.None, true)))
-
-    <h2 class="section-h">@L["Who's who"]</h2>
-    <div class="actors">
-        <div class="actor">
-            <span class="who ms">@L["Marketplace"]</span>
-            <h3>@L["Microsoft"]</h3>
-            <p>@L["Runs the marketplace and the billing. The emulator stands in for it here."]</p>
-        </div>
-        <div class="actor">
-            <span class="who pub">@L["This app"]</span>
-            <h3>@L["Publisher (you)"]</h3>
-            <p>@L["Sells the offer. Builds the three parts above."]</p>
-        </div>
-        <div class="actor">
-            <span class="who buyer">@L["Different tenant"]</span>
-            <h3>@L["Buyer"]</h3>
-            <p>@L["Purchases from the Marketplace, then signs in on the landing page to activate."]</p>
-        </div>
-    </div>
-
     <details class="explainer learn">
         <summary>@L["How this works"]</summary>
         <div class="body">
+            <h3 class="learn-h">@L["Who's who"]</h3>
+            <div class="actors">
+                <div class="actor">
+                    <span class="who ms">@L["Marketplace"]</span>
+                    <h3>@L["Microsoft"]</h3>
+                    <p>@L["Runs the marketplace and the billing. The emulator stands in for it here."]</p>
+                </div>
+                <div class="actor">
+                    <span class="who pub">@L["This app"]</span>
+                    <h3>@L["Publisher (you)"]</h3>
+                    <p>@L["Sells the offer. Builds steps 2 and 3, plus the webhook that carries step 4 back to step 3."]</p>
+                </div>
+                <div class="actor">
+                    <span class="who buyer">@L["Different tenant"]</span>
+                    <h3>@L["Buyer"]</h3>
+                    <p>@L["Purchases from the Marketplace, then signs in on the landing page to activate."]</p>
+                </div>
+            </div>
             @(await Html.PartialAsync("_KeyTerms"))
         </div>
     </details>
@@ -83,10 +76,7 @@ else
     }
     else if (r is not null)
     {
-        <p class="notice">
-            @L["You're the buyer, on the publisher's landing page."]
-            <span class="muted">@L["Only this one screen has to be a web page — your desktop or client app stays as it is."]</span>
-        </p>
+        <p class="notice">@L["Only this one screen has to be a web page — your desktop or client app stays as it is."]</p>
 
         <ol class="substeps">
             <li class="@(signedIn ? "done" : null)">

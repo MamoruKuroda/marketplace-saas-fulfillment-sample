@@ -2,10 +2,20 @@ using Microsoft.Extensions.Configuration;
 
 namespace SaaSAgentSample.Web;
 
-/// <summary>View-model for the shared demo "map" (role stepper) partial.</summary>
-/// <param name="Current">The step the visitor is currently on (1-4), or null for none.</param>
-/// <param name="Expanded">True to render the large explanatory map (home page); false for the compact bar.</param>
-public sealed record DemoMapVm(int? Current, bool Expanded);
+/// <summary>How much of the demo map to spell out.</summary>
+public enum DemoMapDetail
+{
+    /// <summary>Only the step you are on is expanded. Used on every page except the home map.</summary>
+    CurrentOnly,
+
+    /// <summary>Every step is expanded. Used on the home page, where the map is the content.</summary>
+    All,
+}
+
+/// <summary>View-model for the shared demo map, which is the one place the flow is explained.</summary>
+/// <param name="Current">The step the visitor is on (1-4), or null when they are on none of them.</param>
+/// <param name="Detail">Whether to expand every step or only the current one.</param>
+public sealed record DemoMapVm(int? Current, DemoMapDetail Detail);
 
 /// <summary>Helpers for the in-product demo wayfinding ("where do I start / where am I").</summary>
 public static class DemoNavigation

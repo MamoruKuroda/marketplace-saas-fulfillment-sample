@@ -123,8 +123,6 @@
 
   <!-- Start-here / demo map (P1 wayfinding) -->
   <data name="Start here" xml:space="preserve"><value>Start here</value></data>
-  <data name="A hands-on tour of a Marketplace SaaS purchase — you play all three roles." xml:space="preserve"><value>A hands-on tour of a Marketplace SaaS purchase — you play all three roles.</value></data>
-  <data name="The flow, end to end" xml:space="preserve"><value>The flow, end to end</value></data>
   <data name="Who's who" xml:space="preserve"><value>Who's who</value></data>
   <data name="Microsoft" xml:space="preserve"><value>Microsoft</value></data>
   <data name="Marketplace" xml:space="preserve"><value>Marketplace</value></data>
@@ -173,7 +171,6 @@
   <data name="Marketplace handles the money. You build the part that turns the service on and keeps its state — via Resolve/Activate at start and the Webhook during operation." xml:space="preserve"><value>Marketplace handles the money. You build the part that turns the service on and keeps its state — via Resolve/Activate at start and the Webhook during operation.</value></data>
 
   <!-- The three parts you build -->
-  <data name="The three parts you build" xml:space="preserve"><value>The three parts you build</value></data>
   <data name="Landing page" xml:space="preserve"><value>Landing page</value></data>
   <data name="Connection webhook" xml:space="preserve"><value>Connection webhook</value></data>
   <data name="Your subscription database" xml:space="preserve"><value>Your subscription database</value></data>
@@ -226,22 +223,13 @@
   <data name="Prepaid capacity" xml:space="preserve"><value>Prepaid capacity</value></data>
   <data name="An allowance the customer pays for up front and draws down as they use the service. Shown here only to illustrate the idea." xml:space="preserve"><value>An allowance the customer pays for up front and draws down as they use the service. Shown here only to illustrate the idea.</value></data>
 
-  <!-- Layout / orientation band -->
-  <data name="You are" xml:space="preserve"><value>You are</value></data>
-  <data name="all three roles" xml:space="preserve"><value>all three roles</value></data>
-  <data name="Steps 1 and 4 are Microsoft (the emulator); steps 2 and 3 are this app." xml:space="preserve"><value>Steps 1 and 4 are Microsoft (the emulator); steps 2 and 3 are this app.</value></data>
-  <data name="This screen" xml:space="preserve"><value>This screen</value></data>
 
   <!-- Home -->
   <data name="The emulator plays Microsoft. Buy there, and it sends you back here to activate." xml:space="preserve"><value>The emulator plays Microsoft. Buy there, and it sends you back here to activate.</value></data>
   <data name="Runs the marketplace and the billing. The emulator stands in for it here." xml:space="preserve"><value>Runs the marketplace and the billing. The emulator stands in for it here.</value></data>
-  <data name="Sells the offer. Builds the three parts above." xml:space="preserve"><value>Sells the offer. Builds the three parts above.</value></data>
 
   <!-- The three parts you build -->
-  <data name="The buyer arrives from the Marketplace, signs in, and activates." xml:space="preserve"><value>The buyer arrives from the Marketplace, signs in, and activates.</value></data>
   <data name="Receives renewal, suspend, cancel and plan changes. No page — an endpoint." xml:space="preserve"><value>Receives renewal, suspend, cancel and plan changes. No page — an endpoint.</value></data>
-  <data name="Who has which subscription. The only thing this app checks before letting a customer in." xml:space="preserve"><value>Who has which subscription. The only thing this app checks before letting a customer in.</value></data>
-  <data name="Steps 1 and 4 are Microsoft's side. The webhook has no page — it is how step 4 reaches step 3." xml:space="preserve"><value>Steps 1 and 4 are Microsoft's side. The webhook has no page — it is how step 4 reaches step 3.</value></data>
 
   <!-- Demo map -->
   <data name="You're the buyer, shopping in Microsoft's marketplace." xml:space="preserve"><value>You're the buyer, shopping in Microsoft's marketplace.</value></data>
@@ -251,7 +239,6 @@
   <data name="One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one." xml:space="preserve"><value>One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one.</value></data>
 
   <!-- Landing -->
-  <data name="You're the buyer, on the publisher's landing page." xml:space="preserve"><value>You're the buyer, on the publisher's landing page.</value></data>
   <data name="Only this one screen has to be a web page — your desktop or client app stays as it is." xml:space="preserve"><value>Only this one screen has to be a web page — your desktop or client app stays as it is.</value></data>
   <data name="Entra single sign-on, required by Microsoft on this page." xml:space="preserve"><value>Entra single sign-on, required by Microsoft on this page.</value></data>
   <data name="Purchase token traded for the real details — done, shown below." xml:space="preserve"><value>Purchase token traded for the real details — done, shown below.</value></data>
@@ -298,4 +285,12 @@
   <data name="Whether the buyer may use the product — decided from the subscription database alone." xml:space="preserve"><value>Whether the buyer may use the product — decided from the subscription database alone.</value></data>
   <data name="The unit a metered plan charges by. This sample is flat-rate, so it has none." xml:space="preserve"><value>The unit a metered plan charges by. This sample is flat-rate, so it has none.</value></data>
   <data name="An allowance paid for up front and drawn down with use. Shown here only to illustrate the idea." xml:space="preserve"><value>An allowance paid for up front and drawn down with use. Shown here only to illustrate the idea.</value></data>
+
+  <!-- Demo map — who operates each step, and which part it is -->
+  <data name="Operated by" xml:space="preserve"><value>Operated by</value></data>
+  <data name="You build" xml:space="preserve"><value>You build</value></data>
+
+  <!-- Home -->
+  <data name="A hands-on tour of a Marketplace SaaS purchase — the map above is the whole demo." xml:space="preserve"><value>A hands-on tour of a Marketplace SaaS purchase — the map above is the whole demo.</value></data>
+  <data name="Sells the offer. Builds steps 2 and 3, plus the webhook that carries step 4 back to step 3." xml:space="preserve"><value>Sells the offer. Builds steps 2 and 3, plus the webhook that carries step 4 back to step 3.</value></data>
 </root>

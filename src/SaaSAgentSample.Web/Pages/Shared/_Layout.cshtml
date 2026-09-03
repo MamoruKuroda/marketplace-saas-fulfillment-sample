@@ -7,17 +7,11 @@
     var htmlLang = cur == "ja" ? "ja" : "en";
     var hasToken = !string.IsNullOrEmpty(Context.Request.Query["token"]);
     var isHome = !onAdmin && path == "/" && !hasToken;
-    int? demoStep = onAdmin ? 3 : (path == "/" && hasToken ? 2 : (int?)null);
 
-    // Which of the three roles and which of the three parts this page is. The home page is the
-    // map of all of them, so it claims neither. The webhook is never "current" because it has no
-    // page — consistent with steps 1 and 4, which live in the emulator.
-    var role = onAdmin
-        ? SaaSAgentSample.Web.DemoRole.Publisher
-        : (hasToken ? SaaSAgentSample.Web.DemoRole.Buyer : SaaSAgentSample.Web.DemoRole.None);
-    var part = onAdmin
-        ? SaaSAgentSample.Web.BuildPart.StateStore
-        : (hasToken ? SaaSAgentSample.Web.BuildPart.Landing : SaaSAgentSample.Web.BuildPart.None);
+    // The map is on every page. On the home page it is the content, so every step is spelled out;
+    // everywhere else only the step you are on expands, which keeps one part and one actor per page.
+    int? demoStep = onAdmin ? 3 : (path == "/" && hasToken ? 2 : (int?)null);
+    var mapDetail = isHome ? SaaSAgentSample.Web.DemoMapDetail.All : SaaSAgentSample.Web.DemoMapDetail.CurrentOnly;
 }
 <!DOCTYPE html>
 <html lang="@htmlLang">
@@ -42,18 +36,9 @@
         </div>
     </header>
     <div class="orient-bar">
-        @if (!isHome && demoStep != null)
-        {
-            <div class="stepper-bar">
-                @(await Html.PartialAsync("_DemoMap", new SaaSAgentSample.Web.DemoMapVm(demoStep, false)))
-            </div>
-        }
-        <div class="orient-row">
+        <div class="orient-inner">
             @(await Html.PartialAsync("_HeroLine"))
-            <div class="orient-you">
-                @(await Html.PartialAsync("_BuildParts", new SaaSAgentSample.Web.BuildPartsVm(part, false)))
-                @(await Html.PartialAsync("_RoleBadges", new SaaSAgentSample.Web.RoleBadgeVm(role)))
-            </div>
+            @(await Html.PartialAsync("_DemoMap", new SaaSAgentSample.Web.DemoMapVm(demoStep, mapDetail)))
         </div>
     </div>
     <main>
