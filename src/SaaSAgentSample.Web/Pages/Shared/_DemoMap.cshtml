@@ -96,9 +96,14 @@
             {
                 <p class="step-next">@L["Next: go here →"]</p>
             }
-            @if (all || current)
+            @if (all || current || next)
             {
                 <p class="desc">@s.Desc</p>
+            }
+            @* Only the step you are on names its actor and its part. Showing them for the next one
+               too would put two actors on the page, which is the confusion this map removed. *@
+            @if (all || current)
+            {
                 <dl class="step-meta">
                     <dt>@L["Operated by"]</dt>
                     <dd>@s.Who</dd>
