@@ -183,6 +183,7 @@ footer.site-footer a { color:var(--text-2); }
 
 /* ── Admin table density ───────────────────────────────────────────────────── */
 .table-wrap code { white-space:nowrap; }
+.table-wrap tbody td:nth-child(2) { white-space:nowrap; }
 .table-wrap thead th, .table-wrap tbody td { padding:.7rem .6rem; vertical-align:top; }
 .table-wrap thead th:first-child, .table-wrap tbody td:first-child { padding-left:1rem; }
 .cell-sub { display:block; margin-top:.2rem; font-size:.8rem; color:var(--text-2); }
@@ -225,7 +226,9 @@ td.nowrap { white-space:nowrap; }
    is this app. The tint and the label carry it instead. */
 .stepper .step.next { border-color:#bcd9f5; background:#f7fbff; }
 .stepper .step.next .n { background:#eff6fc; color:var(--brand); }
-.step-next { margin:.4rem 0 0; font-size:.74rem; font-weight:700; color:var(--brand); }
+.step-next { margin:.45rem 0 0; font-size:.76rem; font-weight:700; color:var(--brand); }
+/* The next step now describes itself too, so it reads as a destination rather than a hint. */
+.stepper .step.next .desc { color:var(--text); }
 
 /* Who operates the step, and which part of the app it is. */
 .step-meta { display:grid; grid-template-columns:auto 1fr; gap:.15rem .5rem; margin:.5rem 0 0; padding-top:.45rem; border-top:1px solid var(--border); font-size:.74rem; }
