@@ -1,8 +1,8 @@
-@page "/admin/{id:guid}"
+﻿@page "/admin/{id:guid}"
 @using SaaSAgentSample.Core.Subscriptions
 @model SaaSAgentSample.Web.Pages.Admin.DetailModel
 @inject Microsoft.Extensions.Configuration.IConfiguration Config
-@inject SaaSAgentSample.Web.Services.ISubscriptionEventLog Events
+@inject SaaSAgentSample.Core.Subscriptions.ISubscriptionEventLog Events
 @{
     ViewData["Title"] = L["Subscription detail"].Value;
     var s = Model.Subscription;

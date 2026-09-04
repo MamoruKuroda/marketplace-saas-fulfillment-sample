@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -264,8 +264,8 @@
   <data name="Try it: change the plan in the emulator and watch the plan, provenance and allowance move together." xml:space="preserve"><value>試してみてください：エミュレーターでプランを変えると、プラン・更新のきっかけ・利用枠が連動して動きます。</value></data>
 
   <!-- Provenance and allowance -->
-  <data name="Nothing recorded in this process yet — inferred from the current state:" xml:space="preserve"><value>このプロセスではまだ記録がありません。現在の状態からの推定です：</value></data>
-  <data name="Display only — clears on restart. The durable record is the database itself, plus the application log." xml:space="preserve"><value>表示専用で、再起動すると消えます。恒久的な記録は契約状況DBそのものと、アプリケーション ログです。</value></data>
+  <data name="No entry recorded for this subscription — inferred from its current state:" xml:space="preserve"><value>このサブスクリプションには記録がありません。現在の状態からの推定です：</value></data>
+  <data name="Stored with the subscription and written in the same transaction as the state change, so a state can never lose its cause." xml:space="preserve"><value>契約状況DBに保存され、状態の変更と同じトランザクションで書き込まれます。状態だけが残って理由が失われることはありません。</value></data>
   <data name="Not measured, not billed. This sample is flat-rate; the numbers come from the subscription and plan ids, so the bar holds still between reloads and moves when the plan changes." xml:space="preserve"><value>計測も課金もしていません。本サンプルは定額制です。数値はサブスクリプション ID とプラン ID から作っているため、再読み込みしても動かず、プランが変わったときだけ動きます。</value></data>
 
   <!-- Key terms -->
