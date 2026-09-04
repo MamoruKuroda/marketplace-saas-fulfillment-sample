@@ -27,6 +27,11 @@
 <h1 class="page-title">@L["Subscriptions"]</h1>
 <p class="subtitle">@L["Your subscription database. Read-only here."]</p>
 
+@if (Model.ClearedCount is int cleared)
+{
+    <p class="reset-done">@string.Format(L["Reset done — removed {0} subscription(s) and their history."].Value, cleared)</p>
+}
+
 @if (Model.Subscriptions.Count == 0)
 {
     <div class="card"><p class="muted">@L["No subscriptions yet. Activate one from a buyer landing link to see it here."]</p></div>
@@ -103,3 +108,19 @@ else
         @(await Html.PartialAsync("_KeyTerms"))
     </div>
 </details>
+
+@if (Model.AllowReset)
+{
+    <details class="danger-zone">
+        <summary>@L["Reset the demo"]</summary>
+        <div class="dz-body">
+            <p class="dz-note">@L["Deletes every subscription and its history from this app's database. Offers and plans are not affected — they live in the Marketplace, not here. Clear the emulator separately from its Config page to reset both sides."]</p>
+            @* No tag helpers in this project (_ViewImports has no @@addTagHelper), so the handler
+               goes in the action and the token is written explicitly - same as Detail.cshtml. *@
+            <form method="post" action="?handler=Reset" onsubmit="return confirm(this.dataset.confirm);" data-confirm="@L["Delete all subscriptions and their history?"]">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn danger">@L["Delete all subscriptions"]</button>
+            </form>
+        </div>
+    </details>
+}

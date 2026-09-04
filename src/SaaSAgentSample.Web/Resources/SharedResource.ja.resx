@@ -288,7 +288,7 @@
   <data name="Open the publisher admin (step 3) →" xml:space="preserve"><value>パブリッシャー管理（③）を開く →</value></data>
   <data name="After that, step 4: act on it in the emulator and the change arrives here as a webhook." xml:space="preserve"><value>そのあとは ④ です。エミュレーターで操作すると、変更が Webhook でこのアプリに届きます。</value></data>
   <data name="Step 4 — change, suspend or cancel in the emulator. It arrives here as a webhook; reload to see it." xml:space="preserve"><value>④ エミュレーターでプラン変更・一時停止・解約を起こすと、Webhook でここに届きます。再読み込みで反映されます。</value></data>
-  <data name="2 · Purchase token exchanged for the real subscription" xml:space="preserve"><value>② 購入トークンを実際のサブスクリプションに交換</value></data>
+  <data name="2 · Purchase token exchanged for real data" xml:space="preserve"><value>② 購入トークンを実データに交換</value></data>
   <data name="2 · Activated from the landing page — billing starts" xml:space="preserve"><value>② ランディング ページで有効化 — 課金開始</value></data>
   <data name="3 · Activated from the publisher admin — billing starts" xml:space="preserve"><value>③ パブリッシャー管理画面から有効化 — 課金開始</value></data>
   <data name="4→3 · Suspended — a payment was not received" xml:space="preserve"><value>④→③ 一時停止 — 支払いが確認できませんでした</value></data>
@@ -300,4 +300,9 @@
   <data name="4→3 · Purchase announced — the state does not change" xml:space="preserve"><value>④→③ 購入が通知されました — 状態は変わりません</value></data>
   <data name="4→3 · Microsoft sent a notification" xml:space="preserve"><value>④→③ Microsoft から通知が届きました</value></data>
   <data name="No entry — stored before this app kept a trail" xml:space="preserve"><value>記録なし — このアプリが履歴を残す前に保存されました</value></data>
+  <data name="Reset done — removed {0} subscription(s) and their history." xml:space="preserve"><value>リセット完了 — {0} 件のサブスクリプションと履歴を削除しました。</value></data>
+  <data name="Reset the demo" xml:space="preserve"><value>デモをリセット</value></data>
+  <data name="Deletes every subscription and its history from this app's database. Offers and plans are not affected — they live in the Marketplace, not here. Clear the emulator separately from its Config page to reset both sides." xml:space="preserve"><value>このアプリのデータベースから、すべてのサブスクリプションとその履歴を削除します。オファーとプランは影響を受けません — それらはマーケットプレース側にあり、ここにはありません。両側を揃えるには、エミュレーターの設定ページでも別途クリアしてください。</value></data>
+  <data name="Delete all subscriptions and their history?" xml:space="preserve"><value>すべてのサブスクリプションと履歴を削除しますか？</value></data>
+  <data name="Delete all subscriptions" xml:space="preserve"><value>すべてのサブスクリプションを削除</value></data>
 </root>

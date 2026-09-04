@@ -169,6 +169,16 @@ footer.site-footer a { color:var(--text-2); }
 .prov-empty { font-size:.85rem; }
 .prov-note { margin:.6rem 0 0; font-size:.85rem; color:var(--text-2); }
 
+/* Demo reset. Quiet until opened — it is the last thing on the page, not a call to action —
+   but unmistakably destructive once it is. Only rendered when Demo:AllowReset is on. */
+.danger-zone { margin:1.5rem 0 0; border:1px solid #f1bcb7; border-radius:var(--radius); background:#fdf6f5; }
+.danger-zone > summary { cursor:pointer; padding:.75rem 1.1rem; font-size:.9rem; font-weight:600; color:#a4262c; }
+.danger-zone .dz-body { padding:0 1.1rem 1.1rem; }
+.dz-note { margin:0 0 .8rem; font-size:.85rem; color:var(--text-2); }
+.btn.danger { background:#a4262c; color:#fff; }
+.btn.danger:hover { background:#8e1f24; }
+.reset-done { margin:0 0 1.2rem; font-size:.9rem; color:#0e5a0e; }
+
 /* ── Illustrative prepaid allowance — NOT metered, NOT billed (element 7) ──── */
 .cap.compact { max-width:9rem; }
 /* The column header already names it; the "Illustrative only" badge always stays,

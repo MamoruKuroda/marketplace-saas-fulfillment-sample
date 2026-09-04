@@ -12,7 +12,7 @@
     // case-insensitively.
     string Say(SubscriptionEventSource source, string action) => (source, action.ToLowerInvariant()) switch
     {
-        (SubscriptionEventSource.Landing, "resolve") => L["2 · Purchase token exchanged for the real subscription"].Value,
+        (SubscriptionEventSource.Landing, "resolve") => L["2 · Purchase token exchanged for real data"].Value,
         (SubscriptionEventSource.Landing, "activate") => L["2 · Activated from the landing page — billing starts"].Value,
         (SubscriptionEventSource.Admin, _) => L["3 · Activated from the publisher admin — billing starts"].Value,
         (_, "suspend") => L["4→3 · Suspended — a payment was not received"].Value,

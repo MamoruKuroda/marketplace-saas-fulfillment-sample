@@ -80,13 +80,15 @@ resource webApp 'Microsoft.Web/sites@2024-04-01' = {
         // Passwordless: the app authenticates to Azure SQL with its managed identity.
         { name: 'Database__ConnectionString', value: 'Server=tcp:${sqlServer.properties.fullyQualifiedDomainName},1433;Database=${sqlDatabaseName};Authentication=Active Directory Default;Encrypt=True;' }
         { name: 'Landing__RequireAuthentication', value: toLower(string(requireAuthentication)) }
+        // This deployment exists to be demoed repeatedly, so let the admin page clear the
+        // subscriptions a run leaves behind. Off by default in the app; only turned on here.
+        { name: 'Demo__AllowReset', value: 'true' }
         { name: 'AzureAd__Instance', value: environment().authentication.loginEndpoint }
         { name: 'AzureAd__TenantId', value: 'common' }
         { name: 'AzureAd__ClientId', value: landingClientId }
         // Demo: point the app at the deployed emulator (Microsoft's stand-in) so the flow is
         // interactive. The emulator sends unsigned webhook tokens, so signature enforcement is off.
-        { name: 'Fulfillment__BaseUrl', value: 'https://${emulator.properties.configuration.ingress.fqdn}/api' }
-        { name: 'Fulfillment__ApiVersion', value: '2018-08-31' }
+        { name: 'Fulfillment__BaseUrl', value: 'https://${emulator.properties.configuration.ingress.fqdn}/api' }        { name: 'Fulfillment__ApiVersion', value: '2018-08-31' }
         // Emulator is token-free: identify the publisher via the query param (matches PUBLISHER_ID).
         { name: 'Fulfillment__PublisherId', value: 'FourthCoffee' }
         { name: 'Fulfillment__Webhook__Audience', value: webhookAudience }
