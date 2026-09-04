@@ -307,7 +307,9 @@
   <data name="No entry — stored before this app kept a trail" xml:space="preserve"><value>No entry — stored before this app kept a trail</value></data>
   <data name="Reset done — removed {0} subscription(s) and their history." xml:space="preserve"><value>Reset done — removed {0} subscription(s) and their history.</value></data>
   <data name="Reset the demo" xml:space="preserve"><value>Reset the demo</value></data>
-  <data name="Deletes every subscription and its history from this app's database. Offers and plans are not affected — they live in the Marketplace, not here. Clear the emulator separately from its Config page to reset both sides." xml:space="preserve"><value>Deletes every subscription and its history from this app's database. Offers and plans are not affected — they live in the Marketplace, not here. Clear the emulator separately from its Config page to reset both sides.</value></data>
   <data name="Delete all subscriptions and their history?" xml:space="preserve"><value>Delete all subscriptions and their history?</value></data>
   <data name="Delete all subscriptions" xml:space="preserve"><value>Delete all subscriptions</value></data>
+  <data name="Deletes every subscription and its history from this app's database. Offers and plans are not affected — they live in the Marketplace, not here." xml:space="preserve"><value>Deletes every subscription and its history from this app's database. Offers and plans are not affected — they live in the Marketplace, not here.</value></data>
+  <data name="The emulator holds its own copy of what was bought. Clearing it is a separate step, on Microsoft's side:" xml:space="preserve"><value>The emulator holds its own copy of what was bought. Clearing it is a separate step, on Microsoft's side:</value></data>
+  <data name="Open the emulator's Config page →" xml:space="preserve"><value>Open the emulator's Config page →</value></data>
 </root>

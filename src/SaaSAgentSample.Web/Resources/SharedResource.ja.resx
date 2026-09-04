@@ -302,7 +302,9 @@
   <data name="No entry — stored before this app kept a trail" xml:space="preserve"><value>記録なし — このアプリが履歴を残す前に保存されました</value></data>
   <data name="Reset done — removed {0} subscription(s) and their history." xml:space="preserve"><value>リセット完了 — {0} 件のサブスクリプションと履歴を削除しました。</value></data>
   <data name="Reset the demo" xml:space="preserve"><value>デモをリセット</value></data>
-  <data name="Deletes every subscription and its history from this app's database. Offers and plans are not affected — they live in the Marketplace, not here. Clear the emulator separately from its Config page to reset both sides." xml:space="preserve"><value>このアプリのデータベースから、すべてのサブスクリプションとその履歴を削除します。オファーとプランは影響を受けません — それらはマーケットプレース側にあり、ここにはありません。両側を揃えるには、エミュレーターの設定ページでも別途クリアしてください。</value></data>
   <data name="Delete all subscriptions and their history?" xml:space="preserve"><value>すべてのサブスクリプションと履歴を削除しますか？</value></data>
   <data name="Delete all subscriptions" xml:space="preserve"><value>すべてのサブスクリプションを削除</value></data>
+  <data name="Deletes every subscription and its history from this app's database. Offers and plans are not affected — they live in the Marketplace, not here." xml:space="preserve"><value>このアプリのデータベースから、すべてのサブスクリプションとその履歴を削除します。オファーとプランは影響を受けません — それらはマーケットプレース側にあり、ここにはありません。</value></data>
+  <data name="The emulator holds its own copy of what was bought. Clearing it is a separate step, on Microsoft's side:" xml:space="preserve"><value>エミュレーターは購入内容を自分側にも持っています。そちらのクリアは Microsoft 側での別の操作です：</value></data>
+  <data name="Open the emulator's Config page →" xml:space="preserve"><value>エミュレーターの設定ページを開く →</value></data>
 </root>
