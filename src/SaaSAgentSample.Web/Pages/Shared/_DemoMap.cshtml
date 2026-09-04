@@ -55,7 +55,9 @@
             Desc = L["Suspend, change, or cancel from the emulator; webhooks update the state here."].Value,
             Who = L["Microsoft"].Value,
             Part = (string?)null,
-            Href = emu,
+            // The Subscriptions tab, not the emulator root — the root is its Marketplace tab,
+            // which is step 1, so linking there sent people back to the start of the tour.
+            Href = emu is null ? null : emu + "/subscriptions.html",
             External = true,
         },
     };
@@ -92,7 +94,13 @@
                     <span class="lbl">@s.Label<small>@s.Where</small></span>
                 </span>
             }
-            @if (next)
+            @* Styled as a call to action, so it has to actually be one. As a paragraph it looked
+               clickable and was not. *@
+            @if (next && s.Href is not null)
+            {
+                <a class="step-next" href="@s.Href" target="@(s.External ? "_blank" : null)" rel="@(s.External ? "noopener" : null)">@L["Next: go here →"]</a>
+            }
+            else if (next)
             {
                 <p class="step-next">@L["Next: go here →"]</p>
             }

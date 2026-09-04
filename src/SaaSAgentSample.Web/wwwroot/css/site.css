@@ -226,7 +226,8 @@ td.nowrap { white-space:nowrap; }
    is this app. The tint and the label carry it instead. */
 .stepper .step.next { border-color:#bcd9f5; background:#f7fbff; }
 .stepper .step.next .n { background:#eff6fc; color:var(--brand); }
-.step-next { margin:.45rem 0 0; font-size:.76rem; font-weight:700; color:var(--brand); }
+.step-next { display:block; margin:.45rem 0 0; font-size:.76rem; font-weight:700; color:var(--brand); }
+a.step-next:hover { text-decoration:underline; }
 /* The next step now describes itself too, so it reads as a destination rather than a hint. */
 .stepper .step.next .desc { color:var(--text); }
 
