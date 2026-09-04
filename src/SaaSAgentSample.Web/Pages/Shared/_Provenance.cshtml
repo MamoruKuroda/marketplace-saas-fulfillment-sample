@@ -3,44 +3,45 @@
 @model SaaSAgentSample.Web.ProvenanceVm
 @{
     // Element 6: what wrote this state, and when. Part of the ledger — see ISubscriptionEventLog.
-    // A subscription written before the trail was made durable has no entries, so fall back to
-    // what the current state alone can tell us, and say plainly that it is inferred.
-    string SourceLabel(SubscriptionEventSource source) => source switch
+    //
+    // The sentence leads and the Fulfillment API term follows as a tag. Leading with the term
+    // ("Suspend") hid the meaning, and was also less precise than plain language: the docs say
+    // Suspend means a payment was not received, and Unsubscribe covers both an explicit
+    // cancellation and an implicit one after the 30-day unpaid grace period — so naming a culprit
+    // would be wrong. Actions arrive from the payload with the sender's casing, so match
+    // case-insensitively.
+    string Say(SubscriptionEventSource source, string action) => (source, action.ToLowerInvariant()) switch
     {
-        SubscriptionEventSource.Landing => L["2 · Landing page (at start)"].Value,
-        SubscriptionEventSource.Admin => L["3 · Publisher admin (at start)"].Value,
-        _ => L["4→3 · Webhook (in operation)"].Value,
+        (SubscriptionEventSource.Landing, "resolve") => L["2 · Purchase token exchanged for the real subscription"].Value,
+        (SubscriptionEventSource.Landing, "activate") => L["2 · Activated from the landing page — billing starts"].Value,
+        (SubscriptionEventSource.Admin, _) => L["3 · Activated from the publisher admin — billing starts"].Value,
+        (_, "suspend") => L["4→3 · Suspended — a payment was not received"].Value,
+        (_, "unsubscribe") => L["4→3 · Cancelled"].Value,
+        (_, "reinstate") => L["4→3 · Reinstated — payment resumed"].Value,
+        (_, "changeplan") => L["4→3 · Moved to another plan"].Value,
+        (_, "changequantity") => L["4→3 · Number of licences changed"].Value,
+        (_, "renew") => L["4→3 · Renewed — the state does not change"].Value,
+        (_, "subscribe") => L["4→3 · Purchase announced — the state does not change"].Value,
+        _ => L["4→3 · Microsoft sent a notification"].Value,
     };
 
-    // Action names are Fulfillment API terms (Resolve, Activate, Suspend, ChangePlan …) and are
-    // left untranslated, like the state names.
-    var inferred = Model.Events.Count == 0;
-    var fallbackSource = Model.State switch
-    {
-        SubscriptionState.PendingFulfillmentStart => L["2 · Landing page (at start)"].Value,
-        SubscriptionState.Subscribed => L["Activate at start, or a webhook in operation"].Value,
-        _ => L["4→3 · Webhook (in operation)"].Value,
-    };
-    var fallbackAction = Model.State switch
-    {
-        SubscriptionState.PendingFulfillmentStart => "Resolve",
-        SubscriptionState.Suspended => "Suspend",
-        SubscriptionState.Unsubscribed => "Unsubscribe",
-        _ => "—",
-    };
+    // Subscriptions stored before the trail was durable have no entries. Nothing is deduced from
+    // the state here on purpose: a guess dressed as a record is what made this column hard to
+    // trust in the first place.
+    var noTrail = Model.Events.Count == 0;
 }
 @if (Model.Compact)
 {
     <span class="prov compact">
-        @if (inferred)
+        @if (noTrail)
         {
-            <span class="prov-src">@fallbackSource</span> <span class="prov-act">@fallbackAction</span>
-            <span class="prov-inferred">@L["inferred"]</span>
+            <span class="prov-none">@L["No entry — stored before this app kept a trail"]</span>
         }
         else
         {
             var latest = Model.Events[0];
-            <span class="prov-src">@SourceLabel(latest.Source)</span> <span class="prov-act">@latest.Action</span>
+            <span class="prov-say">@Say(latest.Source, latest.Action)</span>
+            <span class="prov-act">@latest.Action</span>
             @if (!string.IsNullOrEmpty(latest.Detail))
             {
                 <span class="prov-detail">@latest.Detail</span>
@@ -52,12 +53,9 @@ else
 {
     <div class="prov full">
         <h3 class="prov-h">@L["What changed this, and when"]</h3>
-        @if (inferred)
+        @if (noTrail)
         {
-            <p class="muted prov-empty">
-                @L["No entry recorded for this subscription — inferred from its current state:"]
-                <span class="prov-src">@fallbackSource</span> <span class="prov-act">@fallbackAction</span>
-            </p>
+            <p class="muted prov-empty">@L["No entry — stored before this app kept a trail"]</p>
         }
         else
         {
@@ -65,7 +63,7 @@ else
                 @foreach (var e in Model.Events)
                 {
                     <li>
-                        <span class="prov-src">@SourceLabel(e.Source)</span>
+                        <span class="prov-say">@Say(e.Source, e.Action)</span>
                         <span class="prov-act">@e.Action</span>
                         @if (!string.IsNullOrEmpty(e.Detail))
                         {

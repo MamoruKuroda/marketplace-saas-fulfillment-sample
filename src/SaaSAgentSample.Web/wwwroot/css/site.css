@@ -155,10 +155,12 @@ footer.site-footer a { color:var(--text-2); }
 
 /* ── Provenance — display only (element 6) ─────────────────────────────────── */
 .prov.compact { display:inline-flex; flex-wrap:wrap; align-items:center; gap:.25rem; font-size:.84rem; line-height:1.35; }
-.prov-src { color:var(--text-2); }
-.prov-act { font-weight:600; }
+.prov-say { color:var(--text); }
+/* The API term is a pointer into the docs, not the message — quiet, and never louder than the
+   sentence it annotates. It used to be the boldest thing in the cell. */
+.prov-act { font-family:"Cascadia Code",Consolas,ui-monospace,monospace; font-size:.9em; color:var(--text-2); }
 .prov-detail { background:#f3f2f1; color:#3b3a39; padding:.05rem .35rem; border-radius:4px; font-size:.9em; }
-.prov-inferred { font-style:italic; color:#8a8886; }
+.prov-none { font-style:italic; color:#8a8886; }
 .prov.full { margin:0 0 1.35rem; }
 .prov-h { margin:0 0 .5rem; font-size:.8rem; text-transform:uppercase; letter-spacing:.03em; color:var(--text-2); font-weight:600; }
 .prov-list { margin:0; padding-left:1.15rem; font-size:.85rem; }

@@ -189,11 +189,6 @@
 
   <!-- Provenance (display only) -->
   <data name="What changed this, and when" xml:space="preserve"><value>何が、いつ更新したか</value></data>
-  <data name="2 · Landing page (at start)" xml:space="preserve"><value>② ランディング ページ（起動時）</value></data>
-  <data name="3 · Publisher admin (at start)" xml:space="preserve"><value>③ パブリッシャー管理（起動時）</value></data>
-  <data name="4→3 · Webhook (in operation)" xml:space="preserve"><value>④→③ Webhook（運用中）</value></data>
-  <data name="Activate at start, or a webhook in operation" xml:space="preserve"><value>起動時の Activate、または運用中の Webhook</value></data>
-  <data name="inferred" xml:space="preserve"><value>推定</value></data>
 
   <!-- Illustrative prepaid capacity (not metered, not billed) -->
   <data name="Illustrative only" xml:space="preserve"><value>表示用の例</value></data>
@@ -264,7 +259,6 @@
   <data name="Try it: change the plan in the emulator and watch the plan, provenance and allowance move together." xml:space="preserve"><value>試してみてください：エミュレーターでプランを変えると、プラン・更新のきっかけ・利用枠が連動して動きます。</value></data>
 
   <!-- Provenance and allowance -->
-  <data name="No entry recorded for this subscription — inferred from its current state:" xml:space="preserve"><value>このサブスクリプションには記録がありません。現在の状態からの推定です：</value></data>
   <data name="Stored with the subscription and written in the same transaction as the state change, so a state can never lose its cause." xml:space="preserve"><value>契約状況DBに保存され、状態の変更と同じトランザクションで書き込まれます。状態だけが残って理由が失われることはありません。</value></data>
   <data name="Not measured, not billed. This sample is flat-rate; the numbers come from the subscription and plan ids, so the bar holds still between reloads and moves when the plan changes." xml:space="preserve"><value>計測も課金もしていません。本サンプルは定額制です。数値はサブスクリプション ID とプラン ID から作っているため、再読み込みしても動かず、プランが変わったときだけ動きます。</value></data>
 
@@ -294,4 +288,16 @@
   <data name="Open the publisher admin (step 3) →" xml:space="preserve"><value>パブリッシャー管理（③）を開く →</value></data>
   <data name="After that, step 4: act on it in the emulator and the change arrives here as a webhook." xml:space="preserve"><value>そのあとは ④ です。エミュレーターで操作すると、変更が Webhook でこのアプリに届きます。</value></data>
   <data name="Step 4 — change, suspend or cancel in the emulator. It arrives here as a webhook; reload to see it." xml:space="preserve"><value>④ エミュレーターでプラン変更・一時停止・解約を起こすと、Webhook でここに届きます。再読み込みで反映されます。</value></data>
+  <data name="2 · Purchase token exchanged for the real subscription" xml:space="preserve"><value>② 購入トークンを実際のサブスクリプションに交換</value></data>
+  <data name="2 · Activated from the landing page — billing starts" xml:space="preserve"><value>② ランディング ページで有効化 — 課金開始</value></data>
+  <data name="3 · Activated from the publisher admin — billing starts" xml:space="preserve"><value>③ パブリッシャー管理画面から有効化 — 課金開始</value></data>
+  <data name="4→3 · Suspended — a payment was not received" xml:space="preserve"><value>④→③ 一時停止 — 支払いが確認できませんでした</value></data>
+  <data name="4→3 · Cancelled" xml:space="preserve"><value>④→③ 解約されました</value></data>
+  <data name="4→3 · Reinstated — payment resumed" xml:space="preserve"><value>④→③ 復帰 — 支払いが再開されました</value></data>
+  <data name="4→3 · Moved to another plan" xml:space="preserve"><value>④→③ 別のプランに変更されました</value></data>
+  <data name="4→3 · Number of licences changed" xml:space="preserve"><value>④→③ ライセンス数が変更されました</value></data>
+  <data name="4→3 · Renewed — the state does not change" xml:space="preserve"><value>④→③ 更新されました — 状態は変わりません</value></data>
+  <data name="4→3 · Purchase announced — the state does not change" xml:space="preserve"><value>④→③ 購入が通知されました — 状態は変わりません</value></data>
+  <data name="4→3 · Microsoft sent a notification" xml:space="preserve"><value>④→③ Microsoft から通知が届きました</value></data>
+  <data name="No entry — stored before this app kept a trail" xml:space="preserve"><value>記録なし — このアプリが履歴を残す前に保存されました</value></data>
 </root>
