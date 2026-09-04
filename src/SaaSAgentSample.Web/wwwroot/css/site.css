@@ -16,7 +16,7 @@ a:hover { text-decoration:underline; }
 .brand { display:flex; align-items:center; gap:.6rem; font-weight:600; color:var(--text); }
 .brand:hover { text-decoration:none; }
 .brand .logo { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,#0f6cbd,#2b88d8); display:grid; place-items:center; color:#fff; font-size:.95rem; font-weight:700; }
-.brand small { display:block; font-weight:400; color:var(--text-2); font-size:.72rem; letter-spacing:.02em; }
+.brand small { display:block; font-weight:400; color:var(--text-2); font-size:.8rem; letter-spacing:.02em; }
 nav.top { margin-left:auto; display:flex; gap:.25rem; }
 nav.top a { padding:.4rem .75rem; border-radius:var(--radius-sm); color:var(--text-2); font-size:.9rem; }
 nav.top a:hover { background:#f3f2f1; text-decoration:none; color:var(--text); }
@@ -48,8 +48,8 @@ main { max-width:var(--maxw); margin:2rem auto; padding:0 1.25rem; }
 .back-link { color:var(--text-2); font-size:.9rem; }
 
 .table-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
-table { border-collapse:collapse; width:100%; font-size:.92rem; }
-thead th { text-align:left; color:var(--text-2); font-weight:600; font-size:.76rem; letter-spacing:.03em; text-transform:uppercase; padding:.8rem 1rem; background:#faf9f8; border-bottom:1px solid var(--border); }
+table { border-collapse:collapse; width:100%; font-size:.95rem; }
+thead th { text-align:left; color:var(--text-2); font-weight:600; font-size:.82rem; letter-spacing:.02em; text-transform:uppercase; padding:.8rem 1rem; background:#faf9f8; border-bottom:1px solid var(--border); }
 tbody td { padding:.8rem 1rem; border-bottom:1px solid var(--border); }
 tbody tr:last-child td { border-bottom:0; }
 tbody tr:hover { background:#f9f8f7; }
@@ -66,7 +66,7 @@ code { font-family:"Cascadia Code",Consolas,ui-monospace,monospace; background:#
 
 /* Lifecycle explainer (teaching aid — explains who initiates each transition) */
 .explainer { max-width:760px; margin:0 0 1.5rem; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); box-shadow:var(--shadow); }
-.explainer > summary { cursor:pointer; padding:.75rem 1rem; font-weight:600; font-size:.92rem; list-style:none; color:var(--text); }
+.explainer > summary { cursor:pointer; padding:.8rem 1rem; font-weight:600; font-size:1rem; list-style:none; color:var(--text); }
 .explainer > summary::-webkit-details-marker { display:none; }
 .explainer > summary::before { content:"\25B8"; color:var(--text-2); margin-right:.5rem; }
 .explainer[open] > summary::before { content:"\25BE"; }
@@ -75,9 +75,9 @@ code { font-family:"Cascadia Code",Consolas,ui-monospace,monospace; background:#
 @media (max-width:640px){ .lc-cols { grid-template-columns:1fr; } }
 .lc-group { border:1px solid var(--border); border-radius:var(--radius-sm); padding:.8rem .9rem; }
 .lc-group h4 { margin:0 0 .5rem; font-size:.78rem; text-transform:uppercase; letter-spacing:.03em; color:var(--text-2); }
-.lc-group ul { margin:0; padding-left:1.05rem; font-size:.9rem; }
+.lc-group ul { margin:0; padding-left:1.05rem; font-size:.95rem; }
 .lc-group li { margin:.15rem 0; }
-.lc-group .who { display:inline-block; font-size:.72rem; font-weight:600; padding:.08rem .5rem; border-radius:999px; margin-bottom:.55rem; }
+.lc-group .who { display:inline-block; font-size:.8rem; font-weight:600; padding:.08rem .5rem; border-radius:999px; margin-bottom:.55rem; }
 .who.pub { background:#eff6fc; color:#0f6cbd; }
 .who.ms { background:#f3f0fa; color:#5c2e91; }
 .explainer .foot { margin:.9rem 0 0; font-size:.88rem; color:var(--text-2); }
@@ -90,7 +90,7 @@ footer.site-footer a { color:var(--text-2); }
    everywhere. The framing line sits above it as one quiet sentence. */
 .orient-bar { background:var(--surface); border-bottom:1px solid var(--border); }
 .orient-inner { max-width:var(--maxw); margin:0 auto; padding:.55rem 1.25rem .7rem; }
-.hero-line p { margin:0 0 .5rem; font-size:.8rem; line-height:1.4; color:var(--text-2); }
+.hero-line p { margin:0 0 .5rem; font-size:.88rem; line-height:1.4; color:var(--text-2); }
 /* ── Step map legend (element 10) ───────────────────────────────────────────── */
 .stepper-legend { display:flex; flex-wrap:wrap; gap:.3rem 1.5rem; margin:.1rem 0 .5rem; font-size:.82rem; color:var(--text-2); }
 .sl-item { display:inline-flex; align-items:center; gap:.4rem; }
@@ -107,8 +107,8 @@ footer.site-footer a { color:var(--text-2); }
 /* ── One "How this works" section, closed by default ───────────────────────── */
 .explainer.learn { margin-top:1.5rem; }
 .learn .body > * + .learn-h { margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border); }
-.learn-h { margin:.2rem 0 .6rem; font-size:.98rem; font-weight:600; }
-.learn-lead, .learn-foot { max-width:68ch; font-size:.87rem; color:var(--text-2); }
+.learn-h { margin:.2rem 0 .6rem; font-size:1.05rem; font-weight:600; }
+.learn-lead, .learn-foot { max-width:68ch; font-size:.95rem; color:var(--text-2); }
 .learn-lead { margin:0 0 .9rem; }
 .learn-foot { margin:.9rem 0 0; }
 
@@ -133,28 +133,28 @@ footer.site-footer a { color:var(--text-2); }
 .truth-col { border:1px solid var(--border); border-radius:var(--radius-sm); padding:.8rem .9rem; }
 .truth-col.ms { background:#faf9fd; }
 .truth-col.pub { background:#f7fbff; }
-.truth-col h4 { margin:.45rem 0 .5rem; font-size:.88rem; }
-.truth-col ul { margin:0; padding-left:1.05rem; font-size:.85rem; }
+.truth-col h4 { margin:.45rem 0 .5rem; font-size:.95rem; }
+.truth-col ul { margin:0; padding-left:1.05rem; font-size:.93rem; }
 .truth-col li { margin:.15rem 0; }
-.truth-col .foot-note { margin:.6rem 0 0; font-size:.78rem; color:var(--text-2); }
+.truth-col .foot-note { margin:.6rem 0 0; font-size:.85rem; color:var(--text-2); }
 .truth-arrows { display:flex; flex-direction:column; justify-content:center; gap:.4rem; min-width:11rem; }
-.ta { font-size:.72rem; color:var(--text-2); text-align:center; padding:.2rem .4rem; border-radius:var(--radius-sm); background:#f3f2f1; }
+.ta { font-size:.8rem; color:var(--text-2); text-align:center; padding:.2rem .4rem; border-radius:var(--radius-sm); background:#f3f2f1; }
 .ta::before { content:"\2192 "; }
 .ta.back::before { content:"\2190 "; }
 
 /* ── Plan-change figure (element 7) ────────────────────────────────────────── */
 .pc-figure { display:flex; align-items:center; gap:1rem; flex-wrap:wrap; margin:.2rem 0 .9rem; }
 .pc-box { display:flex; flex-direction:column; gap:.3rem; align-items:flex-start; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); padding:.65rem .8rem; min-width:10.5rem; }
-.pc-cap { font-size:.68rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--text-2); }
-.pc-plan { font-size:.82rem; color:var(--text-2); }
+.pc-cap { font-size:.76rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--text-2); }
+.pc-plan { font-size:.88rem; color:var(--text-2); }
 .pc-arrow { display:flex; flex-direction:column; align-items:center; gap:.15rem; }
 .pc-arrow-line { font-size:1.25rem; color:var(--brand); }
-.pc-arrow-lbl { font-size:.72rem; color:var(--text-2); }
-.pc-points { margin:0; padding-left:1.05rem; max-width:68ch; font-size:.86rem; }
+.pc-arrow-lbl { font-size:.8rem; color:var(--text-2); }
+.pc-points { margin:0; padding-left:1.05rem; max-width:68ch; font-size:.93rem; }
 .pc-points li { margin:.25rem 0; }
 
 /* ── Provenance — display only (element 6) ─────────────────────────────────── */
-.prov.compact { display:inline-flex; flex-wrap:wrap; align-items:center; gap:.25rem; font-size:.76rem; line-height:1.35; }
+.prov.compact { display:inline-flex; flex-wrap:wrap; align-items:center; gap:.25rem; font-size:.84rem; line-height:1.35; }
 .prov-src { color:var(--text-2); }
 .prov-act { font-weight:600; }
 .prov-detail { background:#f3f2f1; color:#3b3a39; padding:.05rem .35rem; border-radius:4px; font-size:.9em; }
@@ -163,9 +163,9 @@ footer.site-footer a { color:var(--text-2); }
 .prov-h { margin:0 0 .5rem; font-size:.8rem; text-transform:uppercase; letter-spacing:.03em; color:var(--text-2); font-weight:600; }
 .prov-list { margin:0; padding-left:1.15rem; font-size:.85rem; }
 .prov-list li { margin:.25rem 0; display:flex; flex-wrap:wrap; gap:.4rem; align-items:baseline; }
-.prov-list time { font-size:.76rem; }
+.prov-list time { font-size:.82rem; }
 .prov-empty { font-size:.85rem; }
-.prov-note { margin:.6rem 0 0; font-size:.76rem; color:var(--text-2); }
+.prov-note { margin:.6rem 0 0; font-size:.85rem; color:var(--text-2); }
 
 /* ── Illustrative prepaid allowance — NOT metered, NOT billed (element 7) ──── */
 .cap.compact { max-width:9rem; }
@@ -173,31 +173,31 @@ footer.site-footer a { color:var(--text-2); }
    because these numbers must never be mistaken for metering. */
 .cap.compact .cap-label { display:none; }
 .cap-head { display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; margin:0 0 .25rem; }
-.cap-label { font-size:.7rem; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--text-2); }
-.cap-illus { font-size:.62rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase; background:#fff4ce; color:#8a6400; border:1px solid #f2e0a6; padding:.02rem .3rem; border-radius:4px; }
+.cap-label { font-size:.78rem; font-weight:600; letter-spacing:.03em; text-transform:uppercase; color:var(--text-2); }
+.cap-illus { font-size:.7rem; font-weight:700; letter-spacing:.03em; text-transform:uppercase; background:#fff4ce; color:#8a6400; border:1px solid #f2e0a6; padding:.02rem .3rem; border-radius:4px; }
 .cap-bar { height:.45rem; border-radius:999px; background:#f3f2f1; overflow:hidden; }
 .cap.full .cap-bar { height:.7rem; max-width:22rem; }
 .cap-fill { display:block; height:100%; background:linear-gradient(90deg,#0f7b6c,#2aa08c); }
-.cap-read { margin-top:.2rem; font-size:.76rem; color:var(--text-2); white-space:nowrap; }
-.cap-note { margin:.5rem 0 0; max-width:68ch; font-size:.78rem; color:var(--text-2); }
+.cap-read { margin-top:.2rem; font-size:.84rem; color:var(--text-2); white-space:nowrap; }
+.cap-note { margin:.5rem 0 0; max-width:68ch; font-size:.85rem; color:var(--text-2); }
 
 /* ── Admin table density ───────────────────────────────────────────────────── */
 .table-wrap code { white-space:nowrap; }
 .table-wrap tbody td:nth-child(2) { white-space:nowrap; }
 .table-wrap thead th, .table-wrap tbody td { padding:.7rem .6rem; vertical-align:top; }
 .table-wrap thead th:first-child, .table-wrap tbody td:first-child { padding-left:1rem; }
-.cell-sub { display:block; margin-top:.2rem; font-size:.8rem; color:var(--text-2); }
+.cell-sub { display:block; margin-top:.2rem; font-size:.87rem; color:var(--text-2); }
 td.nowrap { white-space:nowrap; }
 
 /* One-line "what to do next" prompt under the data. */
-.next-line { display:flex; align-items:baseline; gap:.45rem; flex-wrap:wrap; margin:.9rem 0 0; font-size:.86rem; color:var(--text-2); }
+.next-line { display:flex; align-items:baseline; gap:.45rem; flex-wrap:wrap; margin:.9rem 0 0; font-size:.93rem; color:var(--text-2); }
 .next-line .ico { color:#0e5a0e; font-weight:700; }
 
 .cta-line { display:flex; align-items:center; gap:.9rem; flex-wrap:wrap; margin:0 0 .5rem; }
 .cta-line .hint { font-size:.85rem; color:var(--text-2); }
 
 /* ── Role chip base (colours .who.ms / .who.pub defined above) ─────────────── */
-.who { display:inline-block; font-size:.72rem; font-weight:600; padding:.1rem .55rem; border-radius:999px; }
+.who { display:inline-block; font-size:.8rem; font-weight:600; padding:.1rem .55rem; border-radius:999px; }
 .who.buyer { background:#e8f6f2; color:#0f7b6c; }
 
 /* ── The demo map (shared _DemoMap partial) ────────────────────────────────────
@@ -210,13 +210,13 @@ td.nowrap { white-space:nowrap; }
 .stepper .step.current { border-color:var(--brand); box-shadow:inset 0 0 0 1px var(--brand); }
 .stepper .step-head { display:flex; align-items:center; gap:.5rem; color:var(--text-2); }
 .stepper .step-head:hover { text-decoration:none; color:var(--text); }
-.stepper .n { flex:none; width:1.4rem; height:1.4rem; border-radius:999px; display:grid; place-items:center; font-size:.76rem; font-weight:700; background:#f3f2f1; color:var(--text-2); }
-.stepper .lbl { display:flex; flex-direction:column; line-height:1.2; font-size:.86rem; font-weight:600; color:var(--text); }
-.stepper .lbl small { font-weight:400; font-size:.68rem; color:var(--text-2); }
+.stepper .n { flex:none; width:1.55rem; height:1.55rem; border-radius:999px; display:grid; place-items:center; font-size:.82rem; font-weight:700; background:#f3f2f1; color:var(--text-2); }
+.stepper .lbl { display:flex; flex-direction:column; line-height:1.25; font-size:.95rem; font-weight:600; color:var(--text); }
+.stepper .lbl small { font-weight:400; font-size:.8rem; color:var(--text-2); }
 .stepper .step.external .n { background:transparent; border:1.5px dashed #c8c6c4; color:var(--text-2); }
 .stepper .step.current .n { background:var(--brand); color:#fff; }
 .stepper .step.current .lbl { color:var(--brand); }
-.stepper .desc { margin:.5rem 0 0; font-size:.8rem; line-height:1.45; color:var(--text-2); }
+.stepper .desc { margin:.5rem 0 0; font-size:.88rem; line-height:1.45; color:var(--text-2); }
 /* Progress: a finished step is ticked, and the one to go to next says so. Both are set only
    from evidence the page has — see the pages for what counts as proof. */
 .stepper .step.done .n { background:#dff6dd; color:#0e700e; }
@@ -226,27 +226,27 @@ td.nowrap { white-space:nowrap; }
    is this app. The tint and the label carry it instead. */
 .stepper .step.next { border-color:#bcd9f5; background:#f7fbff; }
 .stepper .step.next .n { background:#eff6fc; color:var(--brand); }
-.step-next { display:block; margin:.45rem 0 0; font-size:.76rem; font-weight:700; color:var(--brand); }
+.step-next { display:block; margin:.45rem 0 0; font-size:.86rem; font-weight:700; color:var(--brand); }
 a.step-next:hover { text-decoration:underline; }
 /* The next step now describes itself too, so it reads as a destination rather than a hint. */
 .stepper .step.next .desc { color:var(--text); }
 
 /* Who operates the step, and which part of the app it is. */
-.step-meta { display:grid; grid-template-columns:auto 1fr; gap:.15rem .5rem; margin:.5rem 0 0; padding-top:.45rem; border-top:1px solid var(--border); font-size:.74rem; }
+.step-meta { display:grid; grid-template-columns:auto 1fr; gap:.15rem .5rem; margin:.5rem 0 0; padding-top:.45rem; border-top:1px solid var(--border); font-size:.82rem; }
 .step-meta dt { color:var(--text-2); }
 .step-meta dd { margin:0; font-weight:600; color:var(--text); }
 .step-meta .is-part { color:var(--brand); }
 
 /* The webhook is the return path from step 4 to step 3 — a part you build, with no page. */
-.return-path { display:flex; align-items:baseline; gap:.45rem; flex-wrap:wrap; margin:.5rem 0 0; font-size:.78rem; color:var(--text-2); }
-.return-path .rp-n { font-weight:700; font-size:.7rem; color:var(--text-2); background:#f3f2f1; border-radius:999px; padding:.05rem .45rem; }
+.return-path { display:flex; align-items:baseline; gap:.45rem; flex-wrap:wrap; margin:.5rem 0 0; font-size:.86rem; color:var(--text-2); }
+.return-path .rp-n { font-weight:700; font-size:.78rem; color:var(--text-2); background:#f3f2f1; border-radius:999px; padding:.05rem .45rem; }
 /* Same caption-then-value order as the cards' "You build" row, so the webhook reads as
    the third part rather than as a stray link. */
-.return-path .rp-cap { color:var(--text-2); font-size:.74rem; }
+.return-path .rp-cap { color:var(--text-2); font-size:.82rem; }
 .return-path .is-part { color:var(--brand); font-weight:600; }
 
-.stepper-legend { display:flex; flex-wrap:wrap; gap:.3rem 1.5rem; margin:.6rem 0 .3rem; font-size:.78rem; color:var(--text-2); }
-.stepper-note { margin:0; font-size:.78rem; color:var(--text-2); }
+.stepper-legend { display:flex; flex-wrap:wrap; gap:.3rem 1.5rem; margin:.6rem 0 .3rem; font-size:.85rem; color:var(--text-2); }
+.stepper-note { margin:0; font-size:.85rem; color:var(--text-2); }
 /* ── Start-here home ──────────────────────────────────────────────────────── */
 .section-h { font-size:1rem; font-weight:600; margin:1.8rem 0 .7rem; }
 .actors { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:0 0 .5rem; }
@@ -256,7 +256,7 @@ a.step-next:hover { text-decoration:underline; }
 .actor p { margin:0; font-size:.85rem; color:var(--text-2); }
 
 /* ── Glossary (inside "How this works") ───────────────────────────────────── */
-.glossary { display:grid; grid-template-columns:12rem 1fr; gap:.45rem 1rem; margin:.3rem 0 0; max-width:820px; font-size:.87rem; }
+.glossary { display:grid; grid-template-columns:14rem 1fr; gap:.5rem 1rem; margin:.3rem 0 0; max-width:860px; font-size:.95rem; }
 @media (max-width:640px){ .glossary { grid-template-columns:1fr; gap:.1rem 0; } .glossary dt { margin-top:.6rem; } }
 .glossary dt { font-weight:600; color:var(--text); }
 .glossary dd { margin:0; color:var(--text-2); }
