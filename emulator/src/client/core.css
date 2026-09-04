@@ -744,3 +744,18 @@ section.info ol.steps li {
 /* Pointer to the publisher app's glossary. The terms are not duplicated here on purpose:
    a second copy in this emulator's own catalogue would drift, and once did. */
 .demo-map .learn-link { margin: .4rem 0 0; font-size: .86rem; }
+
+/* Demo reset. Sits under the table it clears, set apart so it reads as a harness control rather
+   than another lifecycle action. Mirrors the tone of the Config page's Danger Zone. */
+.reset-demo {
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid #edebe9;
+}
+
+.reset-demo p {
+    margin: .5rem 0 0;
+    color: #605e5c;
+    font-size: .88rem;
+    max-width: 60ch;
+}

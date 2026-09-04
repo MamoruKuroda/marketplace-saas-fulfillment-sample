@@ -9,6 +9,7 @@ using Microsoft.Identity.Web;
 using SaaSAgentSample.Data.DependencyInjection;
 using SaaSAgentSample.Data.Persistence;
 using SaaSAgentSample.Fulfillment.DependencyInjection;
+using SaaSAgentSample.Web;
 using SaaSAgentSample.Web.Endpoints;
 using SaaSAgentSample.Web.Services;
 
@@ -61,8 +62,23 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 builder.Services.Configure<WebEncoderOptions>(options =>
     options.TextEncoderSettings = new TextEncoderSettings(UnicodeRanges.All));
 
-var app = builder.Build();
+// The emulator's Subscriptions page resets both sides of the demo from one button, so it needs to
+// reach /api/demo/reset from its own origin. Nothing else is allowed, and the endpoint also
+// demands a custom header so the browser must preflight — see DemoResetEndpoint.
+builder.Services.AddCors(options => options.AddPolicy(DemoResetEndpoint.CorsPolicyName, policy =>
+{
+    var emulator = DemoNavigation.EmulatorUrl(builder.Configuration);
+    if (emulator is null)
+    {
+        return;
+    }
 
+    policy.WithOrigins(emulator)
+        .WithMethods("POST")
+        .WithHeaders(DemoResetEndpoint.RequiredHeader);
+}));
+
+var app = builder.Build();
 // Ensure the local schema exists (SQLite dev = EnsureCreated; SQL Server = migrations).
 var providerName = builder.Configuration["Database:Provider"] ?? nameof(DatabaseProvider.Sqlite);
 if (Enum.TryParse<DatabaseProvider>(providerName, ignoreCase: true, out var databaseProvider))
@@ -81,10 +97,12 @@ app.UseRequestLocalization();
 
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
 app.MapConnectionWebhook();
+app.MapDemoReset();
 
 // Persist the buyer/publisher UI language when the header toggle is used, then return
 // to the page they were on. Only the supported cultures are honored.

@@ -34,6 +34,12 @@ Changes we made on top of the upstream snapshot:
 - **Shared language** — `src/client/i18n.js` honours a `?culture=en|ja` parameter once, stores the
   choice, and strips it from the URL, so following a link from the publisher app keeps one
   language while leaving the EN / 日本語 toggle in control afterwards.
+- **Demo reset** — `src/client/subscriptions.{html,js}` add a "Reset the demo" button that deletes
+  every subscription here (via the emulator's existing `DELETE /api/util/publishers/...` utility
+  route — no API change) and then asks the publisher app to clear its own copy. It is a
+  test-harness convenience and the button says so: the real Marketplace has no way to delete a
+  publisher's records. The publisher app only accepts that call when it has been configured for
+  demos, and only from this origin.
 
 ## Maintenance notes
 

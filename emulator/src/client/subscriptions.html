@@ -50,6 +50,10 @@
           </td></tr>
         </tbody></table>
         <div class="key"><p data-i18n-html="subs.buttonColourKeyHtml">Button Colour Key - emulate action changing the subscription <button class="detail" disabled="disabled">Detail</button> <button class="state" disabled="disabled">State</button></p><p data-i18n="subs.renewNote">Renew: you will see an HTTP response but no change to this page.</p></div>
+        <div class="reset-demo">
+          <button class="danger" onclick="resetDemo_click()" data-i18n="subs.resetDemo">Reset the demo</button>
+          <p data-i18n="subs.resetNote">Clears every subscription here and in the publisher app, so a demo can start over. Offers and plans are kept. Test-harness convenience only — the real Marketplace has no way to delete a publisher's records.</p>
+        </div>
       </section>
       <div class="template" id="change-quantity-dialog"><p data-i18n="subs.howManyLicenses">How many licenses?</p><input type="number" /></div>
       <div class="template" id="change-plan-dialog"><p data-i18n="subs.changePlanTo">Change plan to?</p><select></select></div>

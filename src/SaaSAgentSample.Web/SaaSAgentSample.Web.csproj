@@ -8,6 +8,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Endpoint handlers stay internal but are worth testing directly when they guard something,
+         as the demo reset does. -->
+    <InternalsVisibleTo Include="SaaSAgentSample.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Identity.Web" Version="4.13.1" />
     <!-- Security pin: remediate CVE-2026-47302 / NU1903 (High) in
          System.Security.Cryptography.Xml 10.0.7, pulled in transitively by
