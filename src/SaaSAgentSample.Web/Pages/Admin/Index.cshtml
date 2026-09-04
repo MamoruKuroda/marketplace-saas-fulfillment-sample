@@ -59,7 +59,7 @@ else
                         <td>@(await Html.PartialAsync("_Provenance", new SaaSAgentSample.Web.ProvenanceVm(Events.For(s.MarketplaceSubscriptionId), s.State, true)))</td>
                         <td>@(await Html.PartialAsync("_CapacityBar", new SaaSAgentSample.Web.CapacityVm(s.MarketplaceSubscriptionId, s.PlanId, true)))</td>
                         <td class="muted nowrap">@s.UpdatedAt.UtcDateTime.ToString("u")</td>
-                        <td><a href="/admin/@s.Id">@L["Details"]</a></td>
+                        <td class="nowrap"><a href="/admin/@s.Id">@L["Details"]</a></td>
                     </tr>
                 }
             </tbody>
