@@ -13,7 +13,7 @@ a:hover { text-decoration:underline; }
 
 .site-header { position:sticky; top:0; z-index:10; background:rgba(255,255,255,.85); backdrop-filter:saturate(180%) blur(8px); border-bottom:1px solid var(--border); }
 .site-header .bar { max-width:var(--maxw); margin:0 auto; display:flex; align-items:center; gap:1rem; padding:.7rem 1.25rem; }
-.brand { display:flex; align-items:center; gap:.6rem; font-weight:600; color:var(--text); }
+.brand { display:flex; align-items:center; gap:.6rem; font-weight:600; font-size:1rem; color:var(--text); }
 .brand:hover { text-decoration:none; }
 .brand .logo { width:30px; height:30px; border-radius:8px; background:linear-gradient(135deg,#0f6cbd,#2b88d8); display:grid; place-items:center; color:#fff; font-size:.95rem; font-weight:700; }
 .brand small { display:block; font-weight:400; color:var(--text-2); font-size:.8rem; letter-spacing:.02em; }

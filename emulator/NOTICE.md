@@ -31,9 +31,15 @@ Changes we made on top of the upstream snapshot:
   convention is shared: a solid card is the system you are in, a dashed one is the other side
   and opens in a new tab. Pure presentation — it reads `/api/util/config` only to find the
   publisher app's URL, and falls back to unlinked cards if that call fails.
+- **Shared language** — `src/client/i18n.js` honours a `?culture=en|ja` parameter once, stores the
+  choice, and strips it from the URL, so following a link from the publisher app keeps one
+  language while leaving the EN / 日本語 toggle in control afterwards.
 
 ## Maintenance notes
 
+- The chrome that both surfaces share — the map, masthead, nav, and language toggle — is
+  duplicated here by necessity and has drifted twice. `scripts/check-shared-ui.ps1` compares the
+  values that must match and fails when they diverge; run it after touching `core.css`.
 - This is a **teaching-sample stand-in for Microsoft** used only in the demo; it is not a
   production component and is torn down with `azd down`.
 - We do **not** run the emulator's Node build in CI — it is built at deploy time in Azure

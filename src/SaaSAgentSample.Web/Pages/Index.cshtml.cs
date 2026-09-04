@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
@@ -38,12 +38,19 @@ public sealed class IndexModel : PageModel
     /// <summary>True when there is no purchase token: render the "Start here" demo map instead of the activation flow.</summary>
     public bool ShowHome { get; private set; }
 
-    /// <summary>Browsable emulator URL for the "Begin at the Emulator" call to action, when known.</summary>
+    /// <summary>
+    /// Emulator links for the "Begin at the Emulator" call to action, when known. They carry the
+    /// reader's language so the demo does not flip language when it crosses into the other system.
+    /// </summary>
     public string? EmulatorUrl { get; private set; }
+
+    /// <summary>Emulator Subscriptions tab, used by the "what happens next" note after activation.</summary>
+    public string? EmulatorSubscriptionsUrl { get; private set; }
 
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
-        EmulatorUrl = DemoNavigation.EmulatorUrl(_config);
+        EmulatorUrl = DemoNavigation.EmulatorLink(_config);
+        EmulatorSubscriptionsUrl = DemoNavigation.EmulatorLink(_config, "/subscriptions.html");
 
         if (string.IsNullOrWhiteSpace(Token))
         {
@@ -72,7 +79,8 @@ public sealed class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string subscriptionId, string planId, int? quantity, CancellationToken cancellationToken)
     {
-        EmulatorUrl = DemoNavigation.EmulatorUrl(_config);
+        EmulatorUrl = DemoNavigation.EmulatorLink(_config);
+        EmulatorSubscriptionsUrl = DemoNavigation.EmulatorLink(_config, "/subscriptions.html");
 
         if (string.IsNullOrWhiteSpace(subscriptionId) || string.IsNullOrWhiteSpace(planId))
         {

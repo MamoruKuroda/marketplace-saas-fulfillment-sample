@@ -372,12 +372,30 @@
         }
     };
 
+    // Resolved once per page load. A link from the publisher app carries ?culture=, so crossing
+    // between the two systems keeps one language; we consume it, remember it, and strip it from
+    // the URL. Leaving it in place would beat the EN/日本語 toggle on every reload.
+    let langResolved = null;
     function i18nLang() {
-        const stored = localStorage.getItem('emu-lang');
-        if (stored === 'en' || stored === 'ja') {
-            return stored;
+        if (langResolved) {
+            return langResolved;
         }
-        return ((navigator.language || '').toLowerCase().indexOf('ja') === 0) ? 'ja' : 'en';
+
+        const requested = new URLSearchParams(location.search).get('culture');
+        if (requested === 'en' || requested === 'ja') {
+            localStorage.setItem('emu-lang', requested);
+            const url = new URL(location.href);
+            url.searchParams.delete('culture');
+            history.replaceState(null, '', url.pathname + url.search + url.hash);
+            langResolved = requested;
+            return langResolved;
+        }
+
+        const stored = localStorage.getItem('emu-lang');
+        langResolved = (stored === 'en' || stored === 'ja')
+            ? stored
+            : (((navigator.language || '').toLowerCase().indexOf('ja') === 0) ? 'ja' : 'en');
+        return langResolved;
     }
 
     function t(key) {

@@ -12,7 +12,7 @@
         SubscriptionState.Unsubscribed => "unsubscribed",
         _ => "pending",
     };
-    var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config);
+    var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorLink(Config, "/subscriptions.html");
 
     // What the map may tick off. A stored subscription proves step 1 happened; one that has left
     // PendingFulfillmentStart proves step 2 did, and this page is step 3 — so the tour's next stop
@@ -72,7 +72,7 @@ else
     <p class="next-line">
         <span class="ico" aria-hidden="true">&#8644;</span>
         @L["Step 4 — change, suspend or cancel in the emulator. It arrives here as a webhook; reload to see it."]
-        <a href="@(emu + "/subscriptions.html")" target="_blank" rel="noopener">@L["Open the emulator →"]</a>
+        <a href="@emu" target="_blank" rel="noopener">@L["Open the emulator →"]</a>
     </p>
 }
 
