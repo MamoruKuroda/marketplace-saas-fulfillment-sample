@@ -11,7 +11,8 @@
     // Only the current step is expanded, so any one page shows exactly one part and one actor.
     // Steps 1 and 4 live in the emulator and can never be current from inside this app, which is
     // why they are dashed and open in a new tab.
-    var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorUrl(Config);
+    var emuRoot = SaaSAgentSample.Web.DemoNavigation.EmulatorLink(Config);
+    var emuSubs = SaaSAgentSample.Web.DemoNavigation.EmulatorLink(Config, "/subscriptions.html");
     var steps = new[]
     {
         new
@@ -22,7 +23,7 @@
             Desc = L["You're the buyer, shopping in Microsoft's marketplace."].Value,
             Who = L["Buyer"].Value,
             Part = (string?)null,
-            Href = emu,
+            Href = emuRoot,
             External = true,
         },
         new
@@ -57,7 +58,7 @@
             Part = (string?)null,
             // The Subscriptions tab, not the emulator root — the root is its Marketplace tab,
             // which is step 1, so linking there sent people back to the start of the tour.
-            Href = emu is null ? null : emu + "/subscriptions.html",
+            Href = emuSubs,
             External = true,
         },
     };

@@ -32,7 +32,10 @@
 }
 
 html {
-    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    /* Same typeface as the publisher app (site.css --font). Left on the upstream
+       ui-sans-serif/system-ui stack, Windows resolved this to Segoe UI while the app
+       resolved to Segoe UI Variable Text, so identical sizes still looked different. */
+    font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
     font-size: 16px;
 }
 
@@ -567,14 +570,10 @@ body > header {
 }
 
 body > header h1 {
-    font-size: 1.15rem;
+    /* Matches the app's masthead product name (.brand, inherited 1rem/600). */
+    font-size: 1rem;
     font-weight: 600;
     letter-spacing: .01em;
-}
-
-body > header sub {
-    color: var(--base-text-color);
-    font-size: .8rem;
 }
 
 /* Nav: light bar with hairline instead of a dark rounded pill */
@@ -598,7 +597,7 @@ nav li:first-child {
 }
 
 nav a {
-    font-size: .92rem;
+    font-size: .9rem;
     line-height: 2.6rem;
     padding: 0 .2rem;
 }
@@ -651,21 +650,33 @@ section.offers div.custom div.icon {
     background: linear-gradient(135deg, #5c2e91, #8661c5);
 }
 /* Language toggle */
+/* Language toggle: same control as the app's .lang, so the two headers read as one product. */
 nav .lang {
     margin-left: auto;
     display: flex;
-    gap: .75rem;
+    gap: .15rem;
     align-items: center;
+    padding-left: .6rem;
+    border-left: 1px solid #edebe9;
 }
 
 nav .lang a {
     color: var(--nav-text-color, #605e5c);
     font-weight: 400;
+    font-size: .82rem;
+    padding: .3rem .5rem;
+    border-radius: 6px;
+}
+
+nav .lang a:hover {
+    background: #f3f2f1;
+    color: #201f1e;
+    text-decoration: none;
 }
 
 nav .lang a.active-lang {
     color: var(--nav-text-active-color, #0f6cbd);
-    font-weight: 700;
+    font-weight: 600;
 }
 
 /* Per-page purpose hint under the nav (P4 wayfinding) */
@@ -675,7 +686,8 @@ nav .lang a.active-lang {
     background: #ffffff;
     border-bottom: 1px solid #edebe9;
     color: #605e5c;
-    font-size: .82rem;
+    /* Same role and position as the app's framing line (.hero-line p), so the same size. */
+    font-size: .88rem;
 }
 
 /* Masthead "which side" subtitle (wayfinding v2) */
@@ -696,35 +708,39 @@ section.info ol.steps li {
 }
 
 /* ── The demo map ──────────────────────────────────────────────────────────────
-   The same map the publisher app shows, so the four steps have a "you are here"
-   on both sides of the demo. Steps 1 and 4 happen in this emulator, so they are
-   the solid ones here; steps 2 and 3 are the publisher app and are dashed.
-   Convention on both sides: solid = the system you are in, dashed = the other
-   one, and it opens in a new tab. Presentation only. */
+   MIRROR of the .stepper block in src/SaaSAgentSample.Web/wwwroot/css/site.css.
+   The two are the same map drawn by two codebases, so every shared value here is
+   copied from there — keep them in step, and run scripts/check-shared-ui.ps1, which
+   fails when they diverge. (They did: the app's type was enlarged and this copy
+   was left behind at the old sizes.)
+
+   Steps 1 and 4 happen in this emulator, so they are the solid ones here; steps 2
+   and 3 are the publisher app and are dashed. Convention on both sides: solid =
+   the system you are in, dashed = the other one, opening in a new tab.
+   Presentation only. */
 .demo-map { padding: .55rem 1.5rem .7rem; background: #fff; border-bottom: 1px solid #edebe9; }
 .demo-map .stepper { display: flex; flex-wrap: wrap; gap: .55rem; align-items: flex-start; }
 .demo-map .step { flex: 1 1 0; min-width: 11rem; display: flex; flex-direction: column; position: relative; border: 1px solid #edebe9; border-radius: 10px; background: #fff; padding: .55rem .7rem; }
 .demo-map .step + .step::before { content: "\2192"; position: absolute; left: -.55rem; top: .85rem; color: #c8c6c4; font-size: .8rem; }
 .demo-map .step.external { border-style: dashed; background: #faf9f8; }
 .demo-map .step.current { border-color: var(--base-link-color); box-shadow: inset 0 0 0 1px var(--base-link-color); }
-.demo-map .step-head { display: flex; align-items: center; gap: .5rem; line-height: 1.2; color: var(--base-text-color); text-decoration: none; }
+.demo-map .step-head { display: flex; align-items: center; gap: .5rem; line-height: 1.25; color: var(--base-text-color); text-decoration: none; }
 .demo-map a.step-head:hover { text-decoration: none; color: var(--page-title-color); }
-.demo-map .n { flex: none; width: 1.4rem; height: 1.4rem; border-radius: 999px; display: grid; place-items: center; font-size: .76rem; line-height: 1; font-weight: 700; background: #f3f2f1; color: var(--base-text-color); }
+.demo-map .n { flex: none; width: 1.55rem; height: 1.55rem; border-radius: 999px; display: grid; place-items: center; font-size: .82rem; line-height: 1; font-weight: 700; background: #f3f2f1; color: var(--base-text-color); }
 .demo-map .step.external .n { background: transparent; border: 1.5px dashed #c8c6c4; }
 .demo-map .step.current .n { background: var(--base-link-color); color: #fff; }
-.demo-map .lbl { display: flex; flex-direction: column; line-height: 1.2; font-size: .86rem; font-weight: 600; color: var(--page-title-color); }
-.demo-map .lbl small { font-weight: 400; font-size: .68rem; color: var(--base-text-color); }
+.demo-map .lbl { display: flex; flex-direction: column; line-height: 1.25; font-size: .95rem; font-weight: 600; color: var(--page-title-color); }
+.demo-map .lbl small { font-weight: 400; font-size: .8rem; color: var(--base-text-color); }
 .demo-map .step.current .lbl { color: var(--base-link-color); }
-.demo-map .desc { margin: .5rem 0 0; font-size: .8rem; line-height: 1.45; color: var(--base-text-color); }
-.demo-map .step-meta { display: grid; grid-template-columns: auto 1fr; gap: .15rem .5rem; margin: .5rem 0 0; padding-top: .45rem; border-top: 1px solid #edebe9; font-size: .74rem; }
+.demo-map .desc { margin: .5rem 0 0; font-size: .88rem; line-height: 1.45; color: var(--base-text-color); }
+.demo-map .step-meta { display: grid; grid-template-columns: auto 1fr; gap: .15rem .5rem; margin: .5rem 0 0; padding-top: .45rem; border-top: 1px solid #edebe9; font-size: .82rem; }
 .demo-map .step-meta dt { color: var(--base-text-color); }
 .demo-map .step-meta dd { margin: 0; font-weight: 600; color: var(--page-title-color); }
 .demo-map .is-part { color: var(--base-link-color); }
-.demo-map .return-path { display: flex; align-items: baseline; gap: .45rem; flex-wrap: wrap; margin: .5rem 0 0; font-size: .78rem; color: var(--base-text-color); }
-.demo-map .return-path .rp-n { font-weight: 700; font-size: .7rem; background: #f3f2f1; border-radius: 999px; padding: .05rem .45rem; }
-.demo-map .return-path .rp-cap { font-size: .74rem; }
+.demo-map .return-path { display: flex; align-items: baseline; gap: .45rem; flex-wrap: wrap; margin: .5rem 0 0; font-size: .86rem; color: var(--base-text-color); }
+.demo-map .return-path .rp-n { font-weight: 700; font-size: .78rem; background: #f3f2f1; border-radius: 999px; padding: .05rem .45rem; }
+.demo-map .return-path .rp-cap { font-size: .82rem; }
 .demo-map .return-path strong { font-weight: 600; }
-
 /* Pointer to the publisher app's glossary. The terms are not duplicated here on purpose:
    a second copy in this emulator's own catalogue would drift, and once did. */
 .demo-map .learn-link { margin: .4rem 0 0; font-size: .86rem; }

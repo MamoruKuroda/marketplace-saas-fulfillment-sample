@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Extensions.Configuration;
 
 namespace SaaSAgentSample.Web;
@@ -53,5 +54,25 @@ public static class DemoNavigation
 
         // Drop the path (e.g. /api) to get the emulator's browsable root.
         return uri.GetLeftPart(UriPartial.Authority);
+    }
+
+    /// <summary>
+    /// A link into the emulator that carries the reader's language, so the demo does not flip
+    /// language when it crosses into the other system. The emulator reads <c>?culture=</c> and
+    /// remembers the choice; its links back into this app already carry the same parameter.
+    /// Returns null whenever <see cref="EmulatorUrl"/> does.
+    /// </summary>
+    /// <param name="path">Path within the emulator, e.g. <c>/subscriptions.html</c>. Empty means its root.</param>
+    public static string? EmulatorLink(IConfiguration config, string path = "")
+    {
+        var root = EmulatorUrl(config);
+        if (root is null)
+        {
+            return null;
+        }
+
+        var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName
+            .Equals("ja", StringComparison.OrdinalIgnoreCase) ? "ja" : "en";
+        return $"{root}{path}?culture={culture}";
     }
 }
