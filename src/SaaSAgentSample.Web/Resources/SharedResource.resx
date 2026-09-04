@@ -293,7 +293,7 @@
   <data name="Open the publisher admin (step 3) →" xml:space="preserve"><value>Open the publisher admin (step 3) →</value></data>
   <data name="After that, step 4: act on it in the emulator and the change arrives here as a webhook." xml:space="preserve"><value>After that, step 4: act on it in the emulator and the change arrives here as a webhook.</value></data>
   <data name="Step 4 — change, suspend or cancel in the emulator. It arrives here as a webhook; reload to see it." xml:space="preserve"><value>Step 4 — change, suspend or cancel in the emulator. It arrives here as a webhook; reload to see it.</value></data>
-  <data name="2 · Purchase token exchanged for the real subscription" xml:space="preserve"><value>2 · Purchase token exchanged for the real subscription</value></data>
+  <data name="2 · Purchase token exchanged for real data" xml:space="preserve"><value>2 · Purchase token exchanged for real data</value></data>
   <data name="2 · Activated from the landing page — billing starts" xml:space="preserve"><value>2 · Activated from the landing page — billing starts</value></data>
   <data name="3 · Activated from the publisher admin — billing starts" xml:space="preserve"><value>3 · Activated from the publisher admin — billing starts</value></data>
   <data name="4→3 · Suspended — a payment was not received" xml:space="preserve"><value>4→3 · Suspended — a payment was not received</value></data>
@@ -305,4 +305,9 @@
   <data name="4→3 · Purchase announced — the state does not change" xml:space="preserve"><value>4→3 · Purchase announced — the state does not change</value></data>
   <data name="4→3 · Microsoft sent a notification" xml:space="preserve"><value>4→3 · Microsoft sent a notification</value></data>
   <data name="No entry — stored before this app kept a trail" xml:space="preserve"><value>No entry — stored before this app kept a trail</value></data>
+  <data name="Reset done — removed {0} subscription(s) and their history." xml:space="preserve"><value>Reset done — removed {0} subscription(s) and their history.</value></data>
+  <data name="Reset the demo" xml:space="preserve"><value>Reset the demo</value></data>
+  <data name="Deletes every subscription and its history from this app's database. Offers and plans are not affected — they live in the Marketplace, not here. Clear the emulator separately from its Config page to reset both sides." xml:space="preserve"><value>Deletes every subscription and its history from this app's database. Offers and plans are not affected — they live in the Marketplace, not here. Clear the emulator separately from its Config page to reset both sides.</value></data>
+  <data name="Delete all subscriptions and their history?" xml:space="preserve"><value>Delete all subscriptions and their history?</value></data>
+  <data name="Delete all subscriptions" xml:space="preserve"><value>Delete all subscriptions</value></data>
 </root>

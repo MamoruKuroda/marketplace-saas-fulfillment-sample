@@ -59,6 +59,10 @@ public static class InfrastructureServiceCollectionExtensions
         // committed by the same SaveChangesAsync as the state change it describes.
         services.AddScoped<ISubscriptionEventLog, EfSubscriptionEventLog>();
 
+        // Demo affordance, not part of the ledger contract. Registering it is harmless; the host
+        // decides whether anything can reach it (see Demo:AllowReset).
+        services.AddScoped<IDemoDataReset, EfDemoDataReset>();
+
         return services;
     }
 
