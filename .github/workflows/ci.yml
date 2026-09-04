@@ -128,3 +128,14 @@ jobs:
           curl -fsS "http://localhost:8080/" -o /dev/null && echo "HTTP 200 OK" || echo "warn: HTTP probe failed (non-fatal)"
           kill "$PID" 2>/dev/null || true
           echo "Smoke test passed."
+
+  # The infrastructure is only exercised by `azd up`, which nothing in CI runs, so a template
+  # that does not compile could reach main and only fail at deploy time. It did. Compiling is
+  # cheap and catches the whole class.
+  build-infra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Bicep
+        run: az bicep build --file infra/main.bicep --stdout > /dev/null
