@@ -13,7 +13,6 @@
         _ => "pending",
     };
     var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorLink(Config, "/subscriptions.html");
-    var emuConfig = SaaSAgentSample.Web.DemoNavigation.EmulatorLink(Config, "/config.html");
 
     // What the map may tick off. A stored subscription proves step 1 happened; one that has left
     // PendingFulfillmentStart proves step 2 did, and this page is step 3 — so the tour's next stop
@@ -27,11 +26,6 @@
 @* The data comes first. Everything explanatory sits below it, behind one summary. *@
 <h1 class="page-title">@L["Subscriptions"]</h1>
 <p class="subtitle">@L["Your subscription database. Read-only here."]</p>
-
-@if (Model.ClearedCount is int cleared)
-{
-    <p class="reset-done">@string.Format(L["Reset done — removed {0} subscription(s) and their history."].Value, cleared)</p>
-}
 
 @if (Model.Subscriptions.Count == 0)
 {
@@ -109,28 +103,3 @@ else
         @(await Html.PartialAsync("_KeyTerms"))
     </div>
 </details>
-
-@if (Model.AllowReset)
-{
-    <details class="danger-zone">
-        <summary>@L["Reset the demo"]</summary>
-        <div class="dz-body">
-            <p class="dz-note">@L["Deletes every subscription and its history from this app's database. Offers and plans are not affected — they live in the Marketplace, not here."]</p>
-            @* The emulator keeps its own store, and a publisher cannot delete Microsoft's records
-               anyway — so the second half of a full reset happens over there. Make it one click. *@
-            <p class="dz-note">
-                @L["The emulator holds its own copy of what was bought. Clearing it is a separate step, on Microsoft's side:"]
-                @if (emuConfig is not null)
-                {
-                    <a href="@emuConfig" target="_blank" rel="noopener">@L["Open the emulator's Config page →"]</a>
-                }
-            </p>
-            @* No tag helpers in this project (_ViewImports has no @@addTagHelper), so the handler
-               goes in the action and the token is written explicitly - same as Detail.cshtml. *@
-            <form method="post" action="?handler=Reset" onsubmit="return confirm(this.dataset.confirm);" data-confirm="@L["Delete all subscriptions and their history?"]">
-                @Html.AntiForgeryToken()
-                <button type="submit" class="btn danger">@L["Delete all subscriptions"]</button>
-            </form>
-        </div>
-    </details>
-}

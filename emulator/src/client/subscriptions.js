@@ -171,6 +171,51 @@ async function delete_click(e) {
   }
 }
 
+// Resets the whole demo: this emulator's subscriptions, and the publisher app's copy of them.
+//
+// This is a test-harness convenience, not a Marketplace capability — there is no Fulfillment API
+// that lets anyone delete a publisher's records. The button says so, and the publisher app only
+// accepts the call when it has been explicitly configured for demos.
+async function resetDemo_click() {
+  if (!(await showYesNo(t('subs.resetConfirmHtml'), t('subs.resetTitle')))) {
+    return;
+  }
+
+  const { result: publishers } = await callAPI('/api/util/publishers');
+
+  let removedHere = 0;
+  for (const pid in publishers) {
+    for (const sid in publishers[pid]) {
+      const { status } = await callAPI(`/api/util/publishers/${pid}/subscriptions/${sid}`, 'delete');
+      if (status === 204) {
+        $(`tr[data-sid='${sid}']`).remove();
+        removedHere++;
+      }
+    }
+  }
+
+  let publisherOutcome = t('subs.resetPublisherUnavailable');
+  const { result: config } = await callAPI('/api/util/config');
+  if (config && config.landingPageUrl) {
+    try {
+      const url = config.landingPageUrl.replace(/\/$/, '') + '/api/demo/reset';
+      // The custom header is what forces a CORS preflight, so only this origin can reach it.
+      const response = await fetch(url, { method: 'POST', headers: { 'X-Demo-Reset': '1' } });
+      if (response.ok) {
+        const body = await response.json();
+        publisherOutcome = formatI18n('subs.resetPublisherDone', { count: body.cleared });
+      }
+    } catch {
+      // Left as unavailable: the app may be down, or not configured to allow a demo reset.
+    }
+  }
+
+  await showDialog(
+    `<p>${formatI18n('subs.resetEmulatorDone', { count: removedHere })}</p><p>${publisherOutcome}</p>`,
+    t('subs.resetTitle')
+  );
+}
+
 async function changeQuantity_click(e) {
   const quantity = await showDialog($('#change-quantity-dialog'), t('action.changeQuantity'), {
     [t('common.ok')]: (button, body) => {
