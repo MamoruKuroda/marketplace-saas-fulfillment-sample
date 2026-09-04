@@ -16,6 +16,21 @@
     if (next && current) current.innerHTML = next.innerHTML;
   }
 
+  // The emulator links here with #how so a reader looking for a term lands on the
+  // explanation already open, instead of on a closed summary they have to spot.
+  function openHow() {
+    if (window.location.hash !== "#how") return;
+    var how = document.getElementById("how");
+    if (!how) return;
+    how.open = true;
+    // Scroll by hand rather than with scrollIntoView: the header is sticky, so aligning the
+    // element with the top of the viewport would park it underneath the header.
+    var header = document.querySelector(".site-header");
+    var offset = (header ? header.getBoundingClientRect().height : 0) + 8;
+    var top = how.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo(0, top > 0 ? top : 0);
+  }
+
   document.addEventListener("click", function (e) {
     var link = e.target.closest(".site-header .lang a");
     if (!link) return;
@@ -46,10 +61,20 @@
 
         var title = doc.querySelector("title");
         if (title) document.title = title.textContent;
+
+        // The swap rebuilds <main>, so a details opened via #how closes again.
+        openHow();
       })
       .catch(function () {
         // Any failure falls back to a normal navigation.
         window.location.assign(href);
       });
   });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", openHow);
+  } else {
+    openHow();
+  }
+  window.addEventListener("hashchange", openHow);
 })();

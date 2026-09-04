@@ -33,12 +33,20 @@
     return node;
   }
 
+  // Carry the language across the hop. Without this, someone reading the emulator in
+  // Japanese lands on the publisher app in whatever its own cookie last said.
+  function publisherLink(publisherUrl, path, hash) {
+    if (!publisherUrl) return null;
+    var lang = window.i18nLang ? window.i18nLang() : "en";
+    return publisherUrl + path + "?culture=" + (lang === "ja" ? "ja" : "en") + (hash || "");
+  }
+
   function buildStep(step, current, publisherUrl) {
     var card = el("div", "step" + (step.external ? " external" : "") + (current ? " current" : ""));
     card.setAttribute("role", "listitem");
     if (current) card.setAttribute("aria-current", "step");
 
-    var href = step.external ? (publisherUrl ? publisherUrl + step.path : null) : step.href;
+    var href = step.external ? publisherLink(publisherUrl, step.path) : step.href;
     var head = el(href ? "a" : "span", "step-head");
     if (href) {
       head.href = href;
@@ -95,6 +103,20 @@
     rp.appendChild(i18nSpan("strong", "map.partWebhook", "is-part"));
     rp.appendChild(i18nSpan("span", "map.webhookDesc"));
     wrap.appendChild(rp);
+
+    // The glossary lives in the publisher app and is deliberately not duplicated here: a second
+    // copy in this emulator's own catalogue would drift, and once did. Link to it instead.
+    var howHref = publisherLink(publisherUrl, "/", "#how");
+    if (howHref) {
+      var learn = el("p", "learn-link");
+      var a = el("a");
+      a.href = howHref;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.setAttribute("data-i18n", "map.learnMore");
+      learn.appendChild(a);
+      wrap.appendChild(learn);
+    }
 
     return wrap;
   }

@@ -724,3 +724,7 @@ section.info ol.steps li {
 .demo-map .return-path .rp-n { font-weight: 700; font-size: .7rem; background: #f3f2f1; border-radius: 999px; padding: .05rem .45rem; }
 .demo-map .return-path .rp-cap { font-size: .74rem; }
 .demo-map .return-path strong { font-weight: 600; }
+
+/* Pointer to the publisher app's glossary. The terms are not duplicated here on purpose:
+   a second copy in this emulator's own catalogue would drift, and once did. */
+.demo-map .learn-link { margin: .4rem 0 0; font-size: .86rem; }
