@@ -160,9 +160,11 @@ public sealed class WebhookService
                 case "subscribe":
                 case "renew":
                     // Informational only. Activation is driven by the buyer landing (Activate); renewal
-                    // does not change the 4-state model. No state mutation.
+                    // does not change the 4-state model. No state mutation — but the trail still records
+                    // that Microsoft told us, so the ledger can show a quiet period was not a gap.
                     _logger.LogInformation("Received informational {Action} for {SubscriptionId}; no state change.", action, subscriptionId);
                     _events?.Record(subscriptionId, SubscriptionEventSource.Webhook, action, null);
+                    await _repository.SaveChangesAsync(cancellationToken);
                     return WebhookProcessingResult.Succeeded;
 
                 default:
@@ -176,6 +178,9 @@ public sealed class WebhookService
             return WebhookProcessingResult.Conflict;
         }
 
+        // Staged before the save so the state change and its cause commit together: the ledger
+        // must never hold a state whose provenance was lost.
+        _events?.Record(subscriptionId, SubscriptionEventSource.Webhook, action, detail);
         await _repository.SaveChangesAsync(cancellationToken);
 
         if (acknowledge)
@@ -184,7 +189,6 @@ public sealed class WebhookService
         }
 
         _logger.LogInformation("Processed {Action} for {SubscriptionId}.", action, subscriptionId);
-        _events?.Record(subscriptionId, SubscriptionEventSource.Webhook, action, detail);
         return WebhookProcessingResult.Succeeded;
     }
 

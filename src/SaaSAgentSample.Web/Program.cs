@@ -21,10 +21,8 @@ builder.Services.AddScoped<LandingService>();
 builder.Services.AddScoped<WebhookService>();
 builder.Services.AddScoped<AdminService>();
 
-// Display-only "what last wrote this state" trail for the publisher admin. A singleton so a demo
-// session accumulates a visible history; in memory only, so it clears on restart. No decision in
-// this app reads it — see ISubscriptionEventLog.
-builder.Services.AddSingleton<ISubscriptionEventLog, InMemorySubscriptionEventLog>();
+// The provenance trail ("what wrote this state, and when") is registered with the state store,
+// because it is part of the ledger and shares its unit of work — see ISubscriptionEventLog.
 
 // Buyer sign-in. In production, require a multitenant Microsoft Entra sign-in (work/school
 // + personal accounts; authority "common"). Locally (emulator/dev) set

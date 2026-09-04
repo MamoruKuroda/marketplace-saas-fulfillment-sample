@@ -1,9 +1,9 @@
-@using SaaSAgentSample.Core.Subscriptions
+﻿@using SaaSAgentSample.Core.Subscriptions
 @using SaaSAgentSample.Web.Services
 @model SaaSAgentSample.Web.ProvenanceVm
 @{
-    // Element 6: what last wrote this state, and when. Display only — see ISubscriptionEventLog.
-    // When nothing is recorded (a fresh process, because the trail is in memory), fall back to
+    // Element 6: what wrote this state, and when. Part of the ledger — see ISubscriptionEventLog.
+    // A subscription written before the trail was made durable has no entries, so fall back to
     // what the current state alone can tell us, and say plainly that it is inferred.
     string SourceLabel(SubscriptionEventSource source) => source switch
     {
@@ -55,7 +55,7 @@ else
         @if (inferred)
         {
             <p class="muted prov-empty">
-                @L["Nothing recorded in this process yet — inferred from the current state:"]
+                @L["No entry recorded for this subscription — inferred from its current state:"]
                 <span class="prov-src">@fallbackSource</span> <span class="prov-act">@fallbackAction</span>
             </p>
         }
@@ -76,6 +76,6 @@ else
                 }
             </ol>
         }
-        <p class="prov-note">@L["Display only — clears on restart. The durable record is the database itself, plus the application log."]</p>
+        <p class="prov-note">@L["Stored with the subscription and written in the same transaction as the state change, so a state can never lose its cause."]</p>
     </div>
 }

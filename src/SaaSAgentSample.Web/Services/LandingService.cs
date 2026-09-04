@@ -62,8 +62,8 @@ public sealed class LandingService
                 resolved.SubscriptionName ?? resolved.Subscription?.Name);
 
             await _repository.AddAsync(subscription, cancellationToken);
-            await _repository.SaveChangesAsync(cancellationToken);
             _events?.Record(marketplaceSubscriptionId, SubscriptionEventSource.Landing, "Resolve", subscription.PlanId);
+            await _repository.SaveChangesAsync(cancellationToken);
         }
 
         return resolved;
@@ -100,8 +100,8 @@ public sealed class LandingService
 
             case SubscriptionState.PendingFulfillmentStart:
                 subscription.Activate(DateTimeOffset.UtcNow);
-                await _repository.SaveChangesAsync(cancellationToken);
                 _events?.Record(marketplaceSubscriptionId, SubscriptionEventSource.Landing, "Activate", planId);
+                await _repository.SaveChangesAsync(cancellationToken);
                 return LandingActivationResult.Activated;
 
             default:

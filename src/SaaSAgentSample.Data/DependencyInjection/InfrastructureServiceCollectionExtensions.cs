@@ -55,6 +55,10 @@ public static class InfrastructureServiceCollectionExtensions
 
         services.AddScoped<ISubscriptionRepository, EfSubscriptionRepository>();
 
+        // Shares the scoped DbContext with the repository above, so a staged provenance entry is
+        // committed by the same SaveChangesAsync as the state change it describes.
+        services.AddScoped<ISubscriptionEventLog, EfSubscriptionEventLog>();
+
         return services;
     }
 

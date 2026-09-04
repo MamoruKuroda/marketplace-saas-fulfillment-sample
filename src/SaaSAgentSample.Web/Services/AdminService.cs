@@ -74,10 +74,10 @@ public sealed class AdminService
             cancellationToken);
 
         subscription.Activate(DateTimeOffset.UtcNow);
+        _events?.Record(subscription.MarketplaceSubscriptionId, SubscriptionEventSource.Admin, "Activate", subscription.PlanId);
         await _repository.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Admin activated subscription {SubscriptionId}.", subscription.MarketplaceSubscriptionId);
-        _events?.Record(subscription.MarketplaceSubscriptionId, SubscriptionEventSource.Admin, "Activate", subscription.PlanId);
         return AdminActivationResult.Activated;
     }
 }
