@@ -228,7 +228,10 @@ check("landing URL preserves existing query/hash and the exact token beside meta
     assert.equal(target.pathname, "/landing");
     assert.equal(target.searchParams.get("existing"), "a+b");
     assert.equal(target.hash, "#configure");
-    assert.deepEqual(target.searchParams.getAll("token"), ["opaque+token/with=="]);
+    // Native URL arrays can belong to a different realm under Jest.
+    const tokens = target.searchParams.getAll("token");
+    assert.equal(tokens.length, 1);
+    assert.equal(tokens[0], "opaque+token/with==");
     assert.equal(target.searchParams.get("scenario"), "web-azure");
     assert.equal(target.searchParams.get("culture"), "ja");
 });
