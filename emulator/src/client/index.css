@@ -126,3 +126,26 @@ section.purchase input[type=number] {
     flex: 0 0;
     width: 100px;
 }
+
+.journey-page section.info { flex-basis: 290px; }
+.journey-page section.main { min-width: 0; }
+.journey-page section.main > div { flex-wrap: wrap; gap: 1rem; }
+.journey-page section.offers { min-width: 250px; padding-left: 0; }
+.journey-page section.offers > div.offer { flex: 1 1 200px; height: auto; min-height: 250px; }
+.journey-page section.offers :is(div.publisher, div.starts-from, div.price, div.action a) { font-size: .95rem; }
+.journey-page section.offers div.icon > div { background-image: none; }
+.journey-page section.purchase { flex: 1 1 380px; width: auto; min-width: 0; margin-left: 0; }
+.journey-page section.purchase div.content { font-size: 1rem; line-height: 1.5; }
+.journey-page section.purchase label { font-size: 1rem; }
+.journey-page section.purchase input { min-width: 0; padding: .5rem; }
+.journey-page section.purchase select { flex: 1 1 0; }
+.journey-page section.purchase .justify { gap: .6rem; flex-wrap: wrap; }
+.journey-page section.purchase div.offer { background-image: none; padding-left: 0; }
+.journey-page section.purchase div.offer > span:last-child { font-size: .95rem; }
+@media (max-width: 720px) {
+    .journey-page section.info { flex-basis: auto; }
+    .journey-page section.offers { min-width: 0; flex-basis: 100%; height: auto; max-height: 420px; }
+    .journey-page section.purchase div.content > div > div { flex-wrap: wrap; gap: .3rem; }
+    .journey-page section.purchase label { flex-basis: 100%; }
+    .journey-page section.purchase input[type=checkbox] { flex: none; }
+}

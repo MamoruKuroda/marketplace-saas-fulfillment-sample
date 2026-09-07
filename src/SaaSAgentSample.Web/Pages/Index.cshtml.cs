@@ -47,10 +47,12 @@ public sealed class IndexModel : PageModel
     /// <summary>Emulator Subscriptions tab, used by the "what happens next" note after activation.</summary>
     public string? EmulatorSubscriptionsUrl { get; private set; }
 
+    public string? DemoScenario => DemoNavigation.PurchaseScenario(Request.Query["scenario"].ToString());
+
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
-        EmulatorUrl = DemoNavigation.EmulatorLink(_config);
-        EmulatorSubscriptionsUrl = DemoNavigation.EmulatorLink(_config, "/subscriptions.html");
+        EmulatorUrl = DemoNavigation.EmulatorLink(_config, DemoNavigation.PurchaseEntryPath, DemoScenario);
+        EmulatorSubscriptionsUrl = DemoNavigation.EmulatorLink(_config, "/subscriptions.html", DemoScenario);
 
         if (string.IsNullOrWhiteSpace(Token))
         {
@@ -79,8 +81,8 @@ public sealed class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string subscriptionId, string planId, int? quantity, CancellationToken cancellationToken)
     {
-        EmulatorUrl = DemoNavigation.EmulatorLink(_config);
-        EmulatorSubscriptionsUrl = DemoNavigation.EmulatorLink(_config, "/subscriptions.html");
+        EmulatorUrl = DemoNavigation.EmulatorLink(_config, DemoNavigation.PurchaseEntryPath, DemoScenario);
+        EmulatorSubscriptionsUrl = DemoNavigation.EmulatorLink(_config, "/subscriptions.html", DemoScenario);
 
         if (string.IsNullOrWhiteSpace(subscriptionId) || string.IsNullOrWhiteSpace(planId))
         {

@@ -5,6 +5,9 @@
     var cur = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
     var returnUrl = Context.Request.Path + Context.Request.QueryString;
     var htmlLang = cur == "ja" ? "ja" : "en";
+    var scenario = DemoNavigation.PurchaseScenario(Context.Request.Query["scenario"].ToString());
+    var homeUrl = DemoNavigation.PublisherLink("/", scenario);
+    var adminUrl = DemoNavigation.PublisherLink("/admin", scenario);
     var hasToken = !string.IsNullOrEmpty(Context.Request.Query["token"]);
     var isHome = !onAdmin && path == "/" && !hasToken;
 
@@ -28,13 +31,13 @@
 <body>
     <header class="site-header">
         <div class="bar">
-            <a class="brand" href="/"><span class="logo">M</span><span>Marketplace SaaS sample<small>@L["Publisher-side app"]</small></span></a>
+            <a class="brand" href="@homeUrl"><span class="logo">M</span><span>Marketplace SaaS sample<small>@L["Publisher-side app"]</small></span></a>
             <nav class="top">
-                <a href="/" class="@(onAdmin ? "" : "active")" aria-current="@(!onAdmin ? "page" : null)">@L["Home"]</a>
-                <a href="/admin" class="@(onAdmin ? "active" : "")" aria-current="@(onAdmin ? "page" : null)">@L["Publisher admin"]</a>
+                <a href="@homeUrl" class="@(onAdmin ? "" : "active")" aria-current="@(!onAdmin ? "page" : null)">@L["Home"]</a>
+                <a href="@adminUrl" class="@(onAdmin ? "active" : "")" aria-current="@(onAdmin ? "page" : null)">@L["Publisher admin"]</a>
                 <span class="lang" role="navigation" aria-label="@L["Language"]">
-                    <a href="/set-culture?culture=en&amp;redirect=@Uri.EscapeDataString(returnUrl)" class="@(cur == "ja" ? "" : "active")" aria-current="@(cur != "ja" ? "true" : null)">EN</a>
-                    <a href="/set-culture?culture=ja&amp;redirect=@Uri.EscapeDataString(returnUrl)" class="@(cur == "ja" ? "active" : "")" aria-current="@(cur == "ja" ? "true" : null)">日本語</a>
+                    <a href="/set-culture?culture=en&amp;redirect=@Uri.EscapeDataString(DemoNavigation.WithCulture(returnUrl, "en"))" class="@(cur == "ja" ? "" : "active")" aria-current="@(cur != "ja" ? "true" : null)">EN</a>
+                    <a href="/set-culture?culture=ja&amp;redirect=@Uri.EscapeDataString(DemoNavigation.WithCulture(returnUrl, "ja"))" class="@(cur == "ja" ? "active" : "")" aria-current="@(cur == "ja" ? "true" : null)">日本語</a>
                 </span>
             </nav>
         </div>

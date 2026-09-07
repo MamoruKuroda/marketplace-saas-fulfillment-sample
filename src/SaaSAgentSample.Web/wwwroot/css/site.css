@@ -112,6 +112,25 @@ footer.site-footer a { color:var(--text-2); }
 .learn-lead { margin:0 0 .9rem; }
 .learn-foot { margin:.9rem 0 0; }
 
+.purchase-arrival { margin:0 0 1.25rem; padding:.8rem 1rem; border-left:3px solid var(--brand); background:var(--surface); max-width:900px; }
+.purchase-arrival p { margin:.25rem 0; font-size:.95rem; overflow-wrap:anywhere; }
+.purchase-context-label { color:var(--text-2); font-size:.85rem; }
+.purchase-permissions { margin:1.5rem 0; }
+.permission-table-scroll { overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius-sm); }
+.permission-table-scroll:focus-visible, .purchase-references summary:focus-visible { outline:2px solid var(--brand); outline-offset:3px; }
+.purchase-permissions table { min-width:38rem; font-size:.95rem; }
+.purchase-permissions caption { text-align:left; padding:.75rem; color:var(--text-2); }
+.purchase-permissions th, .purchase-permissions td { padding:.7rem; vertical-align:top; }
+.purchase-permissions tbody th { text-align:left; font-weight:600; width:25%; border-bottom:1px solid var(--border); }
+.purchase-permissions tbody tr:last-child th { border-bottom:0; }
+.purchase-references { margin-top:1rem; }
+.purchase-references summary { cursor:pointer; font-weight:600; }
+.purchase-references li { margin:.5rem 0; overflow-wrap:anywhere; }
+@media (max-width:640px){
+  .site-header .bar { flex-wrap:wrap; }
+  nav.top { margin-left:0; flex-wrap:wrap; }
+}
+
 /* ── Landing sub-steps (element 4) ─────────────────────────────────────────── */
 .substeps { list-style:none; display:grid; grid-template-columns:repeat(3,1fr); gap:.9rem; margin:0 0 1.5rem; padding:0; max-width:900px; }
 @media (max-width:720px){ .substeps { grid-template-columns:1fr; } }

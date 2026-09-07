@@ -1,0 +1,18 @@
+@model string
+@{
+    var route = Model switch
+    {
+        "web-card" => L["Marketplace Web → card checkout"],
+        "web-azure" => L["Marketplace Web → Azure portal checkout"],
+        "azure-portal" => L["Azure portal → Azure subscription checkout"],
+        _ => null,
+    };
+}
+@if (route is not null)
+{
+    <aside class="purchase-arrival" aria-label="@L["Illustrative purchase route"]">
+        <span class="purchase-context-label">@L["Illustrative purchase route"]</span>
+        <p><strong>@route</strong> <span aria-hidden="true">→</span> @L["The same publisher landing page"]</p>
+        <p class="muted">@L["You build this handoff, not Microsoft's checkout. The route label does not verify payment or permissions."]</p>
+    </aside>
+}

@@ -11,8 +11,9 @@
     // Only the current step is expanded, so any one page shows exactly one part and one actor.
     // Steps 1 and 4 live in the emulator and can never be current from inside this app, which is
     // why they are dashed and open in a new tab.
-    var emuRoot = SaaSAgentSample.Web.DemoNavigation.EmulatorLink(Config);
-    var emuSubs = SaaSAgentSample.Web.DemoNavigation.EmulatorLink(Config, "/subscriptions.html");
+    var scenario = DemoNavigation.PurchaseScenario(Context.Request.Query["scenario"].ToString());
+    var emuRoot = DemoNavigation.EmulatorLink(Config, DemoNavigation.PurchaseEntryPath, scenario);
+    var emuSubs = DemoNavigation.EmulatorLink(Config, "/subscriptions.html", scenario);
     var steps = new[]
     {
         new
@@ -34,7 +35,7 @@
             Desc = L["The buyer lands here and confirms. Activation starts billing."].Value,
             Who = L["Buyer"].Value,
             Part = (string?)L["Landing page"].Value,
-            Href = (string?)"/",
+            Href = (string?)DemoNavigation.PublisherLink("/", scenario),
             External = false,
         },
         new
@@ -45,7 +46,7 @@
             Desc = L["The publisher's own subscription database — what this app checks before letting a customer in."].Value,
             Who = L["Publisher (you)"].Value,
             Part = (string?)L["Your subscription database"].Value,
-            Href = (string?)"/admin",
+            Href = (string?)DemoNavigation.PublisherLink("/admin", scenario),
             External = false,
         },
         new

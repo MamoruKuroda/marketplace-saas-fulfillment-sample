@@ -34,6 +34,27 @@ Changes we made on top of the upstream snapshot:
 - **Shared language** — `src/client/i18n.js` honours a `?culture=en|ja` parameter once, stores the
   choice, and strips it from the URL, so following a link from the publisher app keeps one
   language while leaving the EN / 日本語 toggle in control afterwards.
+- **Illustrative discovery and checkout** — `src/client/start.{html,js,css}` adds three explicit
+  demo scenarios: Marketplace Web with an own corporate card (`web-card`), Marketplace Web
+  handing off to Azure purchasing (`web-azure`), and an Azure portal starting point
+  (`azure-portal`). These are generic teaching assets, not copies of real storefront/portal
+  screens, and contain no vendor logos, payment collection, credential collection, or actual
+  identity/RBAC/purchase-policy evaluation. Availability of every route for every offer is not
+  implied. The existing offer catalogue is read from `GET /api/util/offers`; missing, empty, and
+  invalid selections produce explicit errors rather than invented offers.
+- **Purchase journey navigation** — `src/client/purchase-journey.js`, the map, and client navigation
+  carry whitelisted `scenario` and `culture` query metadata. Discovery passes the same existing
+  `offer` and `plan` IDs to the original purchase form at `/`, which remains directly accessible.
+  The language toggle keeps the selected scenario/offer/plan through reloads. All discovery and
+  checkout screens remain step **1**, operated by the buyer on the Microsoft stand-in side.
+  The existing Continue action still generates the same token once; the URL API adds that token
+  alongside navigation metadata while preserving the configured landing URL's query and hash.
+  Scenario metadata is not trusted purchase proof and does not change fulfillment payloads,
+  purchaser IDs, quantity, prices, plans, authentication, authorization, or subscription state.
+  There is no additional order-creation request. The UI states that the emulator creates its
+  subscription record at Resolve, not at an actual storefront checkout. Short EN/JA route hints
+  link through the map to the publisher's `#how` glossary, keeping the detailed policy explanation
+  in one place. Client regression tests use the existing Jest/TypeScript runner and Node VM.
 - **Demo reset** — `src/client/subscriptions.{html,js}` add a "Reset the demo" button that deletes
   every subscription here (via the emulator's existing `DELETE /api/util/publishers/...` utility
   route — no API change) and then asks the publisher app to clear its own copy. It is a

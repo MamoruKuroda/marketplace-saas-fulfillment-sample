@@ -58,6 +58,13 @@
 
         var lang = doc.documentElement.getAttribute("lang");
         if (lang) document.documentElement.setAttribute("lang", lang);
+        // Keep subsequent form posts in the selected language, even when arrival included ?culture=.
+        if (lang === "ja" || lang === "en") {
+          var currentUrl = new URL(window.location.href);
+          currentUrl.searchParams.set("culture", lang);
+          currentUrl.searchParams.delete("ui-culture");
+          window.history.replaceState(window.history.state, "", currentUrl.href);
+        }
 
         var title = doc.querySelector("title");
         if (title) document.title = title.textContent;
