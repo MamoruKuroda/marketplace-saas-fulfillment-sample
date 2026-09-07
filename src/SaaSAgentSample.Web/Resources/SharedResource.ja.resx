@@ -300,4 +300,45 @@
   <data name="4→3 · Purchase announced — the state does not change" xml:space="preserve"><value>④→③ 購入が通知されました — 状態は変わりません</value></data>
   <data name="4→3 · Microsoft sent a notification" xml:space="preserve"><value>④→③ Microsoft から通知が届きました</value></data>
   <data name="No entry — stored before this app kept a trail" xml:space="preserve"><value>記録なし — このアプリが履歴を残す前に保存されました</value></data>
+  <!-- Purchase journey: illustrative context, not authorization -->
+  <data name="Return to your subscription" xml:space="preserve"><value>有効化済みの契約に戻る</value></data>
+  <data name="This purchase is already active. Returning here does not activate it again." xml:space="preserve"><value>この購入は有効化済みです。再訪しても、もう一度有効化することはありません。</value></data>
+  <data name="In your product, this return visit leads to the buyer's account or settings. This sample shows the publisher's subscription record instead." xml:space="preserve"><value>実際の製品では、再訪した購入者をアカウントや設定画面へ案内します。このサンプルでは、代わりにパブリッシャー側の契約記録を確認できます。</value></data>
+  <data name="Marketplace Web → card checkout" xml:space="preserve"><value>Marketplace の Web → カードで購入</value></data>
+  <data name="Marketplace Web → Azure portal checkout" xml:space="preserve"><value>Marketplace の Web → Azure ポータルで購入</value></data>
+  <data name="Azure portal → Azure subscription checkout" xml:space="preserve"><value>Azure ポータル → Azure サブスクリプションで購入</value></data>
+  <data name="Illustrative purchase route" xml:space="preserve"><value>購入経路の例</value></data>
+  <data name="The same publisher landing page" xml:space="preserve"><value>同じパブリッシャーのランディングページへ</value></data>
+  <data name="You build this handoff, not Microsoft's checkout. The route label does not verify payment or permissions." xml:space="preserve"><value>あなたが作るのは、この受け取り先です。Microsoft の購入画面ではありません。経路の表示は、決済や権限を検証した結果ではありません。</value></data>
+  <data name="Purchase routes and permissions" xml:space="preserve"><value>購入の入口と必要な権限</value></data>
+  <data name="Where a buyer finds an offer is not necessarily where they pay. The offer's available purchase routes come first; an M365 licence alone does not choose the route." xml:space="preserve"><value>商品を見つけた場所と、購入・請求の方式は別です。まずオファーで利用できる購入経路があり、M365 ライセンスの有無だけで経路が決まるわけではありません。</value></data>
+  <data name="Illustrative requirements — this demo does not check accounts, cards, roles or tenant policies." xml:space="preserve"><value>条件の説明用です — このデモはアカウント、カード、ロール、テナントのポリシーを検証しません。</value></data>
+  <data name="Purchase route" xml:space="preserve"><value>購入方式</value></data>
+  <data name="What the buyer needs" xml:space="preserve"><value>購入者に必要なもの</value></data>
+  <data name="Where the customer organization controls it" xml:space="preserve"><value>購入企業側の制御・設定場所</value></data>
+  <data name="Web checkout with a card" xml:space="preserve"><value>Web でカード購入</value></data>
+  <data name="Work or school account and a valid card. The published Web purchase requirements do not require an Entra admin role in advance." xml:space="preserve"><value>職場・学校アカウントと有効なカード。公式の Web 購入要件に、Entra 管理者ロールの事前付与は記載されていません。</value></data>
+  <data name="Third-party SaaS self-service purchase policy (AllowSelfServicePurchase / OfferType SaaS), plus sign-in restrictions." xml:space="preserve"><value>第三者 SaaS のセルフサービス購入ポリシー（AllowSelfServicePurchase / OfferType SaaS）と、サインインの制限です。</value></data>
+  <data name="Using an existing company MCA billing profile" xml:space="preserve"><value>既存の会社の MCA 請求プロファイルを利用</value></data>
+  <data name="Permission to use that profile in a purchase, such as Billing profile Contributor or Owner. Not a requirement for every first-time card purchase." xml:space="preserve"><value>Billing profile Contributor／Owner など、そのプロファイルを購入に使える権限。すべての初回カード購入に共通する要件ではありません。</value></data>
+  <data name="Microsoft 365 admin center → Billing accounts → Billing profiles → Billing profile roles." xml:space="preserve"><value>Microsoft 365 管理センター → 請求アカウント → 請求プロファイル → 請求プロファイルのロールです。</value></data>
+  <data name="Azure checkout — reached from the Web or the portal" xml:space="preserve"><value>Azure 経由で購入 — Web／ポータルから</value></data>
+  <data name="Eligible Azure subscription and Azure RBAC permissions for the purchase. Being able to view the subscription is not enough." xml:space="preserve"><value>購入可能な Azure サブスクリプションと、購入に必要な Azure RBAC 権限。サブスクリプションを閲覧できるだけでは足りません。</value></data>
+  <data name="Azure IAM and Marketplace purchase controls, including Private Marketplace approvals. The Web SaaS self-service policy does not block Azure portal purchases." xml:space="preserve"><value>Azure IAM と Marketplace の購入制限（Private Marketplace の承認など）です。Web の SaaS 自己購入ポリシーは Azure ポータル購入を禁止しません。</value></data>
+  <data name="After purchase: the publisher landing page" xml:space="preserve"><value>購入後：パブリッシャーのランディングページ</value></data>
+  <data name="Entra sign-in and any required app consent; link the purchase to the intended user or company account." xml:space="preserve"><value>Entra サインインと必要なアプリ同意。購入契約を、意図した自社ユーザー／企業アカウントに紐付けます。</value></data>
+  <data name="The customer's Entra policies govern sign-in. The publisher's backend grants access from the contract, not from an email domain alone." xml:space="preserve"><value>サインインは購入企業の Entra ポリシーで制御します。利用権はパブリッシャーのバックエンドが契約に基づき付与し、メールドメインだけでは許可しません。</value></data>
+  <data name="MCA billing-profile roles are not MOSA billing-administrator roles. Billing administration, self-service purchasing and permission to use the SaaS are separate." xml:space="preserve"><value>MCA の請求プロファイルのロールと、MOSA の課金管理者は別です。請求管理、セルフサービス購入、SaaS の利用権は分けて考えます。</value></data>
+  <data name="OfferType SaaS controls third-party SaaS as a type; it is not a per-vendor allow-list. Azure Private Marketplace can approve specific offers and plans. Publishers cannot override a customer's purchase restrictions." xml:space="preserve"><value>OfferType SaaS は第三者 SaaS の種類単位の制御で、ベンダー別の許可リストではありません。Azure Private Marketplace は個別オファー・プランを承認できます。パブリッシャーは顧客の購入制限を上書きできません。</value></data>
+  <data name="One landing page, more than one arrival" xml:space="preserve"><value>入口は複数でも、ランディングページは一つ</value></data>
+  <data name="Buyers can configure immediately after ordering, later from a confirmation email or order history, or return to manage an active subscription. The existing active-subscription check handles the return without another activation." xml:space="preserve"><value>購入直後だけでなく、確認メールや注文履歴から後で構成したり、有効化済みの契約を管理するために再訪したりします。既存の有効化済み判定により、再訪時にもう一度有効化しません。</value></data>
+  <data name="For the manual-activation flow illustrated here, complete configuration within 30 days. This is guidance, not a timer implemented by this demo; auto-activated plans follow a different flow." xml:space="preserve"><value>ここで示す手動有効化の経路では、30 日以内に構成を完了します。これは仕様の説明で、このデモに期限処理を実装したわけではありません。自動有効化のプランは別の経路です。</value></data>
+  <data name="A Windows app can open the offer in a browser, then use its existing backend to check access. The SaaS backend being on Azure does not by itself give the buyer Azure purchase rights." xml:space="preserve"><value>Windows アプリから商品ページをブラウザーで開き、利用権は既存のバックエンドで確認する構成にできます。SaaS のバックエンドが Azure にあるだけで、購入者に Azure の購入権限が付くわけではありません。</value></data>
+  <data name="Official requirements and setting locations" xml:space="preserve"><value>公式の要件・設定場所</value></data>
+  <data name="Third-party self-service purchase settings" xml:space="preserve"><value>第三者 SaaS のセルフサービス購入設定</value></data>
+  <data name="Company billing-profile roles (MCA)" xml:space="preserve"><value>会社の請求プロファイルのロール（MCA）</value></data>
+  <data name="Azure purchase permissions" xml:space="preserve"><value>Azure 経由の購入権限</value></data>
+  <data name="Azure Private Marketplace approvals" xml:space="preserve"><value>Azure Private Marketplace の承認設定</value></data>
+  <data name="Landing page sign-in and return visits" xml:space="preserve"><value>ランディングページのサインインと再訪</value></data>
+  <data name="Confirm the real purchase flow in Partner Center preview" xml:space="preserve"><value>Partner Center のプレビューで実際の購入導線を確認する</value></data>
 </root>

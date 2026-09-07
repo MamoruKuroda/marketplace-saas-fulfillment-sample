@@ -1,10 +1,12 @@
 @page
 @model SaaSAgentSample.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = (Model.ShowHome ? L["Start here"] : L["Activate your subscription"]).Value;
+    ViewData["Title"] = (Model.ShowHome ? L["Start here"] :
+        Model.AlreadyActive ? L["Return to your subscription"] : L["Activate your subscription"]).Value;
     var r = Model.Resolved;
     var sub = r?.Subscription;
     var signedIn = User?.Identity?.IsAuthenticated == true;
+    var adminUrl = DemoNavigation.PublisherLink("/admin", Model.DemoScenario);
 
     // What the map may tick off. Arriving with a purchase token is proof step 1 happened; an
     // activated subscription is proof step 2 did. The home page proves nothing yet.
@@ -51,14 +53,22 @@
                     <p>@L["Purchases from the Marketplace, then signs in on the landing page to activate."]</p>
                 </div>
             </div>
+            @(await Html.PartialAsync("_PurchasePermissions"))
             @(await Html.PartialAsync("_KeyTerms"))
         </div>
     </details>
 }
 else
 {
-    <h1 class="page-title">@L["Activate your subscription"]</h1>
-    <p class="subtitle">@L["Review the plan below, then confirm. Activation starts billing."]</p>
+    <h1 class="page-title">@(Model.AlreadyActive ? L["Return to your subscription"] : L["Activate your subscription"])</h1>
+    <p class="subtitle">@(Model.AlreadyActive
+        ? L["This purchase is already active. Returning here does not activate it again."]
+        : L["Review the plan below, then confirm. Activation starts billing."])</p>
+
+    @if (Model.DemoScenario is not null)
+    {
+        @(await Html.PartialAsync("_PurchaseArrival", Model.DemoScenario))
+    }
 
     @if (signedIn)
     {
@@ -73,8 +83,12 @@ else
             <span class="ico">&#10003;</span>
             <div>
                 <strong>@(Model.IsActivated ? L["Activated."] : L["Already active."])</strong> @Model.Message
+                @if (Model.AlreadyActive)
+                {
+                    <p class="banner-next">@L["In your product, this return visit leads to the buyer's account or settings. This sample shows the publisher's subscription record instead."]</p>
+                }
                 <p class="banner-next">@L["Next: open the publisher admin and confirm the status now reads Subscribed."]</p>
-                <p class="banner-cta"><a class="btn primary" href="/admin">@L["Open the publisher admin (step 3) →"]</a></p>
+                <p class="banner-cta"><a class="btn primary" href="@adminUrl">@L["Open the publisher admin (step 3) →"]</a></p>
                 @if (Model.EmulatorUrl is not null)
                 {
                     <p class="banner-later">
@@ -138,13 +152,16 @@ else
             <p class="hint" style="margin:.9rem 0 0">@L["Offers can also auto-activate, skipping this page."]</p>
         </div>
 
-        <details class="explainer learn" id="how">
-            <summary>@L["How this works"]</summary>
-            <div class="body">@(await Html.PartialAsync("_KeyTerms"))</div>
-        </details>
     }
     else
     {
         <div class="card"><p class="muted">@(Model.Message ?? L["Nothing to show."].Value)</p></div>
     }
+    <details class="explainer learn" id="how">
+        <summary>@L["How this works"]</summary>
+        <div class="body">
+            @(await Html.PartialAsync("_PurchasePermissions"))
+            @(await Html.PartialAsync("_KeyTerms"))
+        </div>
+    </details>
 }

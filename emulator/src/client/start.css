@@ -1,0 +1,39 @@
+.journey-page nav ul { flex-wrap: wrap; }
+.journey-page :is(a, button, input, select):focus-visible { outline: 3px solid #0f6cbd; outline-offset: 3px; }
+.journey-page main { line-height: 1.5; }
+.journey-page h2 { margin: .4rem 0; color: var(--page-title-color); font-size: 1.5rem; }
+.journey-page h3 { margin: .2rem 0; color: var(--page-title-color); font-size: 1.15rem; }
+.journey-page :is(input, select, button) { font: inherit; }
+.journey-page select { min-width: 0; width: 100%; padding: .6rem; line-height: 1.4; }
+.journey-page button { min-height: 44px; padding: .5rem 1rem; }
+.journey-page button:disabled { cursor: not-allowed; opacity: .55; }
+.journey-start { max-width: 1180px; margin: auto; }
+.journey-start > section { min-width: 0; }
+.demo-badge { color: #0f548c; font-size: .82rem; font-weight: 700; letter-spacing: .05em; margin: 0; }
+.simulation-note { border-left: 3px solid #0f6cbd; padding: .6rem .8rem; background: #eff6fc; }
+.scenario-picker { padding: 0; margin: 1.5rem 0 .7rem; border: 0; min-width: 0; }
+.scenario-picker legend { font-weight: 600; padding: 0 0 .6rem; }
+.scenario-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+.scenario-card { display: flex; align-items: flex-start; gap: .65rem; padding: 1rem; border: 1px solid #c8c6c4; border-radius: 8px; cursor: pointer; background: #fff; }
+.scenario-card:has(input:checked) { border-color: #0f6cbd; box-shadow: inset 0 0 0 1px #0f6cbd; background: #eff6fc; }
+.scenario-card input { flex: none; margin-top: .3rem; width: 1.15rem; height: 1.15rem; accent-color: #0f6cbd; }
+.scenario-card span span { display: block; margin-top: .45rem; font-size: .95rem; }
+.route-limits, .direct-checkout { font-size: .95rem; }
+.product-listing { border: 1px solid #edebe9; border-radius: 8px; padding: 1.25rem; margin-top: 1.2rem; background: #faf9f8; }
+.listing-heading { display: flex; align-items: center; gap: 1rem; }
+.listing-heading p { margin: 0; }
+.service-mark { display: grid; place-items: center; flex: none; width: 3.5rem; height: 3.5rem; border-radius: 8px; background: #e1dfdd; color: #323130; font-weight: 600; }
+.listing-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.2rem 0; }
+.listing-fields label { display: block; margin-bottom: .3rem; font-weight: 600; }
+.listing-action { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
+.listing-action span { font-size: .95rem; }
+.journey-error { color: #a4262c; padding: .75rem; border: 1px solid #a4262c; border-radius: 6px; background: #fff; }
+.journey-error p { margin-top: 0; }
+[hidden] { display: none !important; }
+@media (max-width: 720px) {
+    .journey-page main { padding: 1rem; }
+    .journey-page main > section { padding: 1rem; }
+    .scenario-grid, .listing-fields { grid-template-columns: 1fr; }
+    .product-listing { padding: 1rem; }
+    .journey-page nav { padding: 0 1rem; }
+}

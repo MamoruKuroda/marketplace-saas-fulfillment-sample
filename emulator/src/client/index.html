@@ -2,14 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Marketplace API Emulator</title>
     <link rel="stylesheet" href="core.css" />
+    <link rel="stylesheet" href="start.css" />
     <link rel="stylesheet" href="index.css" />
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="notifications.js"></script>
     <script src="core.js"></script>
     <script src="i18n.js"></script>
+    <script src="purchase-journey.js"></script>
     <script src="demo-map.js"></script>
     <script src="index.js"></script>
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
@@ -17,10 +20,10 @@
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png" />
     <link rel="manifest" href="images/site.webmanifest" />
   </head>
-  <body data-demo-step="1">
+  <body data-demo-step="1" class="journey-page">
     <header><h1>Azure Marketplace API Emulator</h1><p class="side-tag" data-i18n="masthead.side">Microsoft side (stand-in) — storefront, billing, webhooks</p></header>
     <nav><ul>
-                <li><a href="/" class="active" data-i18n="nav.marketplace">Marketplace</a></li>
+                <li><a href="/start.html" class="active" data-i18n="nav.marketplace">Marketplace</a></li>
                 <li><a href="/subscriptions.html" data-i18n="nav.subscriptions">Subscriptions</a></li>
                 <li><a href="/landing.html" data-i18n="nav.landingPage">Landing Page</a></li>
                 <li><a href="/offers.html" data-i18n="nav.offers">Offers</a></li>
@@ -32,11 +35,16 @@
         <p class="page-hint" data-i18n="hint.marketplace">Shop as the buyer in Microsoft's marketplace, then hand off to the publisher's landing page.</p>
     <main>
       <section class="info">
-        <header data-i18n="common.introduction">Introduction</header>
-        <article data-i18n-html="index.infoHtml"></article>
+        <p class="demo-badge" data-i18n="journey.badge">ILLUSTRATIVE PURCHASE UX</p>
+        <h2 id="checkout-route"></h2>
+        <p class="simulation-note" data-i18n="journey.disclaimer">Teaching simulation only. No real payment, sign-in, or RBAC/policy checks. Do not enter card details or credentials.</p>
+        <p id="checkout-prerequisites"></p>
+        <p data-i18n="journey.notEvaluated">Route availability depends on the offer. These prerequisites are not evaluated here. Landing-page authorization is a separate check.</p>
+        <p><a href="/start.html" data-journey-link data-i18n="journey.changeRoute">Choose another demo route →</a></p>
       </section>
       <section class="main">
         <header data-i18n="index.sampleMarketplaceBehaviour">Sample Marketplace Behaviour</header>
+        <p id="checkout-error" class="journey-error" role="alert" hidden></p>
         <div>
           <section class="offers">
             <div class="no-offers" data-i18n-html="index.noOffersHtml">No offers have been configured and sample offers have been disabled.<br />Go to <a href="/offers.html">Offer Central</a> to create one</div>
@@ -47,24 +55,24 @@
               <div class="header" data-i18n="index.configurePurchase">Configure Purchase</div>
               <div class="offer"><span></span><span></span></div>
               <div class="content">
-                <div><div><label data-i18n="common.plan">Plan</label><select></select></div></div>
-                <p data-i18n="index.profileInfo">This app requires some basic profile information. We have pulled your Microsoft Account data to help you get started. Azure Marketplace will save your information for next time.</p>
+                <div><div><label for="purchase-plan" data-i18n="common.plan">Plan</label><select id="purchase-plan"></select></div></div>
+                <p data-i18n="index.profileInfo">Demo profile values only. No Microsoft account has been read, and no real payment is collected.</p>
                 <div>
-                  <div><label data-i18n="common.subscriptionName">Subscription Name</label><input id="subscriptionName" type="text" /><input id="subscriptionId" type="hidden" /></div>
-                  <div class="seat-count"><label data-i18n="common.quantity">Quantity</label><input id="quantity" type="number" /></div>
+                  <div><label for="subscriptionName" data-i18n="common.subscriptionName">Subscription Name</label><input id="subscriptionName" type="text" /><input id="subscriptionId" type="hidden" /></div>
+                  <div class="seat-count"><label for="quantity" data-i18n="common.quantity">Quantity</label><input id="quantity" type="number" /></div>
                   <div class="right toggle-optional"><a href="#" data-i18n="common.showOptionalFields">Show optional fields</a></div>
-                  <div class="optional hidden"><p data-i18n="index.optionalRealUser">To simulate a purchase with a real user, enter their AAD Object ID and Tenant ID below.</p></div>
-                  <div class="optional hidden"><label data-i18n="common.beneficiaryEmail">Beneficiary Email</label><input id="beneficiaryEmail" type="text" /></div>
-                  <div class="optional hidden"><label data-i18n="index.beneficiaryObjectId">Beneficiary Object ID</label><input id="beneficiaryOid" type="text" /></div>
-                  <div class="optional hidden"><label data-i18n="index.beneficiaryTenantId">Beneficiary Tenant ID</label><input id="beneficiaryTid" type="text" /></div>
-                  <div class="optional hidden"><p data-i18n="index.optionalPurchaser">To simulate a purchase with a real user on behalf of another real user, check "Specify purchaser" enter their AAD Object ID and Tenant ID below.</p></div>
-                  <div class="optional hidden"><label data-i18n="index.specifyPurchaser">Specify purchaser</label><input id="purchaserIsBeneficiary" type="checkbox" /></div>
-                  <div class="optional hidden"><label data-i18n="index.purchaserEmail">Purchaser Email</label><input id="purchaserEmail" type="text" disabled="disabled" /></div>
-                  <div class="optional hidden"><label data-i18n="index.purchaserObjectId">Purchaser Object ID</label><input id="purchaserOid" type="text" disabled="disabled" /></div>
-                  <div class="optional hidden"><label data-i18n="index.purchaserTenantId">Purchaser Tenant ID</label><input id="purchaserTid" type="text" disabled="disabled" /></div>
+                  <div class="optional hidden"><p data-i18n="index.optionalRealUser">Optional test fixture: beneficiary email, object ID and tenant ID. Use test values, not credentials.</p></div>
+                  <div class="optional hidden"><label for="beneficiaryEmail" data-i18n="common.beneficiaryEmail">Beneficiary Email</label><input id="beneficiaryEmail" type="text" /></div>
+                  <div class="optional hidden"><label for="beneficiaryOid" data-i18n="index.beneficiaryObjectId">Beneficiary Object ID</label><input id="beneficiaryOid" type="text" /></div>
+                  <div class="optional hidden"><label for="beneficiaryTid" data-i18n="index.beneficiaryTenantId">Beneficiary Tenant ID</label><input id="beneficiaryTid" type="text" /></div>
+                  <div class="optional hidden"><p data-i18n="index.optionalPurchaser">Optional test fixture: specify a different purchaser to demonstrate buying for another beneficiary. Use test values.</p></div>
+                  <div class="optional hidden"><label for="purchaserIsBeneficiary" data-i18n="index.specifyPurchaser">Specify purchaser</label><input id="purchaserIsBeneficiary" type="checkbox" /></div>
+                  <div class="optional hidden"><label for="purchaserEmail" data-i18n="index.purchaserEmail">Purchaser Email</label><input id="purchaserEmail" type="text" disabled="disabled" /></div>
+                  <div class="optional hidden"><label for="purchaserOid" data-i18n="index.purchaserObjectId">Purchaser Object ID</label><input id="purchaserOid" type="text" disabled="disabled" /></div>
+                  <div class="optional hidden"><label for="purchaserTid" data-i18n="index.purchaserTenantId">Purchaser Tenant ID</label><input id="purchaserTid" type="text" disabled="disabled" /></div>
                 </div>
-                <p data-i18n-html="index.termsHtml">Collect additional information above, as desired.<br />The user must also accept the Terms and Conditions and Privacy policy here to proceed.</p>
-                <p class="justify"><button id="viewJsonButton" class="secondary" data-i18n="common.viewJson">View JSON</button><button id="viewTokenButton" class="secondary" data-i18n="common.viewToken">View token</button><button id="purchaseButton" class="primary" data-i18n="common.continue">Continue</button></p>
+                <p data-i18n-html="index.termsHtml">Continue passes a demo token to the publisher landing page for configuration. No real order is placed; this emulator creates its subscription record when the token is resolved.</p>
+                <p class="justify"><button id="viewJsonButton" class="secondary" data-i18n="common.viewJson">View JSON</button><button id="viewTokenButton" class="secondary" data-i18n="common.viewToken">View token</button><button id="purchaseButton" class="primary" data-i18n="journey.configureNext">Open publisher landing → configure</button></p>
               </div>
             </div>
           </section>
@@ -73,4 +81,3 @@
     </main>
   </body>
 </html>
-

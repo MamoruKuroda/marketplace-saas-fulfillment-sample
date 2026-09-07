@@ -6,7 +6,8 @@
 @{
     ViewData["Title"] = L["Subscription detail"].Value;
     var s = Model.Subscription;
-    var emu = SaaSAgentSample.Web.DemoNavigation.EmulatorLink(Config, "/subscriptions.html");
+    var scenario = DemoNavigation.PurchaseScenario(Model.Request.Query["scenario"].ToString());
+    var emu = DemoNavigation.EmulatorLink(Config, "/subscriptions.html", scenario);
     static string BadgeClass(SubscriptionState state) => state switch
     {
         SubscriptionState.Subscribed => "subscribed",
@@ -22,7 +23,7 @@
         ViewData["DemoCompletedThrough"] = s.State == SubscriptionState.PendingFulfillmentStart ? 1 : 3;
     }
 }
-<p><a class="back-link" href="/admin">@L["← All subscriptions"]</a></p>
+<p><a class="back-link" href="@DemoNavigation.PublisherLink("/admin", scenario)">@L["← All subscriptions"]</a></p>
 <h1 class="page-title">@L["Subscription detail"]</h1>
 
 @if (Model.Message is not null)
@@ -49,7 +50,7 @@
 
         @if (Model.CanActivate)
         {
-            <form method="post" action="?handler=Activate">
+            <form method="post" action="@DemoNavigation.PublisherLink("?handler=Activate", scenario)">
                 @Html.AntiForgeryToken()
                 <p class="hint">@L["Activation calls the Fulfillment Activate API and starts billing. Confirm before proceeding."]</p>
                 <button type="submit" class="btn primary">@L["Activate subscription"]</button>

@@ -1,4 +1,5 @@
 using System.Globalization;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 
 namespace SaaSAgentSample.Web;
@@ -26,6 +27,44 @@ public sealed record DemoMapVm(int? Current, DemoMapDetail Detail, int? Complete
 /// <summary>Helpers for the in-product demo wayfinding ("where do I start / where am I").</summary>
 public static class DemoNavigation
 {
+    public const string PurchaseEntryPath = "/start.html";
+
+    /// <summary>Presentation context only, never a source of identity or purchase authorization.</summary>
+    public static string? PurchaseScenario(string? value) => value switch
+    {
+        "web-card" or "web-azure" or "azure-portal" => value,
+        _ => null,
+    };
+
+    public static string WithScenario(string url, string? scenario)
+        => WithQueryValue(url, "scenario", PurchaseScenario(scenario));
+
+    public static string PublisherLink(string path, string? scenario = null)
+        => WithCulture(WithScenario(path, scenario),
+            CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ja" ? "ja" : "en");
+
+    public static string WithCulture(string url, string culture)
+    {
+        if (culture is not ("ja" or "en"))
+            throw new ArgumentException("Unsupported UI culture.", nameof(culture));
+
+        return WithQueryValue(WithQueryValue(url, "ui-culture", null), "culture", culture);
+    }
+
+    private static string WithQueryValue(string url, string key, string? value)
+    {
+        var hashAt = url.IndexOf('#');
+        var fragment = hashAt >= 0 ? url[hashAt..] : string.Empty;
+        var address = hashAt >= 0 ? url[..hashAt] : url;
+        var queryAt = address.IndexOf('?');
+        var path = queryAt >= 0 ? address[..queryAt] : address;
+        var query = QueryHelpers.ParseQuery(queryAt >= 0 ? address[queryAt..] : string.Empty);
+        query.Remove(key);
+        if (value is not null)
+            query[key] = value;
+        return QueryHelpers.AddQueryString(path, query) + fragment;
+    }
+
     /// <summary>
     /// Best-effort URL of the Fulfillment API Emulator that backs this demo, so the app can link the
     /// buyer to step 1 ("Buy in Marketplace"). Prefers <c>Demo:EmulatorUrl</c>, otherwise derives it
@@ -63,7 +102,7 @@ public static class DemoNavigation
     /// Returns null whenever <see cref="EmulatorUrl"/> does.
     /// </summary>
     /// <param name="path">Path within the emulator, e.g. <c>/subscriptions.html</c>. Empty means its root.</param>
-    public static string? EmulatorLink(IConfiguration config, string path = "")
+    public static string? EmulatorLink(IConfiguration config, string path = "", string? scenario = null)
     {
         var root = EmulatorUrl(config);
         if (root is null)
@@ -73,6 +112,6 @@ public static class DemoNavigation
 
         var culture = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName
             .Equals("ja", StringComparison.OrdinalIgnoreCase) ? "ja" : "en";
-        return $"{root}{path}?culture={culture}";
+        return WithScenario($"{root}{path}?culture={culture}", scenario);
     }
 }

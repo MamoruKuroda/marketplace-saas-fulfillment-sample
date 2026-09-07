@@ -15,7 +15,7 @@
   // Steps 1 and 4 are this emulator; 2 and 3 are the publisher app, which is a separate
   // origin, so those links are resolved at render time from the emulator's config.
   var STEPS = [
-    { n: "1", key: "map.step1", where: "map.hereEmulator", who: "map.whoBuyer", part: null, href: "/", path: null, external: false },
+    { n: "1", key: "map.step1", where: "map.hereEmulator", who: "map.whoBuyer", part: null, href: "/start.html", path: null, external: false },
     { n: "2", key: "map.step2", where: "map.herePublisher", who: "map.whoBuyer", part: "map.partLanding", href: null, path: "/", external: true },
     { n: "3", key: "map.step3", where: "map.herePublisher", who: "map.whoPublisher", part: "map.partStore", href: null, path: "/admin", external: true },
     { n: "4", key: "map.step4", where: "map.hereEmulator", who: "map.whoMicrosoft", part: null, href: "/subscriptions.html", path: null, external: false },
@@ -37,8 +37,9 @@
   // Japanese lands on the publisher app in whatever its own cookie last said.
   function publisherLink(publisherUrl, path, hash) {
     if (!publisherUrl) return null;
-    var lang = window.i18nLang ? window.i18nLang() : "en";
-    return publisherUrl + path + "?culture=" + (lang === "ja" ? "ja" : "en") + (hash || "");
+    var url = new URL(path, publisherUrl);
+    if (hash) url.hash = hash;
+    return window.PurchaseJourney.withContext(url).href;
   }
 
   function buildStep(step, current, publisherUrl) {
@@ -46,7 +47,7 @@
     card.setAttribute("role", "listitem");
     if (current) card.setAttribute("aria-current", "step");
 
-    var href = step.external ? publisherLink(publisherUrl, step.path) : step.href;
+    var href = step.external ? publisherLink(publisherUrl, step.path) : window.PurchaseJourney.withContext(step.href).href;
     var head = el(href ? "a" : "span", "step-head");
     if (href) {
       head.href = href;
@@ -89,7 +90,7 @@
     // map is not navigation chrome. role/aria keep the semantics.
     var nav = el("div", "stepper");
     nav.setAttribute("role", "list");
-    nav.setAttribute("aria-label", "Demo steps");
+    nav.setAttribute("aria-label", t("journey.mapLabel"));
     STEPS.forEach(function (step) {
       nav.appendChild(buildStep(step, step.n === current, publisherUrl));
     });
@@ -147,7 +148,7 @@
       .then(function (res) { return res.ok ? res.json() : null; })
       .then(function (config) {
         var landing = config && config.landingPageUrl;
-        once(landing ? landing.replace(/\/+$/, "") : null);
+        once(landing ? new URL(landing).href : null);
       })
       .catch(function () { once(null); });
 

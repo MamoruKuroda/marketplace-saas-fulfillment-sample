@@ -1,0 +1,57 @@
+<section class="purchase-permissions">
+    <h3 class="learn-h">@L["Purchase routes and permissions"]</h3>
+    <p class="learn-lead">@L["Where a buyer finds an offer is not necessarily where they pay. The offer's available purchase routes come first; an M365 licence alone does not choose the route."]</p>
+    <div class="permission-table-scroll" role="region" tabindex="0" aria-label="@L["Purchase routes and permissions"]">
+        <table>
+            <caption>@L["Illustrative requirements — this demo does not check accounts, cards, roles or tenant policies."]</caption>
+            <thead>
+                <tr>
+                    <th scope="col">@L["Purchase route"]</th>
+                    <th scope="col">@L["What the buyer needs"]</th>
+                    <th scope="col">@L["Where the customer organization controls it"]</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">@L["Web checkout with a card"]</th>
+                    <td>@L["Work or school account and a valid card. The published Web purchase requirements do not require an Entra admin role in advance."]</td>
+                    <td>@L["Third-party SaaS self-service purchase policy (AllowSelfServicePurchase / OfferType SaaS), plus sign-in restrictions."]</td>
+                </tr>
+                <tr>
+                    <th scope="row">@L["Using an existing company MCA billing profile"]</th>
+                    <td>@L["Permission to use that profile in a purchase, such as Billing profile Contributor or Owner. Not a requirement for every first-time card purchase."]</td>
+                    <td>@L["Microsoft 365 admin center → Billing accounts → Billing profiles → Billing profile roles."]</td>
+                </tr>
+                <tr>
+                    <th scope="row">@L["Azure checkout — reached from the Web or the portal"]</th>
+                    <td>@L["Eligible Azure subscription and Azure RBAC permissions for the purchase. Being able to view the subscription is not enough."]</td>
+                    <td>@L["Azure IAM and Marketplace purchase controls, including Private Marketplace approvals. The Web SaaS self-service policy does not block Azure portal purchases."]</td>
+                </tr>
+                <tr>
+                    <th scope="row">@L["After purchase: the publisher landing page"]</th>
+                    <td>@L["Entra sign-in and any required app consent; link the purchase to the intended user or company account."]</td>
+                    <td>@L["The customer's Entra policies govern sign-in. The publisher's backend grants access from the contract, not from an email domain alone."]</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="learn-foot">@L["MCA billing-profile roles are not MOSA billing-administrator roles. Billing administration, self-service purchasing and permission to use the SaaS are separate."]</p>
+    <p class="learn-foot">@L["OfferType SaaS controls third-party SaaS as a type; it is not a per-vendor allow-list. Azure Private Marketplace can approve specific offers and plans. Publishers cannot override a customer's purchase restrictions."]</p>
+
+    <h4>@L["One landing page, more than one arrival"]</h4>
+    <p class="learn-lead">@L["Buyers can configure immediately after ordering, later from a confirmation email or order history, or return to manage an active subscription. The existing active-subscription check handles the return without another activation."]</p>
+    <p class="learn-foot">@L["For the manual-activation flow illustrated here, complete configuration within 30 days. This is guidance, not a timer implemented by this demo; auto-activated plans follow a different flow."]</p>
+    <p class="learn-foot">@L["A Windows app can open the offer in a browser, then use its existing backend to check access. The SaaS backend being on Azure does not by itself give the buyer Azure purchase rights."]</p>
+    <details class="purchase-references">
+        <summary>@L["Official requirements and setting locations"]</summary>
+        <ul>
+            <li><a href="https://learn.microsoft.com/en-us/marketplace/purchase-software-appsource">@L["Web checkout with a card"]</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/allowselfservicepurchase-powershell?view=o365-worldwide#use-allowselfservicepurchase-with-third-party-offer-types">@L["Third-party self-service purchase settings"]</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/manage-billing-profiles?view=o365-worldwide#assign-billing-profile-roles">@L["Company billing-profile roles (MCA)"]</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/marketplace/purchase-saas-offer-in-azure-portal#requirements">@L["Azure purchase permissions"]</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/marketplace/create-manage-private-azure-marketplace-new">@L["Azure Private Marketplace approvals"]</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/partner-center/marketplace-offers/azure-ad-transactable-saas-landing-page">@L["Landing page sign-in and return visits"]</a></li>
+            <li><a href="https://learn.microsoft.com/en-us/partner-center/marketplace-offers/review-publish-offer#publisher-sign-off-phase">@L["Confirm the real purchase flow in Partner Center preview"]</a></li>
+        </ul>
+    </details>
+</section>
