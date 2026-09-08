@@ -2,6 +2,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const { TextEncoder } = require("node:util");
 
 const client = path.join(__dirname, "..", "client");
 const source = name => fs.readFileSync(path.join(client, name), "utf8");
@@ -13,8 +14,14 @@ const catalogue = {
         displayName: "Existing service",
         publisher: "Demo publisher",
         plans: {
-            basic: { displayName: "Basic", isPricePerSeat: false },
-            "team & annual": { displayName: "Team annual", isPricePerSeat: true }
+            basic: {
+                displayName: "Basic", isPricePerSeat: false,
+                planComponents: { recurrentBillingTerms: [{ price: 37, currency: "GBP", termUnit: "P1M" }] }
+            },
+            "team & annual": {
+                displayName: "Team annual", isPricePerSeat: true,
+                planComponents: { recurrentBillingTerms: [{ price: 415, currency: "GBP", termUnit: "P1Y" }] }
+            }
         }
     }
 };
@@ -32,6 +39,15 @@ class Element {
         this.textContent = "";
         this.className = "";
         this.rawValue = "";
+        this.dataset = {};
+        this.classList = {
+            toggle: (name, enabled) => {
+                const names = new Set(this.className.split(" ").filter(Boolean));
+                if (enabled) names.add(name);
+                else names.delete(name);
+                this.className = Array.from(names).join(" ");
+            }
+        };
     }
     get options() { return this.children; }
     get value() {
@@ -42,13 +58,16 @@ class Element {
         else this.rawValue = value;
     }
     appendChild(node) { this.children.push(node); node.parentNode = this; return node; }
+    append(...nodes) { nodes.forEach(node => this.appendChild(node)); }
     replaceChildren() { this.children = []; this.selectedIndex = 0; }
     setAttribute(name, value) { this.attributes[name] = value; }
+    removeAttribute(name) { delete this.attributes[name]; }
     getAttribute(name) { return this.attributes[name] ?? null; }
     hasAttribute(name) { return Object.hasOwn(this.attributes, name); }
     addEventListener(name, run) { this.listeners[name] = run; }
     querySelectorAll() { return []; }
     closest() { return null; }
+    focus() { this.focused = true; }
 }
 
 function runtime(query = "", language = "en") {
@@ -66,7 +85,7 @@ function runtime(query = "", language = "en") {
         body: new Element("body")
     };
     const sandbox = {
-        URL, URLSearchParams, document,
+        URL, URLSearchParams, TextEncoder, document,
         location: new URL("https://emulator.example/start.html" + query),
         localStorage: { getItem: key => store.get(key), setItem: (key, value) => store.set(key, value) },
         navigator: { language },
@@ -94,7 +113,8 @@ function discovery(query = "") {
     [
         "discovery-form", "discovery-offer", "discovery-plan", "discovery-continue",
         "catalogue-error", "catalogue-status", "catalogue-error-message", "listing-surface",
-        "scenario-warning", "product-preview", "product-name", "product-publisher"
+        "scenario-warning", "product-preview", "product-name", "product-publisher",
+        "product-price", "product-period", "plan-cards"
     ].forEach(id => test.nodes.set(id, new Element(id.endsWith("-offer") || id.endsWith("-plan") ? "select" : "div")));
     ["discovery-offer", "discovery-plan", "discovery-continue"].forEach(id => { test.nodes.get(id).disabled = true; });
     ["catalogue-error", "scenario-warning", "product-preview"].forEach(id => { test.nodes.get(id).hidden = true; });
@@ -108,6 +128,20 @@ function discovery(query = "") {
     form.querySelector = selector => selector.endsWith(":checked")
         ? radios.find(radio => radio.checked)
         : radios.find(radio => selector.includes('value="' + radio.value + '"'));
+    test.sandbox.document.querySelector = selector => selector.includes('name="scenario"')
+        ? form.querySelector(selector) : null;
+    test.sandbox.document.querySelectorAll = selector => {
+        if (selector === 'input[name="scenario"]') return radios;
+        if (selector === ".plan-card") return test.nodes.get("plan-cards").children;
+        return [];
+    };
+    const createElement = test.sandbox.document.createElement;
+    test.sandbox.document.createElement = tag => {
+        const node = createElement(tag);
+        node.querySelector = selector => node.children.find(child => child.tag === selector);
+        return node;
+    };
+    test.load("purchase-experience.js");
     test.load("start.js");
     return { ...test, radios, start: () => test.ready[test.ready.length - 1]() };
 }
@@ -184,7 +218,7 @@ for (const scenario of ["web-card", "web-azure", "azure-portal"]) {
         assert.equal(test.nodes.get("listing-surface").textContent, `journey.${scenario}.surface`);
         test.nodes.get("discovery-form").listeners.submit({ preventDefault() {} });
         const target = test.sandbox.location;
-        assert.equal(target.pathname, "/");
+        assert.equal(target.pathname, "/checkout.html");
         assert.equal(target.searchParams.get("scenario"), scenario);
         assert.equal(target.searchParams.get("culture"), "ja");
         assert.equal(target.searchParams.get("offer"), "existing/offer & one");
@@ -217,6 +251,40 @@ check("scenario switching changes presentation, not catalogue or selected plan",
     assert.equal(test.nodes.get("discovery-offer").value, offer);
     assert.equal(test.nodes.get("discovery-plan").value, plan);
     assert.deepEqual(test.requests, ["/api/util/offers"]);
+});
+
+check("product-first entry shows catalogue prices and selecting a plan card updates the buy panel", async () => {
+    const test = discovery();
+    await test.start();
+    assert.equal(test.nodes.get("product-preview").hidden, false);
+    assert.equal(test.nodes.get("product-price").textContent, "£37.00");
+    assert.equal(test.nodes.get("product-period").textContent, "experience.monthly");
+    const cards = test.nodes.get("plan-cards").children;
+    assert.equal(cards.length, 2);
+    assert.equal(cards[0].children[1].textContent, "£37.00 · experience.monthly");
+    cards[1].querySelector("button").listeners.click();
+    assert.equal(test.nodes.get("discovery-plan").value, "team & annual");
+    assert.equal(test.nodes.get("product-price").textContent, "£415.00");
+    assert.equal(test.nodes.get("product-period").textContent, "experience.annual · experience.perUser");
+    assert.equal(cards[1].querySelector("button").getAttribute("aria-pressed"), "true");
+    assert.equal(cards[0].querySelector("button").getAttribute("aria-pressed"), "false");
+    assert.equal(test.nodes.get("discovery-plan").focused, true);
+});
+
+check("product entry never offers checkout when the selected catalogue plan has no price", async () => {
+    const test = discovery();
+    const offer = structuredClone(Object.values(catalogue)[0]);
+    delete offer.plans.basic.planComponents;
+    test.sandbox.fetch = async () => ({ ok: true, json: async () => ({ [offer.offerId]: offer }) });
+    await test.start();
+    assert.equal(test.nodes.get("product-price").textContent, "experience.noPrice");
+    assert.equal(test.nodes.get("discovery-continue").disabled, true);
+    test.nodes.get("discovery-form").listeners.submit({ preventDefault() {} });
+    assert.equal(test.sandbox.location.pathname, "/start.html");
+    test.nodes.get("discovery-plan").value = "team & annual";
+    test.nodes.get("discovery-plan").listeners.change();
+    assert.equal(test.nodes.get("discovery-continue").disabled, false);
+    assert.equal(test.nodes.get("product-price").textContent, "£415.00");
 });
 
 check("landing URL preserves existing query/hash and the exact token beside metadata", () => {
@@ -497,10 +565,10 @@ check("new text has JP/EN pairs, markup labels, viewport and shared map assets",
     const test = runtime();
     test.load("i18n.js");
     const { en, ja } = test.sandbox.I18N;
-    for (const key of Object.keys(en).filter(key => key.startsWith("journey."))) {
+    for (const key of Object.keys(en).filter(key => key.startsWith("journey.") || key.startsWith("experience."))) {
         assert.ok(en[key] && ja[key], key);
     }
-    for (const file of ["start.html", "index.html"]) {
+    for (const file of ["start.html", "index.html", "checkout.html"]) {
         const html = source(file);
         assert.match(html, /name="viewport"/);
         assert.match(html, /data-demo-step="1"/);
@@ -509,14 +577,42 @@ check("new text has JP/EN pairs, markup labels, viewport and shared map assets",
         for (const [, key] of html.matchAll(/data-i18n(?:-html)?="([^"]+)"/g)) {
             assert.ok(en[key] && ja[key], `${file}: ${key}`);
         }
+        for (const [, attributes] of html.matchAll(/data-i18n-attr="([^"]+)"/g)) {
+            for (const attribute of attributes.split(";")) {
+                const key = attribute.split(":")[1];
+                assert.ok(en[key] && ja[key], `${file}: ${key}`);
+            }
+        }
         for (const [, id] of html.matchAll(/<(?:input|select)[^>]+id="([^"]+)"/g)) {
             if (id === "subscriptionId") continue;
-            assert.ok(html.includes(`for="${id}"`), `${file}: missing label for ${id}`);
+            const wrappingLabel = new RegExp(`<label\\b[^>]*>(?:(?!<\\/label>)[\\s\\S])*<(?:input|select)\\b[^>]*id="${id}"`);
+            assert.ok(html.includes(`for="${id}"`) || wrappingLabel.test(html), `${file}: missing label for ${id}`);
         }
     }
-    for (const name of ["purchase-journey.js", "start.js", "index.js", "demo-map.js", "i18n.js"]) {
+    for (const name of ["purchase-journey.js", "purchase-experience.js", "start.js", "checkout.js", "index.js", "demo-map.js", "i18n.js"]) {
         assert.doesNotThrow(() => new vm.Script(source(name), { filename: name }));
     }
+});
+
+check("product detail is the primary entry, presenter controls start collapsed, and legacy technical form remains linked", () => {
+    const html = source("start.html");
+    const controls = html.match(/<details\b([^>]*class="presenter-tools"[^>]*)>([\s\S]*?)<\/details>/);
+    assert.ok(controls, "Presenter controls are a collapsible details element");
+    assert.doesNotMatch(controls[1], /\bopen\b/);
+    assert.match(controls[2], /name="scenario" value="web-card"/);
+    assert.match(controls[2], /name="scenario" value="web-azure"/);
+    assert.match(controls[2], /name="scenario" value="azure-portal"/);
+    assert.match(controls[2], /id="discovery-offer"/);
+    assert.match(controls[2], /href="\/"[^>]*data-i18n="experience.technicalForm"/);
+    assert.doesNotMatch(controls[2], /id="discovery-continue"/);
+    assert.match(html, /class="product-hero"/);
+    assert.match(html, /id="product-price"/);
+    const checkoutHtml = source("checkout.html");
+    assert.match(checkoutHtml, /id="place-order"[^>]*data-i18n="experience.placeOrder"/);
+    assert.match(checkoutHtml, /data-i18n="experience.orderComplete"/);
+    assert.match(checkoutHtml, /id="configure-account"[^>]*data-i18n="experience.configure"/);
+    assert.match(checkoutHtml, /data-i18n="experience.simulationRecord"/);
+    assert.doesNotMatch(checkoutHtml, /autocomplete="cc-|(?:name|id)="(?:card-number|cvv|cvc)"/);
 });
 
 module.exports = cases;

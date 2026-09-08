@@ -1,0 +1,55 @@
+.checkout-surface { border:1px solid #edebe9; border-radius:10px; overflow:hidden; background:white; }
+.checkout-chrome { padding:1rem 1.5rem; font-weight:600; border-bottom:1px solid #edebe9; background:#f8fbff; color:#134b78; }
+.checkout-progress { display:flex; flex-wrap:wrap; align-items:center; gap:.75rem; padding:1rem 1.5rem; color:#605e5c; border-bottom:1px solid #edebe9; font-size:.9rem; }
+.checkout-progress [aria-current=step] { font-weight:600; color:#0f6cbd; }
+.checkout-layout { display:grid; grid-template-columns:minmax(0,1fr) 300px; }
+.checkout-body { min-width:0; padding:1.8rem; }
+.checkout-body h2 { margin:0 0 1.3rem; }
+.checkout-group { margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid #edebe9; }
+.checkout-group label:not(.accept-label) { display:block; margin:.7rem 0 .35rem; font-weight:500; }
+.form-columns { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; }
+.field-hint { font-size:.88rem; color:#605e5c; }
+.card-illustration { display:flex; flex-direction:column; gap:.7rem; padding:1rem 1.2rem; margin:1rem 0; max-width:300px; border-radius:10px; color:#fff; background:linear-gradient(125deg,#244965,#50728d); box-shadow:0 5px 12px #12395b21; }
+.card-illustration span { font-size:.85rem; letter-spacing:.08em; }
+.card-illustration strong { font-weight:500; }
+.accept-label { display:flex; align-items:flex-start; gap:.75rem; cursor:pointer; }
+.accept-label input { flex:none; width:1.15rem; height:1.15rem; margin-top:.2rem; accent-color:#0f6cbd; }
+.order-summary { padding:1.8rem 1.4rem; background:#fafcfe; border-left:1px solid #edebe9; }
+.summary-product-icon { display:grid; place-items:center; width:44px; height:44px; margin-bottom:1rem; border-radius:10px; background:#0f6cbd; color:#fff; font-weight:600; font-size:1.5rem; }
+.order-summary dl { display:grid; grid-template-columns:1fr auto; gap:.5rem; margin:1.4rem 0; font-size:.9rem; }
+.order-summary dd { margin:0; }
+.summary-total { padding:1rem 0; border-top:1px solid #c8c6c4; display:flex; flex-direction:column; gap:.5rem; }
+.summary-total strong { font-size:1.7rem; font-variant-numeric:tabular-nums; }
+.review-details { display:grid; grid-template-columns:minmax(120px,.8fr) minmax(0,1.2fr); gap:1rem; margin:1.5rem 0 2rem; }
+.review-details dt { color:#605e5c; }
+.review-details dd { margin:0; overflow-wrap:anywhere; font-weight:500; }
+.checkout-actions { display:flex; gap:.75rem; flex-wrap:wrap; }
+.complete-symbol { display:grid; place-items:center; width:54px; height:54px; border-radius:50%; background:#dff6dd; color:#107c10; font-size:1.8rem; margin-bottom:1.2rem; }
+.configure-panel { padding:1.5rem; border:1px solid #b7d5f2; border-radius:8px; background:#f4f9ff; margin:1.5rem 0; }
+.action-link { display:inline-flex; padding:.7rem 1.2rem; border-radius:6px; margin:.7rem 0; text-decoration:none; }
+.action-link:hover { text-decoration:none; }
+.simulation-details { margin-top:1.5rem; font-size:.9rem; color:#605e5c; }
+.simulation-details summary { cursor:pointer; color:#0f6cbd; }
+.redirect-panel { max-width:700px; margin:1rem auto; padding:2rem; border:1px solid #c8dff3; border-radius:10px; background:#fff; text-align:center; }
+.redirect-symbol { display:inline-block; font-size:2.4rem; color:#0f6cbd; }
+.redirect-path { display:flex; justify-content:center; align-items:center; gap:1rem; padding:1.2rem; margin:1.5rem 0; background:#eff6fc; border-radius:6px; flex-wrap:wrap; }
+.azure-checkout .checkout-chrome { background:#12395b; color:#fff; }
+.azure-checkout .checkout-surface { border-radius:2px; }
+.azure-checkout .checkout-progress { background:#f3f3f3; }
+.azure-checkout .checkout-layout { grid-template-columns:minmax(0,1fr) 270px; }
+.azure-checkout .checkout-group { max-width:620px; }
+.azure-checkout .checkout-body { border-left:5px solid #e5edf5; }
+.journey-page [aria-invalid=true] { outline:2px solid #a4262c; outline-offset:2px; }
+@media(max-width:800px) {
+  .checkout-layout,.azure-checkout .checkout-layout { grid-template-columns:1fr; }
+  .order-summary { border-left:0; border-top:1px solid #edebe9; }
+  .checkout-body { padding:1.2rem; }
+  .order-summary { padding:1.2rem; }
+}
+@media(max-width:500px) {
+  .form-columns { grid-template-columns:1fr; gap:0; }
+  .review-details { grid-template-columns:1fr; gap:.3rem; }
+  .review-details dd { margin-bottom:.8rem; }
+  .redirect-panel { padding:1.2rem; }
+  .configure-panel { padding:1rem; }
+}

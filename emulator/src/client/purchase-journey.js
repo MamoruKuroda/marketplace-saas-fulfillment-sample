@@ -7,6 +7,16 @@
         return scenarios.includes(value) ? value : null;
     }
 
+    function newId() {
+        // getRandomValues also works on HTTP emulator hosts, unlike randomUUID.
+        const bytes = window.crypto.getRandomValues(new Uint8Array(16));
+        bytes[6] = (bytes[6] & 15) | 64;
+        bytes[8] = (bytes[8] & 63) | 128;
+        const hex = Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
+        return hex.slice(0, 8) + "-" + hex.slice(8, 12) + "-" + hex.slice(12, 16) + "-" +
+            hex.slice(16, 20) + "-" + hex.slice(20);
+    }
+
     function context() {
         return {
             scenario: scenario(new URLSearchParams(window.location.search).get("scenario")),
@@ -25,7 +35,7 @@
     }
 
     function checkoutUrl(offerId, planId) {
-        const url = withContext("/");
+        const url = withContext("/checkout.html");
         url.searchParams.set("offer", offerId);
         url.searchParams.set("plan", planId);
         return url.href;
@@ -35,6 +45,25 @@
         const url = withContext(target);
         url.searchParams.set("token", token);
         return url.href;
+    }
+
+    function purchaseToken(purchase) {
+        const sub = {
+            id: purchase.id,
+            name: purchase.name,
+            offerId: purchase.offerId,
+            planId: purchase.planId,
+            beneficiary: purchase.beneficiary,
+            purchaser: purchase.purchaser,
+            quantity: purchase.quantity,
+            autoRenew: false,
+            isTest: false,
+            isFreeTrial: false
+        };
+        const json = JSON.stringify(sub, null, 2);
+        let binary = "";
+        for (const byte of new TextEncoder().encode(json)) binary += String.fromCharCode(byte);
+        return { json: json, base64: window.btoa(binary) };
     }
 
     function updateSelection(offerId, planId, selectedScenario) {
@@ -93,11 +122,14 @@
 
     window.PurchaseJourney = {
         scenario: scenario,
+        newId: newId,
         context: context,
         withContext: withContext,
         checkoutUrl: checkoutUrl,
         landingUrl: landingUrl,
+        purchaseToken: purchaseToken,
         updateSelection: updateSelection,
+        updateLinks: updateLinks,
         loadOffers: loadOffers,
         selection: selection
     };

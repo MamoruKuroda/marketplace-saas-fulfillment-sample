@@ -9,6 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
     <script src="i18n.js"></script>
     <script src="purchase-journey.js"></script>
+    <script src="purchase-experience.js"></script>
     <script src="demo-map.js"></script>
     <script src="start.js"></script>
   </head>
@@ -22,55 +23,71 @@
       <li><a href="/config.html" data-i18n="nav.config">Config</a></li>
     </ul></nav>
     <p class="page-hint" data-i18n="journey.startHint">Discover a service → demo checkout → the same publisher landing page.</p>
-    <main class="journey-start">
-      <section class="main">
-        <p class="demo-badge" data-i18n="journey.badge">ILLUSTRATIVE PURCHASE UX</p>
-        <h2 data-i18n="journey.startTitle">Choose a demo purchase route</h2>
-        <p class="simulation-note" data-i18n="journey.disclaimer">Teaching simulation only. No real payment, sign-in, or RBAC/policy checks. Do not enter card details or credentials.</p>
-        <form id="discovery-form">
+    <main class="experience-shell">
+      <div class="experience-toolbar">
+        <span class="demo-badge" data-i18n="experience.demoNotice">Purchase demo · no real charge</span>
+        <details class="presenter-tools">
+          <summary data-i18n="experience.presenterControls">Presenter controls</summary>
           <fieldset class="scenario-picker">
-            <legend data-i18n="journey.scenarios">DEMO SCENARIOS — choose one</legend>
-            <div class="scenario-grid">
-              <label class="scenario-card">
-                <input type="radio" name="scenario" value="web-card" checked />
-                <span><strong data-i18n="journey.web-card.title">Web → own corporate card</strong><span data-i18n="journey.web-card.route">Marketplace Web → card checkout</span></span>
-              </label>
-              <label class="scenario-card">
-                <input type="radio" name="scenario" value="web-azure" />
-                <span><strong data-i18n="journey.web-azure.title">Web → Azure purchasing</strong><span data-i18n="journey.web-azure.route">Marketplace Web → Azure portal checkout</span></span>
-              </label>
-              <label class="scenario-card">
-                <input type="radio" name="scenario" value="azure-portal" />
-                <span><strong data-i18n="journey.azure-portal.title">Start in Azure portal</strong><span data-i18n="journey.azure-portal.route">Azure portal → SaaS subscription checkout</span></span>
-              </label>
-            </div>
+            <legend data-i18n="experience.entryRoute">Entry route</legend>
+            <label><input type="radio" name="scenario" value="web-card" checked /><span data-i18n="journey.web-card.title">Web → own corporate card</span></label>
+            <label><input type="radio" name="scenario" value="web-azure" /><span data-i18n="journey.web-azure.title">Web → Azure purchasing</span></label>
+            <label><input type="radio" name="scenario" value="azure-portal" /><span data-i18n="journey.azure-portal.title">Start in Azure portal</span></label>
           </fieldset>
-          <p class="route-limits" data-i18n="journey.routeLimits">Routes are illustrative, not available for every offer. Choose explicitly; identity and Microsoft 365 licenses do not choose a route.</p>
-          <p id="scenario-warning" class="journey-error" role="alert" hidden data-i18n="journey.invalidScenario">Unknown demo scenario. The default Web/card illustration is selected; choose any demo route.</p>
-          <article class="product-listing" aria-labelledby="listing-heading">
-            <div class="listing-heading">
-              <span class="service-mark" aria-hidden="true">SaaS</span>
-              <div><p id="listing-surface"></p><h3 id="listing-heading" data-i18n="journey.listingTitle">Discover a service</h3></div>
+          <label for="discovery-offer" data-i18n="experience.catalogueOffer">Emulator offer</label>
+          <select id="discovery-offer" disabled></select>
+          <p data-i18n="journey.routeLimits">Routes are illustrative, not available for every offer.</p>
+          <a href="/" data-journey-link data-i18n="experience.technicalForm">Open the technical token form</a>
+        </details>
+      </div>
+      <p id="scenario-warning" class="journey-error" role="alert" hidden data-i18n="journey.invalidScenario"></p>
+      <p id="catalogue-status" role="status" data-i18n="journey.loading">Loading the emulator offer catalogue…</p>
+      <div id="catalogue-error" class="journey-error" role="alert" hidden>
+        <p id="catalogue-error-message"></p>
+        <a href="/offers.html" data-journey-link data-i18n="journey.manageOffers">View offer configuration</a>
+      </div>
+      <article id="product-preview" class="storefront" aria-labelledby="product-name" hidden>
+        <div class="store-chrome"><strong id="listing-surface"></strong><span data-i18n="experience.catalogueBreadcrumb">Marketplace / Productivity / SaaS</span></div>
+        <div class="store-content">
+          <nav class="product-tabs" aria-label="Product information" data-i18n-attr="aria-label:experience.productInformation">
+            <a href="#overview" aria-current="location" data-i18n="experience.overview">Overview</a>
+            <a href="#plans" data-i18n="experience.plansPricing">Plans + pricing</a>
+            <a href="#support" data-i18n="experience.support">Support</a>
+          </nav>
+          <div class="product-main">
+            <div class="product-hero">
+              <div class="product-identity">
+                <span class="product-icon" aria-hidden="true">W</span>
+                <div><span class="product-category" data-i18n="experience.fictionalProduct">Fictional product for this demo</span>
+                  <h2 id="product-name" data-i18n="experience.productName">Workspace Automation</h2>
+                  <p id="product-publisher"></p>
+                </div>
+                <p class="product-description" data-i18n="experience.productDescription">Keep your Windows workflow. Connect to a cloud workspace for repeatable tasks and shared results.</p>
+                <div class="product-tags"><span data-i18n="experience.desktopClient">Windows client</span><span data-i18n="experience.cloudService">Cloud service</span></div>
+              </div>
+              <form id="discovery-form" class="buy-panel">
+                <label for="discovery-plan" data-i18n="common.plan">Plan</label>
+                <select id="discovery-plan" disabled required></select>
+                <p id="product-price" class="price-display" aria-live="polite"></p>
+                <p id="product-period" class="subtle"></p>
+                <button type="submit" id="discovery-continue" class="primary" disabled data-i18n="common.getItNow">Get it now</button>
+                <p class="subtle" data-i18n="experience.priceNotice">Catalogue price shown for the demo. No payment is taken.</p>
+              </form>
             </div>
-            <p id="catalogue-status" role="status" data-i18n="journey.loading">Loading the emulator offer catalogue…</p>
-            <div id="catalogue-error" class="journey-error" role="alert" hidden>
-              <p id="catalogue-error-message"></p>
-              <a href="/offers.html" data-journey-link data-i18n="journey.manageOffers">View offer configuration</a>
-            </div>
-            <div class="listing-fields">
-              <div><label for="discovery-offer" data-i18n="common.offer">Offer</label><select id="discovery-offer" disabled required></select></div>
-              <div><label for="discovery-plan" data-i18n="common.plan">Plan</label><select id="discovery-plan" disabled required></select></div>
-            </div>
-            <div id="product-preview" hidden><h3 id="product-name"></h3><p id="product-publisher"></p><p data-i18n="journey.catalogueNote">From this emulator's existing catalogue. The next screen keeps this offer and plan.</p></div>
-            <div class="listing-action">
-              <button type="submit" id="discovery-continue" class="primary" disabled data-i18n="common.getItNow">Get it now</button>
-              <span data-i18n="journey.checkoutNext">Next: demo checkout, not a real order.</span>
-            </div>
-          </article>
-        </form>
-        <noscript><p class="journey-error">JavaScript is required to load the offer catalogue. / オファー一覧の読み込みには JavaScript が必要です。</p></noscript>
-        <p class="direct-checkout"><a href="/" data-journey-link data-i18n="journey.directCheckout">Existing demo? Open the purchase form directly →</a></p>
-      </section>
+            <section id="overview" class="product-overview">
+              <h3 data-i18n="experience.workTogether">Your desktop and cloud, working together</h3>
+              <div class="product-illustration" role="img" aria-label="Windows client connected to cloud tasks and results" data-i18n-attr="aria-label:experience.illustration">
+                <div class="mini-window"><span class="window-dots" aria-hidden="true">● ● ●</span><strong data-i18n="experience.desktopClient">Windows client</strong><span class="art-line"></span><span class="art-line short"></span><span class="art-action" data-i18n="experience.runTask">Run a task</span></div>
+                <span class="art-connection" aria-hidden="true">⇄</span>
+                <div class="cloud-tasks"><strong data-i18n="experience.cloudService">Cloud service</strong><span data-i18n="experience.automate">Automate routine work</span><span data-i18n="experience.share">Share the results</span></div>
+              </div>
+            </section>
+            <section id="plans" class="product-plans"><h3 data-i18n="experience.plansPricing">Plans + pricing</h3><div id="plan-cards" class="plan-cards"></div></section>
+            <section id="support"><h3 data-i18n="experience.support">Support</h3><p class="subtle" data-i18n="experience.supportNote">This page illustrates buying a service, not a working automation product. Purchase permissions and publisher responsibilities are explained in “How this works” in the map above.</p></section>
+          </div>
+        </div>
+      </article>
+      <noscript><p class="journey-error">JavaScript is required. / JavaScript を有効にしてください。</p></noscript>
     </main>
   </body>
 </html>

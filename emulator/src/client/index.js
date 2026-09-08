@@ -151,10 +151,7 @@ function generateToken() {
         "isFreeTrial": false
     }
 
-    const json = JSON.stringify(sub, null, 2);
-    const base64 = window.btoa(json);
-
-    return {json, base64};
+    return window.PurchaseJourney.purchaseToken(sub);
 }
 
 async function showJson() {
