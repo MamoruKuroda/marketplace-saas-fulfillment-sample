@@ -25,9 +25,15 @@
         return { unitPrice: term.price, total: total, currency: term.currency, termUnit: term.termUnit, units: units };
     }
 
-    function price(value, currency, culture) {
-        return new Intl.NumberFormat(culture === "ja" ? "ja-JP" : "en-US",
+    function price(value, currency, culture, sample = false) {
+        // Fixed sample display prices, not an exchange-rate service. Custom offers retain their currency.
+        if (sample === true && currency === "USD" && culture === "ja") {
+            value *= 7500 / 50;
+            currency = "JPY";
+        }
+        const formatted = new Intl.NumberFormat(culture === "ja" ? "ja-JP" : "en-US",
             { style: "currency", currency: currency }).format(value);
+        return sample === true && currency === "USD" ? formatted.replace("$", "US$") : formatted;
     }
 
     function productName(offer, translate) {

@@ -41,7 +41,7 @@
             const terms = experience.terms(plan);
             next.disabled = !plan || terms.length === 0;
             document.getElementById("product-price").textContent = terms.length
-                ? experience.price(terms[0].price, terms[0].currency, journey.context().culture)
+                ? experience.price(terms[0].price, terms[0].currency, journey.context().culture, offer.builtIn)
                 : t("experience.noPrice");
             document.getElementById("product-period").textContent = terms.length
                 ? termLabel(terms[0].termUnit) + (plan.isPricePerSeat ? " · " + t("experience.perUser") : "")
@@ -76,7 +76,7 @@
                 const price = document.createElement("p");
                 const term = experience.terms(entry[1])[0];
                 price.textContent = term
-                    ? experience.price(term.price, term.currency, journey.context().culture) + " · " + termLabel(term.termUnit)
+                    ? experience.price(term.price, term.currency, journey.context().culture, offer.builtIn) + " · " + termLabel(term.termUnit)
                     : t("experience.noPrice");
                 const choose = document.createElement("button");
                 choose.type = "button";

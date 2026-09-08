@@ -142,6 +142,24 @@ check("currency rendering preserves actual currency and localizes without changi
     assert.equal(quote.total, 25);
 });
 
+check("built-in USD samples use the approved fixed JPY and USD display prices only", () => {
+    const plan = {
+        isPricePerSeat: true,
+        planComponents: { recurrentBillingTerms: [{ price: 50, currency: "USD", termUnit: "P1M" }] }
+    };
+    const quote = experience.quote(plan, 0, 3);
+    assert.equal(experience.price(50, "USD", "ja", true), "￥7,500");
+    assert.equal(experience.price(50, "USD", "en", true), "US$50.00");
+    assert.equal(experience.price(quote.total, quote.currency, "ja", true), "￥22,500");
+    assert.equal(experience.price(quote.total, quote.currency, "en", true), "US$150.00");
+    assert.equal(experience.price(0, "USD", "ja", true), "￥0");
+    assert.equal(experience.price(0, "USD", "en", true), "US$0.00");
+    assert.equal(quote.currency, "USD");
+    assert.equal(quote.total, 150);
+    assert.equal(experience.price(50, "USD", "ja", false), "$50.00");
+    assert.equal(experience.price(50, "GBP", "ja", true), "£50.00");
+});
+
 check("fictional product alias applies only to built-in catalogue entries", () => {
     const translate = key => key === "experience.productName" ? "Demo workspace" : "unexpected";
     assert.equal(experience.productName({ builtIn: true, displayName: "Internal sample" }, translate), "Demo workspace");

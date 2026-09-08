@@ -43,8 +43,10 @@ Changes we made on top of the upstream snapshot:
   cards and Azure resources can be selected. Built-in offers use a fictional product title for the
   visual example; their actual IDs, plans and stored catalogue are unchanged.
 - **Simulation boundary** — This does not collect credentials or payment data, evaluate real
-  identity/RBAC/purchase policies, or assert that all routes are available for every offer. Display
-  totals use catalogue currency/price, but taxes and real billing are not implemented. Contract
+  identity/RBAC/purchase policies, or assert that all routes are available for every offer. Built-in
+  sample catalogue prices are USD; their UI uses fixed display prices of USD 50 / JPY 7,500 by
+  language, scaling quantities consistently. This is explicitly not a real exchange rate.
+  Custom offers retain their own catalogue currency. Taxes and real billing are not implemented. Contract
   period, payment and Azure project selections are presentation-only and never enter the token.
   Missing catalogue/prices and invalid selections show errors rather than replacement offers.
   A draft and confirmed synthetic purchase are stored per browser tab in session storage, so a
