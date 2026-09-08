@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Demo checkout</title>
+    <link rel="stylesheet" href="core.css" />
+    <link rel="stylesheet" href="start.css" />
+    <link rel="stylesheet" href="checkout.css" />
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+    <script src="i18n.js"></script>
+    <script src="purchase-journey.js"></script>
+    <script src="purchase-experience.js"></script>
+    <script src="demo-map.js"></script>
+    <script src="checkout.js"></script>
+  </head>
+  <body data-demo-step="1" class="journey-page checkout-page">
+    <header><h1>Azure Marketplace API Emulator</h1><p class="side-tag" data-i18n="masthead.side">Microsoft side (stand-in) — storefront, billing, webhooks</p></header>
+    <nav aria-label="Emulator navigation" data-i18n-attr="aria-label:journey.emulatorNavigation"><ul>
+      <li><a href="/start.html" class="active" data-i18n="nav.marketplace">Marketplace</a></li>
+      <li><a href="/subscriptions.html" data-i18n="nav.subscriptions">Subscriptions</a></li>
+      <li><a href="/landing.html" data-i18n="nav.landingPage">Landing Page</a></li>
+      <li><a href="/offers.html" data-i18n="nav.offers">Offers</a></li>
+      <li><a href="/config.html" data-i18n="nav.config">Config</a></li>
+    </ul></nav>
+    <p class="page-hint" data-i18n="experience.checkoutHint">Choose purchase details, review the demo order, then configure your account with the publisher.</p>
+    <main class="experience-shell">
+      <div class="experience-toolbar"><span class="demo-badge" data-i18n="experience.demoNotice">Purchase demo · no real charge</span><a id="back-product" href="/start.html" data-i18n="experience.backProduct">Back to product</a></div>
+      <p id="checkout-loading" role="status" data-i18n="journey.loading">Loading the emulator offer catalogue…</p>
+      <p id="checkout-error" class="journey-error" role="alert" hidden></p>
+      <article id="portal-redirect" class="redirect-panel" hidden>
+        <span class="redirect-symbol" aria-hidden="true">→</span>
+        <h2 tabindex="-1" data-i18n="experience.redirectTitle">Continue your purchase in Azure</h2>
+        <p data-i18n="experience.redirectNote">You found this product on the Web. In this example, you complete the purchase using an Azure subscription.</p>
+        <div class="redirect-path"><span>Marketplace Web</span><span aria-hidden="true">→</span><strong data-i18n="experience.azureSurface">Azure portal · demo</strong></div>
+        <button id="continue-azure" class="primary" type="button" data-i18n="experience.continueAzure">Continue to Azure portal</button>
+        <p class="subtle" data-i18n="experience.redirectDemo">The next screen is a local simulation, not the live Azure portal.</p>
+      </article>
+      <article id="checkout-surface" class="checkout-surface" hidden>
+        <div id="checkout-chrome" class="checkout-chrome"></div>
+        <div class="checkout-progress" aria-label="Purchase progress" data-i18n-attr="aria-label:experience.progress">
+          <span data-stage="details" data-i18n="experience.purchaseDetails">Purchase details</span><span aria-hidden="true">›</span>
+          <span data-stage="review" data-i18n="experience.review">Review</span><span aria-hidden="true">›</span>
+          <span data-stage="complete" data-i18n="experience.configure">Configure account</span>
+        </div>
+        <div class="checkout-layout">
+          <div class="checkout-body">
+            <section id="checkout-details" hidden>
+              <h2 id="checkout-heading" tabindex="-1"></h2>
+              <form id="checkout-form" novalidate>
+                <div id="azure-project" class="checkout-group" hidden>
+                  <h3 data-i18n="experience.projectDetails">Project details</h3>
+                  <label for="azure-subscription" data-i18n="experience.azureSubscription">Azure subscription</label>
+                  <select id="azure-subscription" name="azure-subscription"><option value="team" data-i18n="experience.azureTeam">Demo subscription — Product team</option><option value="sandbox" data-i18n="experience.azureSandbox">Demo subscription — Sandbox</option></select>
+                  <label for="resource-group" data-i18n="experience.resourceGroup">Resource group</label>
+                  <select id="resource-group" name="resource-group"><option value="applications">demo-applications</option><option value="evaluation">demo-evaluation</option></select>
+                  <p class="field-hint" data-i18n="experience.azureFixtures">Fictional Azure resources. In a real purchase, you need purchase permissions on the selected subscription.</p>
+                </div>
+                <div class="checkout-group">
+                  <h3 data-i18n="experience.planDetails">Plan and subscription</h3>
+                  <label for="subscriptionName" data-i18n="common.subscriptionName">Subscription name</label>
+                  <input id="subscriptionName" name="subscription-name" type="text" maxlength="200" autocomplete="off" required />
+                  <div class="form-columns">
+                    <div><label for="purchase-plan" data-i18n="common.plan">Plan</label><select id="purchase-plan" name="plan" required></select></div>
+                    <div><label for="billing-term" data-i18n="experience.billingTerm">Contract period</label><select id="billing-term" name="billing-term" required></select></div>
+                  </div>
+                  <div id="quantity-field" hidden><label for="quantity" data-i18n="experience.seats">Users</label><input id="quantity" name="quantity" type="number" min="1" step="1" value="1" /></div>
+                </div>
+                <div id="web-billing" class="checkout-group">
+                  <h3 data-i18n="experience.billingPayment">Billing and payment</h3>
+                  <label for="billing-profile" data-i18n="experience.billingProfile">Billing profile</label>
+                  <select id="billing-profile" name="billing-profile"><option value="individual" data-i18n="experience.individualProfile">Demo employee — individual purchase</option><option value="company" data-i18n="experience.companyProfile">Demo company — shared billing profile</option></select>
+                  <p class="field-hint" id="profile-hint"></p>
+                  <label for="payment-method" data-i18n="experience.paymentMethod">Payment method</label>
+                  <select id="payment-method" name="payment-method"><option value="corporate" data-i18n="experience.corporateCard">Demo corporate card · ending 4242</option><option value="team" data-i18n="experience.teamCard">Demo team card · ending 5555</option></select>
+                  <div class="card-illustration" aria-hidden="true"><span>DEMO</span><strong id="card-name"></strong><span id="card-digits"></span></div>
+                  <p class="field-hint" data-i18n="experience.noCardEntry">Only fictional saved cards are selectable. Never enter a real card number.</p>
+                </div>
+                <div class="checkout-group terms-group">
+                  <label class="accept-label"><input type="checkbox" id="accept-terms" name="accept-terms" required /><span data-i18n="experience.acceptDemo">I accept this demo order summary. No real purchase or payment will be made.</span></label>
+                  <p class="field-hint" data-i18n="experience.realTerms">A real purchase requires reviewing the offer's terms and privacy information.</p>
+                </div>
+                <button id="review-button" type="submit" class="primary" data-i18n="experience.reviewOrder">Review order</button>
+              </form>
+            </section>
+            <section id="checkout-review" hidden>
+              <h2 tabindex="-1" data-i18n="experience.reviewTitle">Review your order</h2>
+              <p class="subtle" data-i18n="experience.reviewHint">Check the purchase details before placing this simulated order.</p>
+              <dl id="review-details" class="review-details"></dl>
+              <div class="checkout-actions"><button id="edit-order" type="button" class="secondary" data-i18n="experience.editDetails">Edit details</button><button id="place-order" type="button" class="primary" data-i18n="experience.placeOrder">Place order (demo)</button></div>
+            </section>
+            <section id="checkout-complete" hidden>
+              <span class="complete-symbol" aria-hidden="true">✓</span>
+              <h2 tabindex="-1" data-i18n="experience.orderComplete">Purchase complete — simulation</h2>
+              <p id="demo-order-reference" class="subtle"></p>
+              <div class="configure-panel">
+                <h3 data-i18n="experience.nextConfigure">Next: configure your account</h3>
+                <p data-i18n="experience.handoffNote">Your purchase is not the end of setup. Continue to the publisher's landing page to sign in, link your account and activate the service.</p>
+                <a id="configure-account" class="primary action-link" target="_blank" rel="noopener" data-i18n="experience.configure">Configure account</a>
+                <p class="field-hint" data-i18n="experience.boundary">This is where the Microsoft-side purchase experience hands over to the page the publisher builds.</p>
+              </div>
+              <details class="simulation-details"><summary data-i18n="experience.aboutSimulation">About this simulated order</summary><p data-i18n="experience.simulationRecord">No payment or Marketplace order was created. This emulator creates its subscription record when the publisher resolves the demo token. Configure again opens the same purchase, not a new order.</p><p data-i18n="experience.laterArrival">For real purchases, buyers can also return using the configuration link in their confirmation email or order history.</p></details>
+            </section>
+          </div>
+          <aside class="order-summary" aria-label="Order summary" data-i18n-attr="aria-label:experience.orderSummary">
+            <span class="summary-product-icon" aria-hidden="true">W</span>
+            <h3 id="summary-product"></h3>
+            <p id="summary-plan"></p>
+            <dl><dt data-i18n="experience.billingTerm">Contract period</dt><dd id="summary-term"></dd><dt data-i18n="experience.seats" id="summary-quantity-label">Users</dt><dd id="summary-quantity"></dd></dl>
+            <div class="summary-total"><span data-i18n="experience.subtotal">Subtotal (demo)</span><strong id="summary-total"></strong></div>
+            <p class="subtle" data-i18n="experience.totalNotice">Illustrative catalogue total. Taxes are not calculated; no amount is charged.</p>
+            <p class="subtle" data-i18n="experience.periodNotice">The selected period illustrates checkout only; this sample's fulfillment flow does not implement billing-period selection.</p>
+          </aside>
+        </div>
+      </article>
+      <noscript><p class="journey-error">JavaScript is required. / JavaScript を有効にしてください。</p></noscript>
+    </main>
+  </body>
+</html>

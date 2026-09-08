@@ -2,8 +2,9 @@
     "use strict";
 
     async function start() {
-        document.title = t("journey.startTitle") + " — Marketplace API Emulator";
+        document.title = t("experience.productName") + " — " + t("experience.demoNotice");
         const journey = window.PurchaseJourney;
+        const experience = window.PurchaseExperience;
         const form = document.getElementById("discovery-form");
         const offerSelect = document.getElementById("discovery-offer");
         const planSelect = document.getElementById("discovery-plan");
@@ -13,6 +14,13 @@
         const requested = new URLSearchParams(window.location.search);
         let selectedScenario = journey.scenario(requested.get("scenario")) || "web-card";
         let offers = [];
+        const tabs = document.querySelectorAll(".product-tabs a");
+        tabs.forEach(function (link) {
+            link.addEventListener("click", function () {
+                tabs.forEach(item => item.removeAttribute("aria-current"));
+                link.setAttribute("aria-current", "location");
+            });
+        });
 
         function showError(key) {
             error.hidden = false;
@@ -20,40 +28,82 @@
         }
 
         function updateScenario() {
-            selectedScenario = form.querySelector('input[name="scenario"]:checked').value;
+            selectedScenario = document.querySelector('input[name="scenario"]:checked').value;
+            document.body.classList.toggle("portal-entry", selectedScenario === "azure-portal");
             document.getElementById("listing-surface").textContent = t("journey." + selectedScenario + ".surface");
             next.textContent = t(selectedScenario === "azure-portal" ? "journey.subscribe" : "common.getItNow");
             journey.updateSelection(offerSelect.value || undefined, planSelect.value || undefined, selectedScenario);
         }
 
         function updatePlan() {
-            next.disabled = !planSelect.value;
+            const offer = offers.find(function (item) { return item.offerId === offerSelect.value; });
+            const plan = offer && offer.plans[planSelect.value];
+            const terms = experience.terms(plan);
+            next.disabled = !plan || terms.length === 0;
+            document.getElementById("product-price").textContent = terms.length
+                ? experience.price(terms[0].price, terms[0].currency, journey.context().culture)
+                : t("experience.noPrice");
+            document.getElementById("product-period").textContent = terms.length
+                ? termLabel(terms[0].termUnit) + (plan.isPricePerSeat ? " · " + t("experience.perUser") : "")
+                : "";
+            document.querySelectorAll(".plan-card").forEach(function (card) {
+                const selected = card.dataset.plan === planSelect.value;
+                card.classList.toggle("selected", selected);
+                card.querySelector("button").setAttribute("aria-pressed", String(selected));
+            });
             journey.updateSelection(offerSelect.value, planSelect.value, selectedScenario);
+        }
+
+        function termLabel(unit) {
+            return unit === "P1M" ? t("experience.monthly") : unit === "P1Y" ? t("experience.annual") : unit;
         }
 
         function updateOffer(planId) {
             const offer = offers.find(function (item) { return item.offerId === offerSelect.value; });
             planSelect.replaceChildren();
+            const cards = document.getElementById("plan-cards");
+            cards.replaceChildren();
             Object.entries(offer.plans).forEach(function (entry) {
                 const option = document.createElement("option");
                 option.value = entry[0];
                 option.textContent = entry[1].displayName + " (" + entry[0] + ")";
                 planSelect.appendChild(option);
+                const card = document.createElement("article");
+                card.className = "plan-card";
+                card.dataset.plan = entry[0];
+                const title = document.createElement("strong");
+                title.textContent = entry[1].displayName;
+                const price = document.createElement("p");
+                const term = experience.terms(entry[1])[0];
+                price.textContent = term
+                    ? experience.price(term.price, term.currency, journey.context().culture) + " · " + termLabel(term.termUnit)
+                    : t("experience.noPrice");
+                const choose = document.createElement("button");
+                choose.type = "button";
+                choose.className = "secondary";
+                choose.textContent = t("experience.selectPlan") + " — " + entry[1].displayName;
+                choose.addEventListener("click", function () {
+                    planSelect.value = entry[0];
+                    updatePlan();
+                    planSelect.focus();
+                });
+                card.append(title, price, choose);
+                cards.appendChild(card);
             });
             if (planId) planSelect.value = planId;
             planSelect.disabled = planSelect.options.length === 0;
             document.getElementById("product-preview").hidden = false;
-            document.getElementById("product-name").textContent = offer.displayName;
+            document.getElementById("product-name").textContent = experience.productName(offer, t);
             document.getElementById("product-publisher").textContent = offer.publisher;
             error.hidden = true;
             if (planSelect.disabled) showError("journey.noPlans");
             updatePlan();
         }
 
-        form.querySelector('input[value="' + selectedScenario + '"]').checked = true;
+        document.querySelector('input[name="scenario"][value="' + selectedScenario + '"]').checked = true;
         document.getElementById("scenario-warning").hidden =
             !requested.has("scenario") || !!journey.scenario(requested.get("scenario"));
-        form.querySelectorAll('input[name="scenario"]').forEach(function (radio) {
+        document.querySelectorAll('input[name="scenario"]').forEach(function (radio) {
             radio.addEventListener("change", function () {
                 document.getElementById("scenario-warning").hidden = true;
                 updateScenario();

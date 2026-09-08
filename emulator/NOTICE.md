@@ -34,21 +34,32 @@ Changes we made on top of the upstream snapshot:
 - **Shared language** — `src/client/i18n.js` honours a `?culture=en|ja` parameter once, stores the
   choice, and strips it from the URL, so following a link from the publisher app keeps one
   language while leaving the EN / 日本語 toggle in control afterwards.
-- **Illustrative discovery and checkout** — `src/client/start.{html,js,css}` adds three explicit
-  demo scenarios: Marketplace Web with an own corporate card (`web-card`), Marketplace Web
-  handing off to Azure purchasing (`web-azure`), and an Azure portal starting point
-  (`azure-portal`). These are generic teaching assets, not copies of real storefront/portal
-  screens, and contain no vendor logos, payment collection, credential collection, or actual
-  identity/RBAC/purchase-policy evaluation. Availability of every route for every offer is not
-  implied. The existing offer catalogue is read from `GET /api/util/offers`; missing, empty, and
-  invalid selections produce explicit errors rather than invented offers.
+- **Product-first purchase experience** — `src/client/start.{html,js,css}` shows a fictional product
+  detail page with catalogue-backed plans and prices. Scenario/offer controls sit in a collapsed
+  presenter panel. The Web product page leads to card checkout (`web-card`) or an explicit handoff
+  to Azure (`web-azure`); the portal-style product page (`azure-portal`) leads to the same Azure
+  checkout. `checkout.{html,js,css}` provides distinct Web billing/card and Azure subscription/
+  resource-group controls, a review step, and simulated order confirmation. Only fictional saved
+  cards and Azure resources can be selected. Built-in offers use a fictional product title for the
+  visual example; their actual IDs, plans and stored catalogue are unchanged.
+- **Simulation boundary** — This does not collect credentials or payment data, evaluate real
+  identity/RBAC/purchase policies, or assert that all routes are available for every offer. Display
+  totals use catalogue currency/price, but taxes and real billing are not implemented. Contract
+  period, payment and Azure project selections are presentation-only and never enter the token.
+  Missing catalogue/prices and invalid selections show errors rather than replacement offers.
+  A draft and confirmed synthetic purchase are stored per browser tab in session storage, so a
+  language reload preserves the same Configure link. Missing drafts cannot render a completed
+  order. There is no additional order-creation API request.
 - **Purchase journey navigation** — `src/client/purchase-journey.js`, the map, and client navigation
   carry whitelisted `scenario` and `culture` query metadata. Discovery passes the same existing
-  `offer` and `plan` IDs to the original purchase form at `/`, which remains directly accessible.
-  The language toggle keeps the selected scenario/offer/plan through reloads. All discovery and
+  `offer` and `plan` IDs to `/checkout.html`; the original technical form at `/` remains directly
+  accessible through presenter controls. The language toggle keeps the selected scenario/offer/
+  plan and checkout draft through reloads. All discovery and
   checkout screens remain step **1**, operated by the buyer on the Microsoft stand-in side.
-  The existing Continue action still generates the same token once; the URL API adds that token
-  alongside navigation metadata while preserving the configured landing URL's query and hash.
+  After simulated confirmation, Configure opens the existing publisher landing page with a
+  frozen purchase token. Repeated Configure clicks reuse that purchase. Both the new experience
+  and the technical form share token serialization (UTF-8, with unchanged ASCII payload output);
+  the URL API preserves the configured landing URL's query and hash.
   Scenario metadata is not trusted purchase proof and does not change fulfillment payloads,
   purchaser IDs, quantity, prices, plans, authentication, authorization, or subscription state.
   There is no additional order-creation request. The UI states that the emulator creates its
@@ -69,8 +80,7 @@ Changes we made on top of the upstream snapshot:
   values that must match and fails when they diverge; run it after touching `core.css`.
 - This is a **teaching-sample stand-in for Microsoft** used only in the demo; it is not a
   production component and is torn down with `azd down`.
-- We do **not** run the emulator's Node build in CI — it is built at deploy time in Azure
-  Container Registry (`remoteBuild`). If you change its TypeScript (not just CSS/HTML), verify
-  the build via `azd deploy emulator` or a local Docker build.
+- The `build-emulator` CI lane compiles TypeScript, runs Jest tests and probes startup. Deployment
+  builds the container in Azure Container Registry (`remoteBuild`), without local Docker.
 - npm dependencies reflect the upstream 2023 snapshot. Prefer minimal, reviewed bumps; a
-  dependency change can break the emulator build, which CI will not catch.
+  dependency changes require both CI and container build validation.
