@@ -271,6 +271,20 @@ check("product-first entry shows catalogue prices and selecting a plan card upda
     assert.equal(test.nodes.get("discovery-plan").focused, true);
 });
 
+check("built-in product and plan cards show fixed sample prices for the selected language", async () => {
+    for (const [language, expected] of [["ja", "￥7,500"], ["en", "US$50.00"]]) {
+        const test = discovery();
+        test.sandbox.i18nLang = () => language;
+        const offer = structuredClone(Object.values(catalogue)[0]);
+        offer.builtIn = true;
+        offer.plans.basic.planComponents.recurrentBillingTerms[0] = { price: 50, currency: "USD", termUnit: "P1M" };
+        test.sandbox.fetch = async () => ({ ok: true, json: async () => ({ [offer.offerId]: offer }) });
+        await test.start();
+        assert.equal(test.nodes.get("product-price").textContent, expected);
+        assert.equal(test.nodes.get("plan-cards").children[0].children[1].textContent, expected + " · experience.monthly");
+    }
+});
+
 check("product entry never offers checkout when the selected catalogue plan has no price", async () => {
     const test = discovery();
     const offer = structuredClone(Object.values(catalogue)[0]);

@@ -347,6 +347,34 @@ check("per-tab reload restores draft choices and Japanese locale while preservin
     assert.equal(completeReload.saved().confirmation.id, reviewReload.saved().confirmation.id);
 });
 
+check("built-in sample totals follow language through details, review and confirmation without changing the token", async () => {
+    const sample = { offer: {
+        ...catalogue.offer, builtIn: true,
+        plans: { team: { displayName: "Sample team", isPricePerSeat: true,
+            planComponents: { recurrentBillingTerms: [{ price: 50, currency: "USD", termUnit: "P1M" }] } } }
+    } };
+    const test = runtime({ catalogue: sample, language: "ja" });
+    await test.start();
+    assert.equal(test.nodes.get("summary-total").textContent, "￥7,500");
+    test.input("quantity", "3");
+    test.input("accept-terms", true);
+    test.submit();
+    assertStage(test, "review");
+    assert.equal(test.nodes.get("summary-total").textContent, "￥22,500");
+    test.click("place-order");
+    assertStage(test, "complete");
+    const token = new URL(test.nodes.get("configure-account").href).searchParams.get("token");
+    const english = runtime({ catalogue: sample, language: "en", storage: test.storage, url: test.location.href });
+    await english.start();
+    assertStage(english, "complete");
+    assert.equal(english.nodes.get("summary-total").textContent, "US$150.00");
+    assert.equal(new URL(english.nodes.get("configure-account").href).searchParams.get("token"), token);
+    const purchase = JSON.parse(Buffer.from(token, "base64").toString("utf8"));
+    assert.equal(purchase.quantity, 3);
+    assert.equal(Object.hasOwn(purchase, "currency"), false);
+    assert.equal(Object.hasOwn(purchase, "price"), false);
+});
+
 check("bare completion/review URLs or another tab never display an order that was not confirmed", async () => {
     for (const stage of ["review", "complete"]) {
         const url = `https://emulator.example/checkout.html?offer=offer&plan=team&scenario=web-card&stage=${stage}`;

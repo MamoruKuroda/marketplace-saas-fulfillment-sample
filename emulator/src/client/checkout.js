@@ -97,7 +97,7 @@
             try {
                 const value = experience.quote(plan(), draft.termIndex, draft.quantity);
                 byId("summary-term").textContent = termLabel(value.termUnit);
-                byId("summary-total").textContent = experience.price(value.total, value.currency, journey.context().culture);
+                byId("summary-total").textContent = experience.price(value.total, value.currency, journey.context().culture, offer.builtIn);
             } catch (error) {
                 byId("summary-total").textContent = t(error.message === "experience.quantityError"
                     ? "experience.quantityError" : "experience.noPrice");
