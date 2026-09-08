@@ -86,6 +86,24 @@ public class PurchaseJourneyTests
         Assert.Contains("name=\"planId\" value=\"purchased-plan\"", html);
         Assert.Contains($"start.html?culture={culture}&amp;scenario={scenario}", html);
         Assert.Contains(culture == "ja" ? "購入経路の例" : "Illustrative purchase route", html);
+        AssertCompactLanding(html, culture);
+        Assert.Equal(0, fake.ActivateCallCount);
+    }
+
+    [Theory]
+    [InlineData("en")]
+    [InlineData("ja")]
+    public async Task Landing_without_scenario_keeps_the_same_compact_confirmation(string culture)
+    {
+        var fake = Fulfillment("PendingFulfillmentStart");
+        using var source = new L2AppFactory("http://127.0.0.1:1/api");
+        using var app = CreateApp(source, fake);
+        using var client = app.CreateClient();
+        var html = await client.GetStringAsync($"/?token=demo&culture={culture}");
+        AssertCompactLanding(html, culture);
+        Assert.DoesNotContain("class=\"purchase-arrival\"", html);
+        Assert.DoesNotContain("class=\"purchase-route-details\"", html);
+        Assert.Contains("name=\"subscriptionId\" value=\"journey-sub\"", html);
         Assert.Equal(0, fake.ActivateCallCount);
     }
 
@@ -131,6 +149,7 @@ public class PurchaseJourneyTests
         var html = await client.GetStringAsync($"/?token=demo&scenario=web-card&culture={culture}");
         Assert.Contains(culture == "ja" ? "有効化済みの契約に戻る" : "Return to your subscription", html);
         Assert.DoesNotContain("name=\"subscriptionId\"", html);
+        Assert.DoesNotContain("class=\"substeps\"", html);
         Assert.Contains("id=\"how\"", html);
         Assert.Equal(0, fake.ActivateCallCount);
     }
@@ -208,6 +227,42 @@ public class PurchaseJourneyTests
             SaasSubscriptionStatus = status,
         },
     });
+
+    private static void AssertCompactLanding(string html, string culture)
+    {
+        html = WebUtility.HtmlDecode(html);
+        var main = html.IndexOf("<main>", StringComparison.Ordinal);
+        var how = html.IndexOf("<details class=\"explainer learn\" id=\"how\">", StringComparison.Ordinal);
+        Assert.True(main >= 0 && how > main);
+        var primary = html[main..how];
+        var explanation = html[how..];
+        var progress = Regex.Match(primary, "<ol class=\"substeps\".*?</ol>", RegexOptions.Singleline).Value;
+        Assert.NotEmpty(progress);
+        Assert.Equal(3, Regex.Matches(progress, "<li\\b").Count);
+        Assert.DoesNotContain("<p", progress);
+        Assert.Contains("aria-current=\"step\"", progress);
+        Assert.Contains(culture == "ja" ? "未サインイン" : "Not signed in", progress);
+        Assert.Contains(culture == "ja" ? "契約確認: 完了" : "Purchase details: Completed", progress);
+        Assert.Contains("class=\"card activation-card\"", primary);
+        Assert.Contains(culture == "ja" ? "既存ユーザー／企業ID" : "existing user or company ID", primary);
+        Assert.Contains("type=\"submit\"", primary);
+        Assert.DoesNotContain("purchase-route-details", primary);
+        var routeNotice = culture == "ja" ? "経路の表示は、決済や権限" : "The route label does not verify";
+        Assert.DoesNotContain(routeNotice, primary);
+        if (primary.Contains("class=\"purchase-arrival\"", StringComparison.Ordinal))
+        {
+            Assert.Contains("class=\"purchase-route-details\"", explanation);
+            Assert.Contains(routeNotice, explanation);
+        }
+        foreach (var text in culture == "ja"
+            ? new[] { "ブラウザーで開く必要", "Entra シングル サインオン", "購入トークンを契約情報に交換", "オファーを自動有効化" }
+            : new[] { "Only this one screen", "Entra single sign-on", "The purchase token is exchanged",
+                "Offers can also auto-activate" })
+        {
+            Assert.DoesNotContain(text, primary);
+            Assert.Contains(text, explanation);
+        }
+    }
 
     private static WebApplicationFactory<Program> CreateApp(L2AppFactory source, FakeFulfillmentClient fake)
         => source.WithWebHostBuilder(builder =>
