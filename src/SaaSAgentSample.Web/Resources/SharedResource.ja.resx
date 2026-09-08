@@ -225,9 +225,17 @@
   <data name="One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one." xml:space="preserve"><value>1つのオファーで複数リージョンに展開できます。データのアップロード先はリージョンごとです。本サンプルは1リージョン構成です。</value></data>
 
   <!-- Landing -->
+  <data name="Microsoft checkout" xml:space="preserve"><value>Microsoft 側で購入</value></data>
+  <data name="Service activation" xml:space="preserve"><value>サービスの利用開始</value></data>
+  <data name="Activation progress" xml:space="preserve"><value>利用開始までの進行状況</value></data>
+  <data name="Purchase details" xml:space="preserve"><value>契約確認</value></data>
+  <data name="Completed" xml:space="preserve"><value>完了</value></data>
+  <data name="Not signed in" xml:space="preserve"><value>未サインイン</value></data>
+  <data name="In your implementation, link this subscription to your existing user or company ID." xml:space="preserve"><value>実装の要点：この契約を自社の既存ユーザー／企業IDに紐付けます。</value></data>
+  <data name="What happens on this page" xml:space="preserve"><value>この画面で行うこと</value></data>
   <data name="Only this one screen has to be a web page — your desktop or client app stays as it is." xml:space="preserve"><value>ブラウザーで開く必要があるのはこの画面だけ。デスクトップ アプリやクライアント アプリはそのままで構いません。</value></data>
   <data name="Entra single sign-on, required by Microsoft on this page." xml:space="preserve"><value>Entra シングル サインオン。このページでは Microsoft の必須要件です。</value></data>
-  <data name="Purchase token traded for the real details — done, shown below." xml:space="preserve"><value>購入トークンを実データに交換します。実行済みで、結果は下に表示されています。</value></data>
+  <data name="The purchase token is exchanged for subscription details, which appear in the confirmation." xml:space="preserve"><value>購入トークンを契約情報に交換します。確認欄の内容はその結果です。</value></data>
   <data name="Also where you link this subscription to your own company account — Microsoft cannot hold that." xml:space="preserve"><value>ここは自社の企業アカウントへ紐付ける場所でもあります。Microsoft はこの情報を持てません。</value></data>
   <data name="Offers can also auto-activate, skipping this page." xml:space="preserve"><value>オファーを自動有効化に設定すると、この画面は省略されます。</value></data>
   <data name="Next: open the publisher admin and confirm the status now reads Subscribed." xml:space="preserve"><value>次は、パブリッシャー管理を開いて状態が「Subscribed」になったことを確認します。</value></data>

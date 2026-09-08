@@ -230,9 +230,17 @@
   <data name="One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one." xml:space="preserve"><value>One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one.</value></data>
 
   <!-- Landing -->
+  <data name="Microsoft checkout" xml:space="preserve"><value>Microsoft checkout</value></data>
+  <data name="Service activation" xml:space="preserve"><value>Service activation</value></data>
+  <data name="Activation progress" xml:space="preserve"><value>Activation progress</value></data>
+  <data name="Purchase details" xml:space="preserve"><value>Purchase details</value></data>
+  <data name="Completed" xml:space="preserve"><value>Completed</value></data>
+  <data name="Not signed in" xml:space="preserve"><value>Not signed in</value></data>
+  <data name="In your implementation, link this subscription to your existing user or company ID." xml:space="preserve"><value>In your implementation, link this subscription to your existing user or company ID.</value></data>
+  <data name="What happens on this page" xml:space="preserve"><value>What happens on this page</value></data>
   <data name="Only this one screen has to be a web page — your desktop or client app stays as it is." xml:space="preserve"><value>Only this one screen has to be a web page — your desktop or client app stays as it is.</value></data>
   <data name="Entra single sign-on, required by Microsoft on this page." xml:space="preserve"><value>Entra single sign-on, required by Microsoft on this page.</value></data>
-  <data name="Purchase token traded for the real details — done, shown below." xml:space="preserve"><value>Purchase token traded for the real details — done, shown below.</value></data>
+  <data name="The purchase token is exchanged for subscription details, which appear in the confirmation." xml:space="preserve"><value>The purchase token is exchanged for subscription details, which appear in the confirmation.</value></data>
   <data name="Also where you link this subscription to your own company account — Microsoft cannot hold that." xml:space="preserve"><value>Also where you link this subscription to your own company account — Microsoft cannot hold that.</value></data>
   <data name="Offers can also auto-activate, skipping this page." xml:space="preserve"><value>Offers can also auto-activate, skipping this page.</value></data>
   <data name="Next: open the publisher admin and confirm the status now reads Subscribed." xml:space="preserve"><value>Next: open the publisher admin and confirm the status now reads Subscribed.</value></data>

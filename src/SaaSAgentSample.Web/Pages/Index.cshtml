@@ -67,7 +67,11 @@ else
 
     @if (Model.DemoScenario is not null)
     {
-        @(await Html.PartialAsync("_PurchaseArrival", Model.DemoScenario))
+        <aside class="purchase-arrival" aria-label="@L["Illustrative purchase route"]">
+            <span>@L["Microsoft checkout"]</span>
+            <span aria-hidden="true">→</span>
+            <strong>@L["Service activation"]</strong>
+        </aside>
     }
 
     @if (signedIn)
@@ -101,36 +105,26 @@ else
     }
     else if (r is not null)
     {
-        <p class="notice">@L["Only this one screen has to be a web page — your desktop or client app stays as it is."]</p>
-
         @* Markers are status, not numbers: the map above already owns the numbering, and a second
            1-2-3 next to it was exactly the kind of double scheme that made this confusing. *@
-        <ol class="substeps">
-            <li class="@(signedIn ? "done" : null)">
+        <ol class="substeps" aria-label="@L["Activation progress"]">
+            <li class="@(signedIn ? "done" : null)" aria-label="@L["Sign in"]: @(signedIn ? L["Completed"] : L["Not signed in"])">
                 <span class="ss-n" aria-hidden="true"></span>
-                <div>
-                    <strong>@L["Sign in"]</strong>
-                    <p>@L["Entra single sign-on, required by Microsoft on this page."]</p>
-                </div>
+                <span class="ss-label">@L["Sign in"]</span>
+                <span class="ss-next" aria-hidden="true">→</span>
             </li>
-            <li class="done">
+            <li class="done" aria-label="@L["Purchase details"]: @L["Completed"]">
                 <span class="ss-n" aria-hidden="true"></span>
-                <div>
-                    <strong>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Resolve(L)))</strong>
-                    <p>@L["Purchase token traded for the real details — done, shown below."]</p>
-                </div>
+                <span class="ss-label">@L["Purchase details"]</span>
+                <span class="ss-next" aria-hidden="true">→</span>
             </li>
-            <li class="now">
+            <li class="now" aria-current="step">
                 <span class="ss-n" aria-hidden="true"></span>
-                <div>
-                    <strong>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Activate(L)))</strong>
-                    <p>@L["Tells Microsoft fulfillment is done, which starts billing."]</p>
-                    <p class="ss-link">@L["Also where you link this subscription to your own company account — Microsoft cannot hold that."]</p>
-                </div>
+                <span class="ss-label">@L["Activate"]</span>
             </li>
         </ol>
 
-        <div class="card">
+        <div class="card activation-card">
             <h2>@L["Confirm activation"]</h2>
             <dl class="kv">
                 <dt>@L["Subscription"]</dt><dd>@(r.SubscriptionName ?? sub?.Name)</dd>
@@ -139,6 +133,7 @@ else
                 <dt>@L["Quantity"]</dt><dd>@(r.Quantity?.ToString() ?? "—")</dd>
                 <dt>@L["Status"]</dt><dd><span class="badge pending">@sub?.SaasSubscriptionStatus</span></dd>
             </dl>
+            <p class="hint">@L["In your implementation, link this subscription to your existing user or company ID."]</p>
             <form method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="subscriptionId" value="@(sub?.Id ?? r.Id)" />
@@ -149,7 +144,6 @@ else
                 }
                 <button type="submit" class="btn primary">@L["Activate subscription"]</button>
             </form>
-            <p class="hint" style="margin:.9rem 0 0">@L["Offers can also auto-activate, skipping this page."]</p>
         </div>
 
     }
@@ -160,6 +154,24 @@ else
     <details class="explainer learn" id="how">
         <summary>@L["How this works"]</summary>
         <div class="body">
+            @if (Model.DemoScenario is not null)
+            {
+                @(await Html.PartialAsync("_PurchaseArrival", Model.DemoScenario))
+            }
+            <h3 class="learn-h">@L["What happens on this page"]</h3>
+            <p class="learn-lead">@L["Only this one screen has to be a web page — your desktop or client app stays as it is."]</p>
+            <dl class="landing-explanation">
+                <dt>@L["Sign in"]</dt>
+                <dd>@L["Entra single sign-on, required by Microsoft on this page."]</dd>
+                <dt>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Resolve(L)))</dt>
+                <dd>@L["The purchase token is exchanged for subscription details, which appear in the confirmation."]</dd>
+                <dt>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Activate(L)))</dt>
+                <dd>
+                    <p>@L["Tells Microsoft fulfillment is done, which starts billing."]</p>
+                    <p>@L["Also where you link this subscription to your own company account — Microsoft cannot hold that."]</p>
+                </dd>
+            </dl>
+            <p class="learn-foot">@L["Offers can also auto-activate, skipping this page."]</p>
             @(await Html.PartialAsync("_PurchasePermissions"))
             @(await Html.PartialAsync("_KeyTerms"))
         </div>
