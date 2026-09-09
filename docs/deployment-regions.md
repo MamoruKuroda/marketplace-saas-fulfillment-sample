@@ -116,6 +116,23 @@ workflow. In azd 1.33.0 those flags are applied **after** `preup`; conflicting
 flags can cause azd to reject the target selected by the hook.
 The advisor is attached to `up`, not to standalone `provision` or `deploy`.
 
+### Check candidates without deploying or saving
+
+The standalone helper accepts `--check-only`. Supply `AZURE_ENV_NAME` and an
+explicit `AZURE_SUBSCRIPTION_ID` in its process environment; an explicit
+`AZURE_TENANT_ID` avoids cross-tenant discovery. Optionally set
+`DEPLOYMENT_GEOGRAPHY` or `AZURE_LOCATION` to constrain the check.
+
+```bash
+dotnet run --project tools/DeploymentPreflight --configuration Release -- --check-only
+```
+
+This runs one bounded candidate batch without selection prompts, saving azd
+environment values, or continuing to provisioning. Exit code 0 means at least
+one candidate passed; nonzero means no candidate was established or a prerequisite
+failed. Regions beyond that batch remain unverified. Do not use `azd up` to run
+this check-only path.
+
 The helper currently supports this repository's subscription-scoped Bicep
 layout and Azure public cloud. It does not support cross-tenant delegated
 deployment, custom IaC paths/providers, or arbitrary ARM parameter expressions.
@@ -134,8 +151,19 @@ different template/input set.
 - **Local SDK used for offline tests**: .NET SDK 10.0.112 on Windows ARM64.
 - **Local Bicep compiler**: 0.45.15; the actual template compiles with the
   explicit location parameter and the resource-group contract used by the helper.
-- **Live Azure end-to-end verification: pending.** Source review and offline
-  tests must not be described as a successful cloud deployment.
+- **Live check-only run, 2026-09-10**: an isolated official azd 1.33.0 executable
+  used the existing azd test identity on one test subscription. `australiaeast`,
+  `austriaeast`, and `canadacentral` passed Provider validation.
+  `brazilsouth` was rejected with App Service B1 limit 0 / required 1.
+  `belgiumcentral` was excluded by the Log Analytics provider catalog.
+  These are observations for that subscription at that time, not recommended
+  regions or guarantees for other subscriptions. The remaining 58 regions were
+  not checked in that batch.
+- **Boundaries of that run**: no target was saved and no resources were created.
+  It exercised the standalone check-only path, not an entire `azd up` run.
+  Interactive hook execution, policy-denial cases, package/publish, SQL setup
+  and application endpoint behavior still require separate live verification.
+  The machine's installed azd 1.28.1 was not upgraded or reauthenticated.
 
 ## Sources
 

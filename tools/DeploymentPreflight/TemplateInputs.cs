@@ -121,7 +121,8 @@ internal sealed partial class TemplateInputs(JsonObject template, JsonObject par
             throw new InvalidOperationException("Expected a compiled ARM template with a resources array.");
         foreach (var resource in resources.OfType<JsonObject>())
         {
-            if (resource["properties"]?["template"] is JsonObject nested)
+            if (string.Equals(resource["type"]?.GetValue<string>(), "Microsoft.Resources/deployments", StringComparison.OrdinalIgnoreCase) &&
+                resource["properties"]?["template"] is JsonObject nested)
             {
                 foreach (var child in Resources(nested))
                     yield return child;

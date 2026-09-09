@@ -166,6 +166,22 @@ public sealed class RegionGuidanceTests
     }
 
     [Fact]
+    public void ContainerAppPodTemplateIsNotAnArmNestedDeployment()
+    {
+        var template = JsonNode.Parse(Template)!.AsObject();
+        template["resources"]![1]!["properties"]!["template"]!["resources"]!.AsArray().Add(
+            JsonNode.Parse("""
+                {"type":"Microsoft.App/containerApps","apiVersion":"2024-03-01",
+                 "location":"[parameters('location')]",
+                 "properties":{"template":{"containers":[{"name":"emulator","image":"example"}]}}}
+                """));
+        var inputs = new TemplateInputs(template, JsonNode.Parse(Parameters)!.AsObject());
+        Assert.Equal("Basic", inputs.AppServiceTier());
+        Assert.Equal(2, inputs.RegionalResources().Count);
+        Assert.Contains(inputs.RegionalResources(), r => r.Type == "Microsoft.App/containerApps");
+    }
+
+    [Fact]
     public async Task FreshEnvironmentRejectsB1QuotaThenSavesOnlyTheConfirmedCandidate()
     {
         var env = Env();
@@ -291,6 +307,50 @@ public sealed class RegionGuidanceTests
         await Run(env, new ConsoleUi(env, output: new StringWriter()), commands, server);
         Assert.Empty(commands.Calls);
         Assert.Equal(0, server.CallCount);
+    }
+
+    [Fact]
+    public async Task CheckOnlyUsesRealFlowWithoutPromptsSavingOrDeployment()
+    {
+        var env = Env();
+        var commands = new FakeCommands();
+        var server = new FakeArm { RejectUS = true };
+        var output = new StringWriter();
+        await DeploymentPreflight.Program.RunAsync(env,
+            new ConsoleUi(env, new StringReader(""), output, false), CancellationToken.None,
+            commands, server, _ => Task.FromResult(Parameters), checkOnly: true);
+        Assert.Equal(new[] { "eastus", "japaneast" }, server.ValidatedRegions);
+        Assert.Empty(commands.Saved);
+        Assert.Contains("No target was selected or saved", output.ToString());
+    }
+
+    [Fact]
+    public async Task CheckOnlyWithoutExplicitSubscriptionStopsBeforeAuthentication()
+    {
+        var env = Env();
+        env.Remove("AZURE_SUBSCRIPTION_ID");
+        var commands = new FakeCommands();
+        var server = new FakeArm();
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            DeploymentPreflight.Program.RunAsync(env,
+                new ConsoleUi(env, output: new StringWriter()), CancellationToken.None,
+                commands, server, _ => Task.FromResult(Parameters), checkOnly: true));
+        Assert.Empty(commands.Calls);
+        Assert.Equal(0, server.CallCount);
+    }
+
+    [Fact]
+    public async Task EmptyResourceGroupVariableIsNotAnOverride()
+    {
+        var env = Env();
+        env["AZURE_RESOURCE_GROUP"] = "";
+        var commands = new FakeCommands();
+        var server = new FakeArm();
+        await DeploymentPreflight.Program.RunAsync(env,
+            new ConsoleUi(env, new StringReader(""), new StringWriter(), false), CancellationToken.None,
+            commands, server, _ => Task.FromResult(Parameters), checkOnly: true);
+        Assert.NotEmpty(server.ValidatedRegions);
+        Assert.Empty(commands.Saved);
     }
 
     [Fact]

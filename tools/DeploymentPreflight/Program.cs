@@ -7,7 +7,7 @@ namespace DeploymentPreflight;
 
 internal static class Program
 {
-    private static async Task<int> Main()
+    private static async Task<int> Main(string[] args)
     {
         var environment = Environment.GetEnvironmentVariables().Cast<System.Collections.DictionaryEntry>()
             .ToDictionary(e => (string)e.Key, e => (string?)e.Value ?? "", StringComparer.OrdinalIgnoreCase);
@@ -16,7 +16,9 @@ internal static class Program
         Console.CancelKeyPress += (_, e) => { e.Cancel = true; cancellation.Cancel(); };
         try
         {
-            await RunAsync(environment, ui, cancellation.Token);
+            if (args.Length > 1 || args.Any(arg => arg != "--check-only"))
+                throw new ArgumentException("Supported argument: --check-only");
+            await RunAsync(environment, ui, cancellation.Token, checkOnly: args.Contains("--check-only"));
             return 0;
         }
         catch (OperationCanceledException)
@@ -40,18 +42,23 @@ internal static class Program
     internal static async Task RunAsync(
         Dictionary<string, string> environment, ConsoleUi ui, CancellationToken cancellation,
         Commands? commandRunner = null, HttpMessageHandler? messageHandler = null,
-        Func<CancellationToken, Task<string>>? readParameters = null)
+        Func<CancellationToken, Task<string>>? readParameters = null, bool checkOnly = false)
     {
         if (environment.GetValueOrDefault("DEPLOYMENT_PREFLIGHT_MODE") == "off")
         {
+            if (checkOnly)
+                throw new InvalidOperationException("Check-only cannot run while DEPLOYMENT_PREFLIGHT_MODE=off.");
             ui.Write("Region guidance explicitly disabled. Normal azd validation still applies.",
                 "地域候補の案内は明示的に無効化されています。通常の azd 検証は実施されます。");
             return;
         }
         var environmentName = Required(environment, "AZURE_ENV_NAME");
+        if (checkOnly && string.IsNullOrWhiteSpace(environment.GetValueOrDefault("AZURE_SUBSCRIPTION_ID")))
+            throw new InvalidOperationException("Check-only requires an explicit AZURE_SUBSCRIPTION_ID.");
         if (environment.GetValueOrDefault("AZURE_CLOUD_NAME", "AzureCloud") != "AzureCloud")
             throw new InvalidOperationException("Region guidance currently supports AzureCloud only.");
-        if (environment.GetValueOrDefault("AZURE_RESOURCE_GROUP", $"rg-{environmentName}") != $"rg-{environmentName}")
+        var groupOverride = environment.GetValueOrDefault("AZURE_RESOURCE_GROUP");
+        if (!string.IsNullOrWhiteSpace(groupOverride) && groupOverride != $"rg-{environmentName}")
             throw new InvalidOperationException("The resource-group override does not match this sample's template.");
 
         var commands = commandRunner ?? new Commands();
@@ -195,7 +202,7 @@ internal static class Program
             throw new InvalidOperationException("Azure returned no physical deployment regions.");
 
         string? geography = environment.GetValueOrDefault("DEPLOYMENT_GEOGRAPHY");
-        if (pinned is null && requested.Length == 0 && geography is null && !ui.Accepted)
+        if (pinned is null && requested.Length == 0 && geography is null && !ui.Accepted && !checkOnly)
         {
             var specify = ui.Choose("Do you want to restrict the deployment geography?",
                 "配置先の国・地理範囲に希望はありますか？",
@@ -245,6 +252,14 @@ internal static class Program
                 ui.Result(check);
             }
             var passed = checks.Where(c => c.Status == CheckStatus.Candidate).ToArray();
+            if (checkOnly)
+            {
+                ui.Write($"Check-only complete: {passed.Length} candidate(s); {candidates.Count - index} region(s) not checked. No target was selected or saved; no deployment was started.",
+                    $"チェックのみ完了：候補 {passed.Length} 件、残り未確認 {candidates.Count - index} 件。配置先の選択・保存、デプロイは行っていません。");
+                if (passed.Length == 0)
+                    throw new InvalidOperationException("No selectable candidates in this batch. Unchecked regions have not been ruled out.");
+                return;
+            }
             if (ui.Accepted)
             {
                 if (passed.Length == 1)
