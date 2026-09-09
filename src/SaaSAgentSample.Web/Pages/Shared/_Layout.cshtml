@@ -1,4 +1,5 @@
 @using System.Globalization
+@inject Microsoft.Extensions.Configuration.IConfiguration Config
 @{
     var path = (Context.Request.Path.Value ?? "/").ToLowerInvariant();
     var onAdmin = path.StartsWith("/admin");
@@ -11,10 +12,13 @@
     var hasToken = !string.IsNullOrEmpty(Context.Request.Query["token"]);
     var isHome = !onAdmin && path == "/" && !hasToken;
 
-    // The map is on every page. On the home page it is the content, so every step is spelled out;
-    // everywhere else only the step you are on expands, which keeps one part and one actor per page.
+    // This compact guide is teaching navigation, separate from each product's header and controls.
     int? demoStep = onAdmin ? 3 : (path == "/" && hasToken ? 2 : (int?)null);
-    var mapDetail = isHome ? SaaSAgentSample.Web.DemoMapDetail.All : SaaSAgentSample.Web.DemoMapDetail.CurrentOnly;
+    var mapDetail = SaaSAgentSample.Web.DemoMapDetail.CurrentOnly;
+    var emulatorPurchase = DemoNavigation.EmulatorLink(Config, DemoNavigation.PurchaseEntryPath, scenario);
+    var emulatorEvents = DemoNavigation.EmulatorLink(Config, "/subscriptions.html", scenario);
+    var boundaryUrl = DemoNavigation.PublisherLink("/#boundary", scenario);
+    var area = onAdmin ? "operations" : isHome ? "overview" : "buyer";
 
     // Pages report how far the visitor has actually got, so the map can tick off what is done and
     // point at what is next. Set from evidence only — see each page for what it counts as proof.
@@ -28,29 +32,77 @@
     <title>@(ViewData["Title"] ?? "Marketplace SaaS sample")</title>
     <link rel="stylesheet" href="/css/site.css" />
 </head>
-<body>
-    <header class="site-header">
-        <div class="bar">
-            <a class="brand" href="@homeUrl"><span class="logo">M</span><span>Marketplace SaaS sample<small>@L["Publisher-side app"]</small></span></a>
-            <nav class="top">
-                <a href="@homeUrl" class="@(onAdmin ? "" : "active")" aria-current="@(!onAdmin ? "page" : null)">@L["Home"]</a>
-                <a href="@adminUrl" class="@(onAdmin ? "active" : "")" aria-current="@(onAdmin ? "page" : null)">@L["Publisher admin"]</a>
-                <span class="lang" role="navigation" aria-label="@L["Language"]">
-                    <a href="/set-culture?culture=en&amp;redirect=@Uri.EscapeDataString(DemoNavigation.WithCulture(returnUrl, "en"))" class="@(cur == "ja" ? "" : "active")" aria-current="@(cur != "ja" ? "true" : null)">EN</a>
-                    <a href="/set-culture?culture=ja&amp;redirect=@Uri.EscapeDataString(DemoNavigation.WithCulture(returnUrl, "ja"))" class="@(cur == "ja" ? "active" : "")" aria-current="@(cur == "ja" ? "true" : null)">日本語</a>
-                </span>
-            </nav>
-        </div>
-    </header>
-    <div class="orient-bar">
-        <div class="orient-inner">
-            @(await Html.PartialAsync("_HeroLine"))
+<body class="partner-page area-@area">
+    <a class="skip-link" href="#main-content">@L["Skip to content"]</a>
+    <div class="orient-bar teaching-guide">
+        <div class="guide-inner">
+            <a class="guide-title" href="@homeUrl">@L["Teaching guide"]</a>
             @(await Html.PartialAsync("_DemoMap", new SaaSAgentSample.Web.DemoMapVm(demoStep, mapDetail, completedThrough)))
+            <a class="boundary-link" href="@boundaryUrl">@L["Responsibility map"]</a>
+            <details class="demo-role-switch">
+                <summary>@L["Demonstration role switch"]</summary>
+                <div class="role-menu">
+                    <p>@L["Teaching navigation only. It does not grant access or change authentication."]</p>
+                    @if (emulatorPurchase is not null)
+                    {
+                        <a href="@emulatorPurchase" target="_blank" rel="noopener">@L["Buyer — simulated Microsoft purchase ↗"]</a>
+                    }
+                    <a href="@homeUrl">@L["Overview — start the buyer journey here"]</a>
+                    <a href="@adminUrl">@L["Operator — partner company contract DB"]</a>
+                    @if (emulatorEvents is not null)
+                    {
+                        <a href="@emulatorEvents" target="_blank" rel="noopener">@L["Demo operator — trigger Microsoft-side events ↗"]</a>
+                    }
+                </div>
+            </details>
         </div>
     </div>
-    <main>
+    <header class="site-header">
+        <div class="bar">
+            <div class="brand">
+                <span class="area-icon" aria-hidden="true">
+                    @if (onAdmin)
+                    {
+                        <svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3" /><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0" /></svg>
+                    }
+                    else
+                    {
+                        <svg viewBox="0 0 24 24"><path d="M3 8l9-5 9 5-9 5-9-5M3 12l9 5 9-5M3 16l9 5 9-5" /></svg>
+                    }
+                </span>
+                <span>@(onAdmin ? L["Example operations UI implemented by the partner company"] : isHome ? L["Marketplace SaaS teaching sample"] : L["Partner company service"])
+                    <small>@(onAdmin ? L["Partner company administration / for operators"] : isHome ? L["A guide across separate systems — not a product menu"] : L["Partner company site / for buyers"])</small>
+                </span>
+            </div>
+                <nav class="lang" aria-label="@L["Language"]">
+                    <a href="/set-culture?culture=en&amp;redirect=@Uri.EscapeDataString(DemoNavigation.WithCulture(returnUrl, "en"))" class="@(cur == "ja" ? "" : "active")" aria-current="@(cur != "ja" ? "true" : null)">EN</a>
+                    <a href="/set-culture?culture=ja&amp;redirect=@Uri.EscapeDataString(DemoNavigation.WithCulture(returnUrl, "ja"))" class="@(cur == "ja" ? "active" : "")" aria-current="@(cur == "ja" ? "true" : null)">日本語</a>
+                </nav>
+        </div>
+        <div class="area-context" aria-label="@L["Location and responsibility"]">
+            <dl>
+                <div><dt>@L["Current area"]</dt><dd>@(onAdmin ? L["Partner company contract DB"] : isHome ? L["Responsibility overview"] : L["Service activation"])</dd></div>
+                <div><dt>@L["Operated by"]</dt><dd>@(onAdmin ? L["Partner company operator"] : isHome ? L["Demo participant"] : L["Buyer"])</dd></div>
+                <div><dt>@L["Implemented in production by"]</dt><dd>@(isHome ? L["Teaching aid only"] : L["Partner company (SaaS publisher)"])</dd></div>
+            </dl>
+            <span class="area-badge">@(onAdmin ? L["Not a buyer-facing screen"] : isHome ? L["No real purchase"] : L["Partner implementation starts here"])</span>
+        </div>
+    </header>
+    <div class="partner-shell">
+        @if (onAdmin)
+        {
+            <aside class="partner-sidebar">
+                <nav aria-label="@L["Operations navigation"]">
+                    <a href="@adminUrl" aria-current="@(path == "/admin" ? "page" : null)">@L["Subscriptions"]</a>
+                    <a href="@boundaryUrl">@L["Responsibility map"]</a>
+                </nav>
+                <p>@L["For purchase and notification tests, use the teaching role switch above."]</p>
+            </aside>
+        }
+    <main id="main-content" tabindex="-1">
         @RenderBody()
     </main>
+    </div>
     <footer class="site-footer">@L["Experimental teaching sample — not for production use."]</footer>
     <script src="/js/site.js" defer></script>
 </body>

@@ -2,7 +2,7 @@
     // Element 6: why the publisher needs a database at all, when Microsoft already holds the
     // subscription. Renders bare so the caller decides how to group it.
 }
-<h3 class="learn-h">@L["Microsoft holds the subscription too — so why keep your own?"]</h3>
+<h3 class="learn-h">@L["Why does the partner company keep a contract database?"]</h3>
 <div class="truth-cols">
     <div class="truth-col ms">
         <span class="who ms">@L["Microsoft"]</span>
@@ -20,14 +20,14 @@
         <span class="ta back">@L["re-read any time"]</span>
     </div>
     <div class="truth-col pub">
-        <span class="who pub">@L["Publisher (you)"]</span>
-        <h4>@L["Your own side"]</h4>
+        <span class="who pub">@L["Partner company (SaaS publisher)"]</span>
+        <h4>@L["Partner company side"]</h4>
         <ul>
             <li>@L["A synced copy of the commercial state"]</li>
-            <li>@L["The link to your company account and users"]</li>
-            <li>@L["What you provisioned, and their data"]</li>
+            <li>@L["Mapping to customer-company accounts and users"]</li>
+            <li>@L["Provisioned resources and customer data"]</li>
         </ul>
-        <p class="foot-note">@L["Microsoft cannot hold this. That link is why you need your own."]</p>
+        <p class="foot-note">@L["Product-specific account mappings belong to the partner company."]</p>
     </div>
 </div>
-<p class="learn-foot">@L["Microsoft is upstream, so this app checks every webhook against the Operations API before writing. Your database then answers one question: may this customer use the product?"]</p>
+<p class="learn-foot">@L["Microsoft is upstream. Notifications are checked against the Operations API before the partner company's database is updated."]</p>

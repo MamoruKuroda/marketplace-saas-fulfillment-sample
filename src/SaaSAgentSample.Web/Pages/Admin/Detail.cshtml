@@ -25,6 +25,7 @@
 }
 <p><a class="back-link" href="@DemoNavigation.PublisherLink("/admin", scenario)">@L["← All subscriptions"]</a></p>
 <h1 class="page-title">@L["Subscription detail"]</h1>
+<p class="subtitle">@L["The partner company records and synchronizes contracts. This management UI is optional and can reuse existing tools."]</p>
 
 @if (Model.Message is not null)
 {
@@ -34,6 +35,7 @@
 @if (s is not null)
 {
     <div class="card" style="max-width:640px">
+        <p class="hint">@L["Sample operations screen reading the partner company's contract DB. Not the emulator's state."]</p>
         <dl class="kv">
             <dt>@L["Marketplace subscription"]</dt><dd><code>@s.MarketplaceSubscriptionId</code></dd>
             <dt>@L["Name"]</dt><dd>@(string.IsNullOrEmpty(s.Name) ? "—" : s.Name)</dd>
@@ -64,8 +66,13 @@
             </p>
             @if (emu is not null)
             {
-                <p style="margin-top:.6rem"><a href="@emu" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></p>
+                <p style="margin-top:.6rem"><a href="@emu" target="_blank" rel="noopener">@L["Demo role switch: Microsoft-side event operator ↗"]</a></p>
             }
+            <p class="sync-notice">@L["Notifications appear after receipt and database save. Reload to read the latest stored records; this screen cannot detect notifications still in transit."]</p>
+            <details class="explainer learn" id="how">
+                <summary>@L["How this works"]</summary>
+                <div class="body"><p>@L["Contract recording and synchronization belong to the partner implementation. This operations screen and its design are examples, not a required Marketplace management UI."]</p></div>
+            </details>
         }
     </div>
 }

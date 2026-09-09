@@ -121,7 +121,6 @@
   <data name="Microsoft" xml:space="preserve"><value>Microsoft</value></data>
   <data name="Marketplace" xml:space="preserve"><value>マーケットプレース</value></data>
   <data name="This app" xml:space="preserve"><value>このアプリ</value></data>
-  <data name="Publisher (you)" xml:space="preserve"><value>パブリッシャー（あなた）</value></data>
   <data name="Different tenant" xml:space="preserve"><value>別テナント</value></data>
   <data name="Buyer" xml:space="preserve"><value>購入者</value></data>
   <data name="Purchases from the Marketplace, then signs in on the landing page to activate." xml:space="preserve"><value>マーケットプレースで購入し、ランディングページでサインインして有効化します。</value></data>
@@ -161,12 +160,11 @@
   <data name="Language" xml:space="preserve"><value>言語</value></data>
 
   <!-- Layout / hero -->
-  <data name="Marketplace handles the money. You build the part that turns the service on and keeps its state — via Resolve/Activate at start and the Webhook during operation." xml:space="preserve"><value>Marketplace は“お金”を扱う。あなたが作るのは“サービスをONにして状態を持ち続ける”側。境目は、起動時の Resolve/Activate と、運用中の Webhook。</value></data>
+  <data name="Marketplace handles billing. The partner company activates the service and keeps contract state through Resolve/Activate and webhooks." xml:space="preserve"><value>Marketplaceが課金を担当します。パートナー企業がResolve / ActivateとWebhookを使い、サービスの開通と契約状態の維持を実装します。</value></data>
 
   <!-- The three parts you build -->
   <data name="Landing page" xml:space="preserve"><value>ランディング ページ</value></data>
   <data name="Connection webhook" xml:space="preserve"><value>接続 Webhook</value></data>
-  <data name="Your subscription database" xml:space="preserve"><value>自社側の契約状況DB</value></data>
 
 
   <!-- Landing sub-steps -->
@@ -185,7 +183,7 @@
   <data name="at start: Resolve / Activate" xml:space="preserve"><value>起動時：Resolve / Activate</value></data>
   <data name="in operation: Webhook" xml:space="preserve"><value>運用中：Webhook</value></data>
   <data name="re-read any time" xml:space="preserve"><value>いつでも読み直せる</value></data>
-  <data name="Your own side" xml:space="preserve"><value>自社側</value></data>
+  <data name="Partner company side" xml:space="preserve"><value>パートナー企業側</value></data>
 
   <!-- Provenance (display only) -->
   <data name="What changed this, and when" xml:space="preserve"><value>何が、いつ更新したか</value></data>
@@ -231,31 +229,28 @@
   <data name="Purchase details" xml:space="preserve"><value>契約確認</value></data>
   <data name="Completed" xml:space="preserve"><value>完了</value></data>
   <data name="Not signed in" xml:space="preserve"><value>未サインイン</value></data>
-  <data name="In your implementation, link this subscription to your existing user or company ID." xml:space="preserve"><value>実装の要点：この契約を自社の既存ユーザー／企業IDに紐付けます。</value></data>
   <data name="What happens on this page" xml:space="preserve"><value>この画面で行うこと</value></data>
   <data name="Only this one screen has to be a web page — your desktop or client app stays as it is." xml:space="preserve"><value>ブラウザーで開く必要があるのはこの画面だけ。デスクトップ アプリやクライアント アプリはそのままで構いません。</value></data>
   <data name="Entra single sign-on, required by Microsoft on this page." xml:space="preserve"><value>Entra シングル サインオン。このページでは Microsoft の必須要件です。</value></data>
   <data name="The purchase token is exchanged for subscription details, which appear in the confirmation." xml:space="preserve"><value>購入トークンを契約情報に交換します。確認欄の内容はその結果です。</value></data>
-  <data name="Also where you link this subscription to your own company account — Microsoft cannot hold that." xml:space="preserve"><value>ここは自社の企業アカウントへ紐付ける場所でもあります。Microsoft はこの情報を持てません。</value></data>
   <data name="Offers can also auto-activate, skipping this page." xml:space="preserve"><value>オファーを自動有効化に設定すると、この画面は省略されます。</value></data>
   <data name="Next: open the publisher admin and confirm the status now reads Subscribed." xml:space="preserve"><value>次は、パブリッシャー管理を開いて状態が「Subscribed」になったことを確認します。</value></data>
 
   <!-- Publisher admin -->
-  <data name="Your subscription database. Read-only here." xml:space="preserve"><value>自社側の契約状況DB。ここでは閲覧のみです。</value></data>
   <data name="Open the emulator →" xml:space="preserve"><value>エミュレーターを開く →</value></data>
   <data name="How this works" xml:space="preserve"><value>しくみを学ぶ</value></data>
   <data name="Who drives the lifecycle" xml:space="preserve"><value>ライフサイクルを動かすのは誰か</value></data>
-  <data name="Microsoft drives it. This app activates a purchase, then keeps its database in sync with the events Microsoft sends. It never invents state." xml:space="preserve"><value>動かすのは Microsoft です。このアプリは購入を有効化し、その後は Microsoft から届くイベントに合わせて自社DBを同期し続けます。状態を勝手に作り出すことはありません。</value></data>
+  <data name="Microsoft drives it. This app activates a purchase, then keeps its database in sync with the events Microsoft sends. It never invents state." xml:space="preserve"><value>動かすのはMicrosoftです。パートナー企業のアプリは購入を有効化し、その後は通知に合わせて契約DBを更新します。状態を勝手に作り出すことはありません。</value></data>
   <data name="Suspend, Reinstate, Change plan and Unsubscribe are Microsoft-initiated and arrive as a webhook. Trigger them in the emulator, then refresh." xml:space="preserve"><value>Suspend・Reinstate・Change plan・Unsubscribe は Microsoft 起点で、Webhook として届きます。エミュレーターで発生させてから、この画面を再読み込みしてください。</value></data>
 
   <!-- Why keep your own database -->
-  <data name="Microsoft holds the subscription too — so why keep your own?" xml:space="preserve"><value>Microsoft 側もサブスクリプションを持っている — では、なぜ自社でも持つのか？</value></data>
+  <data name="Why does the partner company keep a contract database?" xml:space="preserve"><value>なぜパートナー企業も契約DBを持つのか？</value></data>
   <data name="Upstream. Re-read it any time with GET /subscriptions/{id}." xml:space="preserve"><value>こちらが上流です。GET /subscriptions/{id} でいつでも読み直せます。</value></data>
   <data name="A synced copy of the commercial state" xml:space="preserve"><value>商取引の状態を同期した写し</value></data>
-  <data name="The link to your company account and users" xml:space="preserve"><value>自社の企業アカウントやユーザーとの紐付け</value></data>
-  <data name="What you provisioned, and their data" xml:space="preserve"><value>プロビジョニングしたものと、顧客のデータ</value></data>
-  <data name="Microsoft cannot hold this. That link is why you need your own." xml:space="preserve"><value>これは Microsoft には持てません。この紐付けこそが、自社で持つ理由です。</value></data>
-  <data name="Microsoft is upstream, so this app checks every webhook against the Operations API before writing. Your database then answers one question: may this customer use the product?" xml:space="preserve"><value>Microsoft が上流なので、このアプリは書き込む前に必ず Webhook を Operations API に照合します。そのうえで自社DBが答えるのは1つだけです — この顧客に製品を使わせてよいか？</value></data>
+  <data name="Mapping to customer-company accounts and users" xml:space="preserve"><value>顧客企業アカウントやユーザーとの紐付け</value></data>
+  <data name="Provisioned resources and customer data" xml:space="preserve"><value>払い出したリソースや顧客のデータ</value></data>
+  <data name="Product-specific account mappings belong to the partner company." xml:space="preserve"><value>製品固有のアカウント対応付けはパートナー企業が管理します。</value></data>
+  <data name="Microsoft is upstream. Notifications are checked against the Operations API before the partner company's database is updated." xml:space="preserve"><value>Microsoftが上流です。通知をOperations APIに照合してから、パートナー企業のDBを更新します。</value></data>
 
   <!-- Plan change -->
   <data name="What a plan change means for you" xml:space="preserve"><value>プラン変更は何を意味するか</value></data>
@@ -279,7 +274,6 @@
 
   <!-- Demo map — who operates each step, and which part it is -->
   <data name="Operated by" xml:space="preserve"><value>操作するのは</value></data>
-  <data name="You build" xml:space="preserve"><value>あなたが作る</value></data>
 
   <!-- Home -->
   <data name="A hands-on tour of a Marketplace SaaS purchase — the map above is the whole demo." xml:space="preserve"><value>マーケットプレースでの SaaS 購入を体験するツアーです。上の地図がデモの全体像です。</value></data>
@@ -317,7 +311,7 @@
   <data name="Azure portal → Azure subscription checkout" xml:space="preserve"><value>Azure ポータル → Azure サブスクリプションで購入</value></data>
   <data name="Illustrative purchase route" xml:space="preserve"><value>購入経路の例</value></data>
   <data name="The same publisher landing page" xml:space="preserve"><value>同じパブリッシャーのランディングページへ</value></data>
-  <data name="You build this handoff, not Microsoft's checkout. The route label does not verify payment or permissions." xml:space="preserve"><value>あなたが作るのは、この受け取り先です。Microsoft の購入画面ではありません。経路の表示は、決済や権限を検証した結果ではありません。</value></data>
+  <data name="The partner company implements this destination, not Microsoft's checkout. The route label does not verify payment or permissions." xml:space="preserve"><value>パートナー企業が作るのは、この受け取り先です。Microsoftの購入画面ではありません。経路の表示は、決済や権限を検証した結果ではありません。</value></data>
   <data name="Purchase routes and permissions" xml:space="preserve"><value>購入の入口と必要な権限</value></data>
   <data name="Where a buyer finds an offer is not necessarily where they pay. The offer's available purchase routes come first; an M365 licence alone does not choose the route." xml:space="preserve"><value>商品を見つけた場所と、購入・請求の方式は別です。まずオファーで利用できる購入経路があり、M365 ライセンスの有無だけで経路が決まるわけではありません。</value></data>
   <data name="Illustrative requirements — this demo does not check accounts, cards, roles or tenant policies." xml:space="preserve"><value>条件の説明用です — このデモはアカウント、カード、ロール、テナントのポリシーを検証しません。</value></data>
@@ -334,7 +328,7 @@
   <data name="Eligible Azure subscription and Azure RBAC permissions for the purchase. Being able to view the subscription is not enough." xml:space="preserve"><value>購入可能な Azure サブスクリプションと、購入に必要な Azure RBAC 権限。サブスクリプションを閲覧できるだけでは足りません。</value></data>
   <data name="Azure IAM and Marketplace purchase controls, including Private Marketplace approvals. The Web SaaS self-service policy does not block Azure portal purchases." xml:space="preserve"><value>Azure IAM と Marketplace の購入制限（Private Marketplace の承認など）です。Web の SaaS 自己購入ポリシーは Azure ポータル購入を禁止しません。</value></data>
   <data name="After purchase: the publisher landing page" xml:space="preserve"><value>購入後：パブリッシャーのランディングページ</value></data>
-  <data name="Entra sign-in and any required app consent; link the purchase to the intended user or company account." xml:space="preserve"><value>Entra サインインと必要なアプリ同意。購入契約を、意図した自社ユーザー／企業アカウントに紐付けます。</value></data>
+  <data name="Entra sign-in and any required app consent; link the purchase to the intended user or company account." xml:space="preserve"><value>Entraサインインと必要なアプリ同意。購入契約を、パートナー企業が管理する対象ユーザー／顧客企業アカウントに紐付けます。</value></data>
   <data name="The customer's Entra policies govern sign-in. The publisher's backend grants access from the contract, not from an email domain alone." xml:space="preserve"><value>サインインは購入企業の Entra ポリシーで制御します。利用権はパブリッシャーのバックエンドが契約に基づき付与し、メールドメインだけでは許可しません。</value></data>
   <data name="MCA billing-profile roles are not MOSA billing-administrator roles. Billing administration, self-service purchasing and permission to use the SaaS are separate." xml:space="preserve"><value>MCA の請求プロファイルのロールと、MOSA の課金管理者は別です。請求管理、セルフサービス購入、SaaS の利用権は分けて考えます。</value></data>
   <data name="OfferType SaaS controls third-party SaaS as a type; it is not a per-vendor allow-list. Azure Private Marketplace can approve specific offers and plans. Publishers cannot override a customer's purchase restrictions." xml:space="preserve"><value>OfferType SaaS は第三者 SaaS の種類単位の制御で、ベンダー別の許可リストではありません。Azure Private Marketplace は個別オファー・プランを承認できます。パブリッシャーは顧客の購入制限を上書きできません。</value></data>
@@ -349,4 +343,82 @@
   <data name="Azure Private Marketplace approvals" xml:space="preserve"><value>Azure Private Marketplace の承認設定</value></data>
   <data name="Landing page sign-in and return visits" xml:space="preserve"><value>ランディングページのサインインと再訪</value></data>
   <data name="Confirm the real purchase flow in Partner Center preview" xml:space="preserve"><value>Partner Center のプレビューで実際の購入導線を確認する</value></data>
+  <!-- Responsibility boundaries: shared teaching navigation, separate partner surfaces -->
+  <data name="Operations screen — example only" xml:space="preserve"><value>運用管理画面 — あくまで一例</value></data>
+  <data name="Operators inspect saved partner records. The screen design is optional; access control is a separate implementation concern." xml:space="preserve"><value>運用担当者がパートナー企業の保存記録を確認します。画面のデザインは任意で、アクセス制御は別途実装するものです。</value></data>
+  <data name="Skip to content" xml:space="preserve"><value>本文へ移動</value></data>
+  <data name="Teaching guide" xml:space="preserve"><value>教材ガイド</value></data>
+  <data name="Responsibility map" xml:space="preserve"><value>責任分界図</value></data>
+  <data name="Demonstration role switch" xml:space="preserve"><value>説明用の役割切替</value></data>
+  <data name="Teaching navigation only. It does not grant access or change authentication." xml:space="preserve"><value>説明用の移動です。アクセス権の付与や認証の変更は行いません。</value></data>
+  <data name="Buyer — simulated Microsoft purchase ↗" xml:space="preserve"><value>購入者 — Microsoft側の模擬購入 ↗</value></data>
+  <data name="Overview — start the buyer journey here" xml:space="preserve"><value>全体図 — 購入体験はここから開始</value></data>
+  <data name="Operator — partner company contract DB" xml:space="preserve"><value>運用担当者 — パートナー企業の契約DB</value></data>
+  <data name="Demo operator — trigger Microsoft-side events ↗" xml:space="preserve"><value>デモ操作者 — Microsoft側の通知を発生 ↗</value></data>
+  <data name="Example operations UI implemented by the partner company" xml:space="preserve"><value>パートナー企業が実装する運用管理画面の例</value></data>
+  <data name="The partner company records and synchronizes contracts. This management UI is optional and can reuse existing tools." xml:space="preserve"><value>契約の記録・同期はパートナー企業が担当します。この管理UIは任意で、既存の管理機能でも構いません。</value></data>
+  <data name="Marketplace SaaS teaching sample" xml:space="preserve"><value>Marketplace SaaS 教材サンプル</value></data>
+  <data name="Partner company service" xml:space="preserve"><value>パートナー企業のサービス</value></data>
+  <data name="Partner company administration / for operators" xml:space="preserve"><value>パートナー企業の管理領域 / 運用担当者向け</value></data>
+  <data name="A guide across separate systems — not a product menu" xml:space="preserve"><value>別々のシステムを案内する教材 — 製品のメニューではありません</value></data>
+  <data name="Partner company site / for buyers" xml:space="preserve"><value>パートナー企業のサイト / 購入者向け</value></data>
+  <data name="Location and responsibility" xml:space="preserve"><value>現在地と実装主体</value></data>
+  <data name="Current area" xml:space="preserve"><value>現在地</value></data>
+  <data name="Partner company contract DB" xml:space="preserve"><value>パートナー企業の契約DB</value></data>
+  <data name="Responsibility overview" xml:space="preserve"><value>責任分界の全体図</value></data>
+  <data name="Partner company operator" xml:space="preserve"><value>パートナー企業の運用担当者</value></data>
+  <data name="Demo participant" xml:space="preserve"><value>デモの体験者</value></data>
+  <data name="Implemented in production by" xml:space="preserve"><value>本番の実装</value></data>
+  <data name="Teaching aid only" xml:space="preserve"><value>教材専用</value></data>
+  <data name="Partner company (SaaS publisher)" xml:space="preserve"><value>パートナー企業（SaaS提供者）</value></data>
+  <data name="Not a buyer-facing screen" xml:space="preserve"><value>購入者向けの画面ではありません</value></data>
+  <data name="No real purchase" xml:space="preserve"><value>実購入なし</value></data>
+  <data name="Partner implementation starts here" xml:space="preserve"><value>ここからパートナー企業が実装</value></data>
+  <data name="Operations navigation" xml:space="preserve"><value>運用・照会</value></data>
+  <data name="For purchase and notification tests, use the teaching role switch above." xml:space="preserve"><value>購入体験や通知テストへの移動は、上部の説明用の役割切替から行います。</value></data>
+  <data name="Microsoft purchase" xml:space="preserve"><value>Microsoftで購入</value></data>
+  <data name="Partner activation" xml:space="preserve"><value>パートナー企業で有効化</value></data>
+  <data name="Partner contract DB" xml:space="preserve"><value>パートナー企業のDB</value></data>
+  <data name="Notification test" xml:space="preserve"><value>通知を試す</value></data>
+  <data name="Teaching steps — links may switch role or system" xml:space="preserve"><value>教材のステップ — 移動先で役割やシステムが切り替わります</value></data>
+  <data name="Who provides the screens, services and data?" xml:space="preserve"><value>誰が画面・サーバー処理・DBを用意する？</value></data>
+  <data name="Screens are opened by people. APIs, webhooks and the database run behind those screens." xml:space="preserve"><value>人が開くのは画面です。API・Webhook・DBは、その裏側で動きます。</value></data>
+  <data name="Microsoft provides" xml:space="preserve"><value>Microsoftが提供</value></data>
+  <data name="Browser screen" xml:space="preserve"><value>ブラウザーで開く画面</value></data>
+  <data name="Marketplace purchase" xml:space="preserve"><value>Marketplaceでの購入</value></data>
+  <data name="Buyer selects and purchases an offer. The partner company does not build this checkout." xml:space="preserve"><value>購入者がオファーを選び、購入します。この購入画面はパートナー企業では作りません。</value></data>
+  <data name="Server / API" xml:space="preserve"><value>サーバー / API</value></data>
+  <data name="Microsoft's commercial subscription state and operations." xml:space="preserve"><value>Microsoft側の商取引上の契約状態・操作を扱います。</value></data>
+  <data name="In this demo, the emulator stands in for Microsoft and keeps its own separate state." xml:space="preserve"><value>デモではエミュレーターがMicrosoftの代役となり、独立した状態を持ちます。</value></data>
+  <data name="Partner company implements" xml:space="preserve"><value>パートナー企業が実装</value></data>
+  <data name="Buyer landing page" xml:space="preserve"><value>購入者向けランディングページ</value></data>
+  <data name="Sign-in, purchase confirmation and activation; link the purchase to the intended customer account." xml:space="preserve"><value>サインイン・契約確認・有効化。購入契約を対象の顧客アカウントに紐付けます。</value></data>
+  <data name="Server / endpoint — not a page" xml:space="preserve"><value>サーバー / エンドポイント — 画面ではありません</value></data>
+  <data name="Fulfillment calls and webhook receiver" xml:space="preserve"><value>Fulfillment呼び出し・Webhook受信</value></data>
+  <data name="Resolve / Activate from the server; validate Microsoft notifications before saving changes." xml:space="preserve"><value>サーバーからResolve / Activateを呼び出します。通知は検証してから保存します。</value></data>
+  <data name="Database" xml:space="preserve"><value>データベース</value></data>
+  <data name="Saved subscription state and event history. The operations screen reads these records, not the emulator table." xml:space="preserve"><value>契約状態と更新履歴を保存します。管理画面の表示元はこの記録で、エミュレーターの表ではありません。</value></data>
+  <data name="SaaS backend" xml:space="preserve"><value>SaaSのバックエンド</value></data>
+  <data name="Customer entitlement handling" xml:space="preserve"><value>顧客の利用権処理</value></data>
+  <data name="The partner company connects saved contract state to its user and customer-company IDs. Product access enforcement is outside this sample." xml:space="preserve"><value>パートナー企業が契約状態と既存ユーザー／顧客企業IDを対応付けます。製品の利用制御は本サンプルの範囲外です。</value></data>
+  <data name="Browser → partner" xml:space="preserve"><value>ブラウザー → パートナー企業</value></data>
+  <data name="Purchase handoff carries a purchase identification token. Its value is never shown in this diagram." xml:space="preserve"><value>購入識別トークンを伴って画面遷移します。この図にはトークンの実値を表示しません。</value></data>
+  <data name="Partner server → Microsoft API" xml:space="preserve"><value>パートナー企業のサーバー → Microsoft API</value></data>
+  <data name="Microsoft → partner endpoint" xml:space="preserve"><value>Microsoft → パートナー企業の受信処理</value></data>
+  <data name="Asynchronous webhook notification; validated server-side." xml:space="preserve"><value>非同期のWebhook通知を送り、受信側サーバーで検証します。</value></data>
+  <data name="Partner server → partner DB" xml:space="preserve"><value>パートナー企業のサーバー → 契約DB</value></data>
+  <data name="Save after Resolve / Activate or an accepted notification; operators reload to see stored updates." xml:space="preserve"><value>Resolve / Activateや受理した通知の処理で保存します。運用担当者は再読み込みして保存結果を確認します。</value></data>
+  <data name="The two stores are separate. This UI cannot know that a notification is still in transit or claim synchronization without observing the saved result." xml:space="preserve"><value>2つの状態ストアは別物です。このUIでは未到着の通知を判定できず、保存結果を見ずに同期済みとは断定しません。</value></data>
+  <data name="You are now on the partner company's site" xml:space="preserve"><value>パートナー企業のサイトに移りました</value></data>
+  <data name="Next in the demo: switch to the partner company operator and inspect the saved contract. This is not the buyer's product navigation." xml:space="preserve"><value>デモの次の操作：パートナー企業の運用担当者に切り替え、保存された契約を確認します。購入者向けの通常の導線ではありません。</value></data>
+  <data name="Demo role switch: partner company operator →" xml:space="preserve"><value>説明用の役割切替：パートナー企業の運用担当者へ →</value></data>
+  <data name="The partner company links this contract to its existing user or customer-company ID." xml:space="preserve"><value>パートナー企業が管理する既存ユーザー／顧客企業IDに、この契約を紐付けます。</value></data>
+  <data name="The partner company manages the mapping between this subscription and its customer accounts; Microsoft does not provide that product-specific mapping." xml:space="preserve"><value>契約と顧客アカウントの対応付けはパートナー企業が管理します。製品固有のこの対応付けはMicrosoftからは提供されません。</value></data>
+  <data name="This is a partner-designed screen, not a mandatory Microsoft UI design." xml:space="preserve"><value>パートナー企業が設計する画面です。Microsoft指定の必須UIデザインではありません。</value></data>
+  <data name="Sample operations screen reading the partner company's contract DB. Not the emulator's state." xml:space="preserve"><value>パートナー企業の契約DBを表示するサンプル管理画面です。エミュレーターの状態ではありません。</value></data>
+  <data name="Saved partner contracts" xml:space="preserve"><value>パートナー企業が保存した契約</value></data>
+  <data name="Notifications appear after receipt and database save. Reload to read the latest stored records; this screen cannot detect notifications still in transit." xml:space="preserve"><value>通知は受信・DB保存後に反映されます。再読み込みで保存結果を確認してください。この画面では未到着の通知は判定できません。</value></data>
+  <data name="Reload partner company DB" xml:space="preserve"><value>パートナー企業のDBを再読み込み</value></data>
+  <data name="Demo role switch: Microsoft-side event operator ↗" xml:space="preserve"><value>説明用の役割切替：Microsoft側の通知テストへ ↗</value></data>
+  <data name="Contract recording and synchronization belong to the partner implementation. This operations screen and its design are examples, not a required Marketplace management UI." xml:space="preserve"><value>契約の記録・同期はパートナー企業の実装範囲です。この管理画面やデザインは一例であり、Marketplace指定の必須管理UIではありません。</value></data>
 </root>

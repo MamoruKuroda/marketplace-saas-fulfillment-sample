@@ -1,164 +1,145 @@
-// The same demo map the publisher app shows, rendered here so the four steps have a
-// "you are here" everywhere. Steps 1 and 4 happen in this emulator, so without this the
-// map could never highlight them and the app had to explain the gap in prose instead.
-//
-// The convention is the same on both sides: a solid card is the system you are in now,
-// a dashed card is the other system and opens in a new tab. Only the current step is
-// expanded, so a page shows one actor and (where relevant) one part.
-//
-// Presentation only — no emulator behaviour or API is touched. Strings go through the
-// existing i18n catalogue, and injected markup is translated with applyI18n(), the same
-// way injectLanguageToggle() does it.
+// Teaching navigation only. Roles do not grant access, and the guide never creates
+// a purchase or a tokenless "activated landing" link.
 (function () {
   "use strict";
 
-  // Steps 1 and 4 are this emulator; 2 and 3 are the publisher app, which is a separate
-  // origin, so those links are resolved at render time from the emulator's config.
+  var TOOLS = [
+    { href: "/start.html", key: "nav.marketplace" },
+    { href: "/subscriptions.html", key: "nav.subscriptions" },
+    { href: "/", key: "boundary.tokenTool" },
+    { href: "/landing.html", key: "nav.landingPage" },
+    { href: "/offers.html", key: "nav.offers" },
+    { href: "/config.html", key: "nav.config" },
+    { href: "https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues", key: "boundary.issues" }
+  ];
   var STEPS = [
-    { n: "1", key: "map.step1", where: "map.hereEmulator", who: "map.whoBuyer", part: null, href: "/start.html", path: null, external: false },
-    { n: "2", key: "map.step2", where: "map.herePublisher", who: "map.whoBuyer", part: "map.partLanding", href: null, path: "/", external: true },
-    { n: "3", key: "map.step3", where: "map.herePublisher", who: "map.whoPublisher", part: "map.partStore", href: null, path: "/admin", external: true },
-    { n: "4", key: "map.step4", where: "map.hereEmulator", who: "map.whoMicrosoft", part: null, href: "/subscriptions.html", path: null, external: false },
+    { n: "1", key: "map.step1", href: "/start.html" },
+    { n: "2", key: "map.step2", external: true },
+    { n: "3", key: "map.step3", external: true, path: "/admin" },
+    { n: "4", key: "map.step4", href: "/subscriptions.html" }
   ];
 
-  function el(tag, className) {
+  function el(tag, className, key) {
     var node = document.createElement(tag);
     if (className) node.className = className;
+    if (key) {
+      node.setAttribute("data-i18n", key);
+      node.textContent = t(key);
+    }
     return node;
   }
 
-  function i18nSpan(tag, key, className) {
-    var node = el(tag, className);
-    node.setAttribute("data-i18n", key);
-    return node;
-  }
-
-  // Carry the language across the hop. Without this, someone reading the emulator in
-  // Japanese lands on the publisher app in whatever its own cookie last said.
-  function publisherLink(publisherUrl, path, hash) {
-    if (!publisherUrl) return null;
-    var url = new URL(path, publisherUrl);
-    if (hash) url.hash = hash;
-    return window.PurchaseJourney.withContext(url).href;
-  }
-
-  function buildStep(step, current, publisherUrl) {
-    var card = el("div", "step" + (step.external ? " external" : "") + (current ? " current" : ""));
-    card.setAttribute("role", "listitem");
-    if (current) card.setAttribute("aria-current", "step");
-
-    var href = step.external ? publisherLink(publisherUrl, step.path) : window.PurchaseJourney.withContext(step.href).href;
-    var head = el(href ? "a" : "span", "step-head");
-    if (href) {
-      head.href = href;
-      if (step.external) {
-        head.target = "_blank";
-        head.rel = "noopener";
-      }
+  function teachingLink(node, href, external) {
+    node.href = window.PurchaseJourney.withContext(href).href;
+    if (external) {
+      node.target = "_blank";
+      node.rel = "noopener";
+      node.setAttribute("title", t("boundary.newTab"));
     }
-
-    var num = el("span", "n");
-    num.textContent = step.n;
-    head.appendChild(num);
-
-    var lbl = el("span", "lbl");
-    lbl.appendChild(i18nSpan("span", step.key));
-    var where = i18nSpan("small", step.where);
-    lbl.appendChild(where);
-    head.appendChild(lbl);
-    card.appendChild(head);
-
-    if (current) {
-      card.appendChild(i18nSpan("p", step.key + "Desc", "desc"));
-      var meta = el("dl", "step-meta");
-      meta.appendChild(i18nSpan("dt", "map.operatedBy"));
-      meta.appendChild(i18nSpan("dd", step.who));
-      if (step.part) {
-        meta.appendChild(i18nSpan("dt", "map.youBuild"));
-        meta.appendChild(i18nSpan("dd", step.part, "is-part"));
-      }
-      card.appendChild(meta);
-    }
-
-    return card;
   }
 
-  function render(current, publisherUrl) {
-    var wrap = el("div", "demo-map");
-
-    // A div, not a <nav>: the emulator styles every <nav> as its dark navigation bar, and the
-    // map is not navigation chrome. role/aria keep the semantics.
-    var nav = el("div", "stepper");
-    nav.setAttribute("role", "list");
-    nav.setAttribute("aria-label", t("journey.mapLabel"));
-    STEPS.forEach(function (step) {
-      nav.appendChild(buildStep(step, step.n === current, publisherUrl));
+  function roleLinks() {
+    var list = document.querySelector(".role-switch nav ul");
+    if (!list) return;
+    list.replaceChildren();
+    TOOLS.forEach(function (tool) {
+      var item = el("li");
+      var link = el("a", "", tool.key);
+      var external = tool.href.indexOf("https:") === 0;
+      if (external) {
+        link.href = tool.href;
+        link.target = "_blank";
+        link.rel = "noopener";
+      } else {
+        teachingLink(link, tool.href, false);
+        if (new URL(link.href).pathname === window.location.pathname ||
+            (tool.href === "/" && window.location.pathname === "/index.html")) {
+          link.setAttribute("aria-current", "page");
+        }
+      }
+      item.appendChild(link);
+      list.appendChild(item);
     });
-    wrap.appendChild(nav);
-
-    var rp = el("p", "return-path");
-    var rpn = el("span", "rp-n");
-    rpn.textContent = "4\u21923";
-    rp.appendChild(rpn);
-    rp.appendChild(i18nSpan("span", "map.youBuild", "rp-cap"));
-    rp.appendChild(i18nSpan("strong", "map.partWebhook", "is-part"));
-    rp.appendChild(i18nSpan("span", "map.webhookDesc"));
-    wrap.appendChild(rp);
-
-    // The glossary lives in the publisher app and is deliberately not duplicated here: a second
-    // copy in this emulator's own catalogue would drift, and once did. Link to it instead.
-    var howHref = publisherLink(publisherUrl, "/", "#how");
-    if (howHref) {
-      var learn = el("p", "learn-link");
-      var a = el("a");
-      a.href = howHref;
-      a.target = "_blank";
-      a.rel = "noopener";
-      a.setAttribute("data-i18n", "map.learnMore");
-      learn.appendChild(a);
-      wrap.appendChild(learn);
-    }
-
-    return wrap;
-  }
-
-  function mount(publisherUrl) {
-    if (document.querySelector(".demo-map")) return;
-
-    var current = document.body.getAttribute("data-demo-step") || "";
-    var anchor = document.querySelector("p.page-hint") || document.querySelector("nav");
-    if (!anchor || !anchor.parentNode) return;
-
-    var map = render(current, publisherUrl);
-    anchor.parentNode.insertBefore(map, anchor.nextSibling);
-    if (window.applyI18n) window.applyI18n(map);
   }
 
   function start() {
-    // The publisher app's URL is the landing page the emulator is configured to call, so the
-    // map can link to steps 2 and 3 without hard-coding anything.
-    var done = false;
-    function once(url) {
-      if (done) return;
-      done = true;
-      mount(url);
+    roleLinks();
+    if (document.querySelector(".demo-map")) return;
+    var anchor = document.querySelector("p.page-hint");
+    if (!anchor || !anchor.parentNode) return;
+    var current = document.body.getAttribute("data-demo-step") || "";
+    var wrap = el("aside", "demo-map");
+    wrap.setAttribute("aria-label", t("journey.mapLabel"));
+    var nav = el("div", "stepper");
+    nav.setAttribute("role", "list");
+    var partnerLinks = [];
+    STEPS.forEach(function (step) {
+      var item = el("div", "step" + (step.external ? " external" : "") + (step.n === current ? " current" : ""));
+      item.setAttribute("role", "listitem");
+      if (step.n === current) item.setAttribute("aria-current", "step");
+      var head = el(step.href || step.path ? "a" : "span", "step-head");
+      if (step.href) teachingLink(head, step.href, false);
+      if (step.path) partnerLinks.push({ node: head, path: step.path });
+      var number = el("span", "n");
+      number.textContent = step.n;
+      head.appendChild(number);
+      head.appendChild(el("span", "lbl", step.key));
+      item.appendChild(head);
+      nav.appendChild(item);
+    });
+    wrap.appendChild(nav);
+    var guide = el("div", "guide-caption");
+    guide.appendChild(el("strong", "", "boundary.teachingGuide"));
+    var overview = el("a", "boundary-overview", "boundary.overview");
+    partnerLinks.push({ node: overview, path: "/", hash: "#boundary" });
+    guide.appendChild(overview);
+    var learn = el("a", "learn-link", "map.learnMore");
+    partnerLinks.push({ node: learn, path: "/", hash: "#how" });
+    guide.appendChild(learn);
+    var status = el("span", "guide-status", "boundary.configLoading");
+    status.setAttribute("role", "status");
+    guide.appendChild(status);
+    var roles = document.querySelector(".role-switch");
+    if (roles) {
+      var menu = el("div", "role-menu");
+      Array.from(roles.children).forEach(function (child) {
+        if (child.tagName !== "SUMMARY") menu.appendChild(child);
+      });
+      roles.appendChild(menu);
+      guide.appendChild(roles);
     }
+    wrap.appendChild(guide);
+    var header = document.querySelector("body > header");
+    (header || anchor).parentNode.insertBefore(wrap, header || anchor);
+    if (window.applyI18n) window.applyI18n(wrap);
 
+    var settled = false;
+    function unavailable() {
+      status.textContent = t("boundary.configUnavailable");
+      status.setAttribute("data-i18n", "boundary.configUnavailable");
+    }
+    // The guide and role labels are visible even while configuration is unavailable.
+    window.setTimeout(function () { if (!settled) unavailable(); }, 1500);
     fetch("/api/util/config")
-      .then(function (res) { return res.ok ? res.json() : null; })
-      .then(function (config) {
-        var landing = config && config.landingPageUrl;
-        once(landing ? new URL(landing).href : null);
+      .then(function (res) {
+        if (!res.ok) throw new Error("Configuration unavailable");
+        return res.json();
       })
-      .catch(function () { once(null); });
-
-    // Never let a slow or failed config call hide the map.
-    window.setTimeout(function () { once(null); }, 1500);
+      .then(function (config) {
+        var base = new URL(config.landingPageUrl);
+        if (!/^https?:$/.test(base.protocol) || base.username || base.password) throw new Error("Invalid partner URL");
+        partnerLinks.forEach(function (link) {
+          // Root paths intentionally discard configured token/query values.
+          var url = new URL(link.path, base);
+          if (link.hash) url.hash = link.hash;
+          teachingLink(link.node, url, true);
+        });
+        status.hidden = true;
+        settled = true;
+      })
+      .catch(function () { settled = true; unavailable(); });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start);
-  } else {
-    start();
-  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
+  else start();
 })();
