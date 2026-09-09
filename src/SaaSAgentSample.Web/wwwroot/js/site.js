@@ -19,10 +19,10 @@
   // The emulator links here with #how so a reader looking for a term lands on the
   // explanation already open, instead of on a closed summary they have to spot.
   function openHow() {
-    if (window.location.hash !== "#how") return;
-    var how = document.getElementById("how");
+    if (window.location.hash !== "#how" && window.location.hash !== "#boundary") return;
+    var how = document.getElementById(window.location.hash.substring(1));
     if (!how) return;
-    how.open = true;
+    if (how.tagName === "DETAILS") how.open = true;
     // Scroll by hand rather than with scrollIntoView: the header is sticky, so aligning the
     // element with the top of the viewport would park it underneath the header.
     var header = document.querySelector(".site-header");
@@ -54,6 +54,7 @@
         swapInner(doc, "main");
         swapInner(doc, ".site-header");
         swapInner(doc, ".orient-bar");
+        swapInner(doc, ".partner-sidebar");
         swapInner(doc, ".site-footer");
 
         var lang = doc.documentElement.getAttribute("lang");

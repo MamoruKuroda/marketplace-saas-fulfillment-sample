@@ -1,143 +1,36 @@
 @model SaaSAgentSample.Web.DemoMapVm
 @inject Microsoft.Extensions.Configuration.IConfiguration Config
 @{
-    // The single map of the demo, shown on every page. One card per step, carrying everything a
-    // first-time viewer needs about that step: what happens, whose system it is, who operates it,
-    // and — for the two steps that are this app — which of the parts you build it is.
-    //
-    // Merging those facts into the steps is deliberate: they used to be three parallel lists (the
-    // flow, the parts, the cast) that the reader had to line up in their head.
-    //
-    // Only the current step is expanded, so any one page shows exactly one part and one actor.
-    // Steps 1 and 4 live in the emulator and can never be current from inside this app, which is
-    // why they are dashed and open in a new tab.
     var scenario = DemoNavigation.PurchaseScenario(Context.Request.Query["scenario"].ToString());
-    var emuRoot = DemoNavigation.EmulatorLink(Config, DemoNavigation.PurchaseEntryPath, scenario);
-    var emuSubs = DemoNavigation.EmulatorLink(Config, "/subscriptions.html", scenario);
     var steps = new[]
     {
-        new
-        {
-            N = 1,
-            Label = L["Buy in Marketplace"].Value,
-            Where = L["Emulator (Microsoft)"].Value,
-            Desc = L["You're the buyer, shopping in Microsoft's marketplace."].Value,
-            Who = L["Buyer"].Value,
-            Part = (string?)null,
-            Href = emuRoot,
-            External = true,
-        },
-        new
-        {
-            N = 2,
-            Label = L["Activate"].Value,
-            Where = L["Publisher app"].Value,
-            Desc = L["The buyer lands here and confirms. Activation starts billing."].Value,
-            Who = L["Buyer"].Value,
-            Part = (string?)L["Landing page"].Value,
-            Href = (string?)DemoNavigation.PublisherLink("/", scenario),
-            External = false,
-        },
-        new
-        {
-            N = 3,
-            Label = L["Manage"].Value,
-            Where = L["Publisher app"].Value,
-            Desc = L["The publisher's own subscription database — what this app checks before letting a customer in."].Value,
-            Who = L["Publisher (you)"].Value,
-            Part = (string?)L["Your subscription database"].Value,
-            Href = (string?)DemoNavigation.PublisherLink("/admin", scenario),
-            External = false,
-        },
-        new
-        {
-            N = 4,
-            Label = L["Lifecycle events"].Value,
-            Where = L["Emulator (Microsoft)"].Value,
-            Desc = L["Suspend, change, or cancel from the emulator; webhooks update the state here."].Value,
-            Who = L["Microsoft"].Value,
-            Part = (string?)null,
-            // The Subscriptions tab, not the emulator root — the root is its Marketplace tab,
-            // which is step 1, so linking there sent people back to the start of the tour.
-            Href = emuSubs,
-            External = true,
-        },
+        (N: 1, Label: L["Microsoft purchase"].Value,
+            Href: DemoNavigation.EmulatorLink(Config, DemoNavigation.PurchaseEntryPath, scenario), External: true),
+        // A token-free link cannot open a purchased landing. Keep this step informational.
+        (N: 2, Label: L["Partner activation"].Value, Href: (string?)null, External: false),
+        (N: 3, Label: L["Partner contract DB"].Value,
+            Href: (string?)DemoNavigation.PublisherLink("/admin", scenario), External: false),
+        (N: 4, Label: L["Notification test"].Value,
+            Href: DemoNavigation.EmulatorLink(Config, "/subscriptions.html", scenario), External: true),
     };
-    var all = Model.Detail == SaaSAgentSample.Web.DemoMapDetail.All;
-
-    // A step is done when there is evidence for it; the one after the last done step is where to
-    // go next. Without that, the map could say where you are but not that you had finished with it.
-    // The step you are standing on is never also the "next" one.
     var doneThrough = Model.CompletedThrough ?? 0;
-    var nextStep = doneThrough > 0 && doneThrough < steps.Length ? doneThrough + 1 : (int?)null;
-    if (nextStep == Model.Current)
-    {
-        nextStep = null;
-    }
 }
-<nav class="stepper" aria-label="@L["Demo steps"]">
+<nav class="stepper" aria-label="@L["Teaching steps — links may switch role or system"]">
     @foreach (var s in steps)
     {
         var current = Model.Current == s.N;
         var done = s.N <= doneThrough;
-        var next = nextStep == s.N;
-        <div class="step @(s.External ? "external" : null) @(done ? "done" : null) @(next ? "next" : null) @(current ? "current" : null)" aria-current="@(current ? "step" : null)">
-            @if (s.Href is not null)
+        <div class="step @(s.External ? "external" : null) @(done ? "done" : null) @(current ? "current" : null)" aria-current="@(current ? "step" : null)">
+            @if (s.Href is not null && !current)
             {
                 <a class="step-head" href="@s.Href" target="@(s.External ? "_blank" : null)" rel="@(s.External ? "noopener" : null)">
-                    <span class="n">@(done ? "✓" : s.N.ToString())</span>
-                    <span class="lbl">@s.Label<small>@s.Where@(s.External ? " ↗" : "")</small></span>
+                    <span class="n">@s.N</span><span class="lbl">@s.Label@(s.External ? " ↗" : "")</span>
                 </a>
             }
             else
             {
-                <span class="step-head">
-                    <span class="n">@(done ? "✓" : s.N.ToString())</span>
-                    <span class="lbl">@s.Label<small>@s.Where</small></span>
-                </span>
-            }
-            @* Styled as a call to action, so it has to actually be one. As a paragraph it looked
-               clickable and was not. *@
-            @if (next && s.Href is not null)
-            {
-                <a class="step-next" href="@s.Href" target="@(s.External ? "_blank" : null)" rel="@(s.External ? "noopener" : null)">@L["Next: go here →"]</a>
-            }
-            else if (next)
-            {
-                <p class="step-next">@L["Next: go here →"]</p>
-            }
-            @if (all || current || next)
-            {
-                <p class="desc">@s.Desc</p>
-            }
-            @* Only the step you are on names its actor and its part. Showing them for the next one
-               too would put two actors on the page, which is the confusion this map removed. *@
-            @if (all || current)
-            {
-                <dl class="step-meta">
-                    <dt>@L["Operated by"]</dt>
-                    <dd>@s.Who</dd>
-                    @if (s.Part is not null)
-                    {
-                        <dt>@L["You build"]</dt>
-                        <dd class="is-part">@s.Part</dd>
-                    }
-                </dl>
+                <span class="step-head"><span class="n">@s.N</span><span class="lbl">@s.Label</span></span>
             }
         </div>
     }
 </nav>
-<p class="return-path">
-    <span class="rp-n">4&#8594;3</span>
-    <span class="rp-cap">@L["You build"]</span>
-    <strong class="is-part">@L["Connection webhook"]</strong>
-    <span>@L["Receives renewal, suspend, cancel and plan changes. No page — an endpoint."]</span>
-</p>
-@if (all)
-{
-    <p class="stepper-legend">
-        <span class="sl-item"><span class="sl-key app" aria-hidden="true"></span>@L["Solid — the system you are in now"]</span>
-        <span class="sl-item"><span class="sl-key ext" aria-hidden="true"></span>@L["Dashed — the other system, opens in a new tab"]</span>
-    </p>
-    <p class="stepper-note">@L["One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one."]</p>
-}

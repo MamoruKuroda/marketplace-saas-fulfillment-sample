@@ -32,6 +32,9 @@
         <p class="notice">@L["To begin, open your Fulfillment API Emulator and use its Marketplace tab."]</p>
     }
 
+    <div id="boundary">
+        @(await Html.PartialAsync("_ResponsibilityMap"))
+    </div>
     <details class="explainer learn" id="how">
         <summary>@L["How this works"]</summary>
         <div class="body">
@@ -44,7 +47,7 @@
                 </div>
                 <div class="actor">
                     <span class="who pub">@L["This app"]</span>
-                    <h3>@L["Publisher (you)"]</h3>
+                    <h3>@L["Partner company (SaaS publisher)"]</h3>
                     <p>@L["Sells the offer. Builds steps 2 and 3, plus the webhook that carries step 4 back to step 3."]</p>
                 </div>
                 <div class="actor">
@@ -70,7 +73,7 @@ else
         <aside class="purchase-arrival" aria-label="@L["Illustrative purchase route"]">
             <span>@L["Microsoft checkout"]</span>
             <span aria-hidden="true">→</span>
-            <strong>@L["Service activation"]</strong>
+            <strong>@L["You are now on the partner company's site"]</strong>
         </aside>
     }
 
@@ -91,8 +94,8 @@ else
                 {
                     <p class="banner-next">@L["In your product, this return visit leads to the buyer's account or settings. This sample shows the publisher's subscription record instead."]</p>
                 }
-                <p class="banner-next">@L["Next: open the publisher admin and confirm the status now reads Subscribed."]</p>
-                <p class="banner-cta"><a class="btn primary" href="@adminUrl">@L["Open the publisher admin (step 3) →"]</a></p>
+                <p class="banner-next">@L["Next in the demo: switch to the partner company operator and inspect the saved contract. This is not the buyer's product navigation."]</p>
+                <p class="banner-cta"><a class="btn primary" href="@adminUrl">@L["Demo role switch: partner company operator →"]</a></p>
                 @if (Model.EmulatorUrl is not null)
                 {
                     <p class="banner-later">
@@ -133,7 +136,7 @@ else
                 <dt>@L["Quantity"]</dt><dd>@(r.Quantity?.ToString() ?? "—")</dd>
                 <dt>@L["Status"]</dt><dd><span class="badge pending">@sub?.SaasSubscriptionStatus</span></dd>
             </dl>
-            <p class="hint">@L["In your implementation, link this subscription to your existing user or company ID."]</p>
+            <p class="hint">@L["The partner company links this contract to its existing user or customer-company ID."]</p>
             <form method="post">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="subscriptionId" value="@(sub?.Id ?? r.Id)" />
@@ -151,6 +154,11 @@ else
     {
         <div class="card"><p class="muted">@(Model.Message ?? L["Nothing to show."].Value)</p></div>
     }
+    <p class="design-note">@L["This is a partner-designed screen, not a mandatory Microsoft UI design."]</p>
+    <details class="explainer learn" id="boundary">
+        <summary>@L["Responsibility map"]</summary>
+        <div class="body">@(await Html.PartialAsync("_ResponsibilityMap"))</div>
+    </details>
     <details class="explainer learn" id="how">
         <summary>@L["How this works"]</summary>
         <div class="body">
@@ -168,7 +176,7 @@ else
                 <dt>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Activate(L)))</dt>
                 <dd>
                     <p>@L["Tells Microsoft fulfillment is done, which starts billing."]</p>
-                    <p>@L["Also where you link this subscription to your own company account — Microsoft cannot hold that."]</p>
+                    <p>@L["The partner company manages the mapping between this subscription and its customer accounts; Microsoft does not provide that product-specific mapping."]</p>
                 </dd>
             </dl>
             <p class="learn-foot">@L["Offers can also auto-activate, skipping this page."]</p>

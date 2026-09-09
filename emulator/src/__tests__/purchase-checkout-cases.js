@@ -9,6 +9,27 @@ const client = path.join(__dirname, "..", "client");
 const source = name => fs.readFileSync(path.join(client, name), "utf8");
 const cases = [];
 const check = (name, run) => cases.push([name, run]);
+check("partner handoff lives only in existing completion stage and preserves the configure anchor contract", () => {
+    const html = source("checkout.html");
+    const complete = html.match(/<section id="checkout-complete" hidden>([\s\S]*?)<\/section>/);
+    assert.ok(complete);
+    assert.match(complete[1], /class="purchase-handoff"/);
+    assert.match(complete[1], /boundary.handoffFrom/);
+    assert.match(complete[1], /boundary.handoffTo/);
+    assert.match(complete[1], /boundary.handoffImplementation/);
+    assert.equal((html.match(/class="purchase-handoff"/g) || []).length, 1);
+    const configure = complete[1].match(/<a id="configure-account"[^>]*>([^<]*)<\/a>/);
+    assert.ok(configure);
+    assert.equal(configure[1], "Continue on the partner site");
+    assert.match(configure[0], /target="_blank" rel="noopener"/);
+    assert.match(configure[0], /data-i18n="experience.configure"/);
+    assert.doesNotMatch(configure[0], /\bhref=|\bonclick=/, "Only the existing controller may supply the frozen URL");
+    assert.doesNotMatch(complete[1], /data-stage="handoff"|token=|<input/);
+    assert.match(complete[1], /<details class="simulation-details"><summary/);
+    assert.doesNotMatch(complete[1], /<details[^>]*\bopen\b/);
+    assert.match(source("checkout.css"), /#configure-account.*#087e77/);
+    assert.match(source("checkout.css"), /@media\(max-width:500px\)[\s\S]*\.purchase-handoff.*grid-template-columns:1fr/);
+});
 const catalogue = {
     offer: {
         offerId: "offer", displayName: "Catalogue workspace", publisher: "Demo publisher",

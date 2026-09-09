@@ -1,0 +1,56 @@
+<section class="responsibility-map" aria-labelledby="responsibility-title">
+    <h2 id="responsibility-title">@L["Who provides the screens, services and data?"]</h2>
+    <p class="map-intro">@L["Screens are opened by people. APIs, webhooks and the database run behind those screens."]</p>
+    <div class="responsibility-columns">
+        <section class="responsibility-side microsoft-side">
+            <h3>@L["Microsoft provides"]</h3>
+            <div class="map-node screen-node">
+                <span class="node-type">@L["Browser screen"]</span>
+                <h4>@L["Marketplace purchase"]</h4>
+                <p>@L["Buyer selects and purchases an offer. The partner company does not build this checkout."]</p>
+            </div>
+            <div class="map-node server-node">
+                <span class="node-type">@L["Server / API"]</span>
+                <h4>Fulfillment API</h4>
+                <p>@L["Microsoft's commercial subscription state and operations."]</p>
+            </div>
+            <p class="side-foot">@L["In this demo, the emulator stands in for Microsoft and keeps its own separate state."]</p>
+        </section>
+        <section class="responsibility-side partner-side">
+            <h3>@L["Partner company implements"]</h3>
+            <div class="map-node screen-node">
+                <span class="node-type">@L["Browser screen"]</span>
+                <h4>@L["Buyer landing page"]</h4>
+                <p>@L["Sign-in, purchase confirmation and activation; link the purchase to the intended customer account."]</p>
+            </div>
+            <div class="map-node server-node">
+                <span class="node-type">@L["Server / endpoint — not a page"]</span>
+                <h4>@L["Fulfillment calls and webhook receiver"]</h4>
+                <p>@L["Resolve / Activate from the server; validate Microsoft notifications before saving changes."]</p>
+            </div>
+            <div class="map-node database-node">
+                <span class="node-type">@L["Database"]</span>
+                <h4>@L["Partner company contract DB"]</h4>
+                <p>@L["Saved subscription state and event history. The operations screen reads these records, not the emulator table."]</p>
+            </div>
+            <div class="map-node screen-node">
+                <span class="node-type">@L["Browser screen"]</span>
+                <h4>@L["Operations screen — example only"]</h4>
+                <p>@L["Operators inspect saved partner records. The screen design is optional; access control is a separate implementation concern."]</p>
+            </div>
+            <div class="map-node service-node">
+                <span class="node-type">@L["SaaS backend"]</span>
+                <h4>@L["Customer entitlement handling"]</h4>
+                <p>@L["The partner company connects saved contract state to its user and customer-company IDs. Product access enforcement is outside this sample."]</p>
+            </div>
+        </section>
+    </div>
+    <ol class="boundary-flows">
+        <li><span class="flow-kind">@L["Browser → partner"]</span>@L["Purchase handoff carries a purchase identification token. Its value is never shown in this diagram."]</li>
+        <li><span class="flow-kind">@L["Partner server → Microsoft API"]</span><span>Resolve / Activate / Get subscription / Get operation / PATCH operation</span></li>
+        <li><span class="flow-kind">@L["Microsoft → partner endpoint"]</span>@L["Asynchronous webhook notification; validated server-side."]</li>
+        <li><span class="flow-kind">@L["Partner server → partner DB"]</span>@L["Save after Resolve / Activate or an accepted notification; operators reload to see stored updates."]</li>
+    </ol>
+    <p class="map-caveat">@L["The two stores are separate. This UI cannot know that a notification is still in transit or claim synchronization without observing the saved result."]</p>
+    <p class="map-intro">@L["One offer can serve several regions — where data is uploaded is chosen per region. This sample deploys one."]</p>
+</section>

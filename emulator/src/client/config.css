@@ -57,3 +57,10 @@ div.form.kenny-loggins {
 div.form.kenny-loggins > header {
     color: var(--danger-color);
 }
+
+@media(max-width:600px) {
+    div.form { padding:.6rem 0; }
+    div.form > div { flex-wrap:wrap; gap:.35rem; }
+    div.form > div > label { flex:1 0 100%; overflow-wrap:anywhere; }
+    div.form > div > input, div.form > div > select { min-width:0; max-width:100%; flex:1 1 8rem; }
+}

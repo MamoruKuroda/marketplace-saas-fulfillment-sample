@@ -487,13 +487,13 @@ check("catalogue display uses text rather than interpreting product names as HTM
     assert.equal(test.nodes.get("product-publisher").textContent, offer.publisher);
 });
 
-check("four-step map keeps discovery at buyer step 1 and carries glossary context", async () => {
+check("compact teaching map keeps step 1 current and links only to partner overview, explanation and operations", async () => {
     const test = runtime("?scenario=web-azure", "ja");
     let mounted;
     const anchor = { parentNode: { insertBefore: map => { mounted = map; } }, nextSibling: null };
     test.sandbox.document.body.setAttribute("data-demo-step", "1");
     test.sandbox.document.querySelector = selector => selector === "p.page-hint" ? anchor : null;
-    test.sandbox.fetch = async () => ({ ok: true, json: async () => ({ landingPageUrl: "https://publisher.example/landing?existing=yes" }) });
+    test.sandbox.fetch = async () => ({ ok: true, json: async () => ({ landingPageUrl: "https://publisher.example/landing?token=DO-NOT-DISPLAY&existing=yes" }) });
     test.load("demo-map.js");
     test.ready[test.ready.length - 1]();
     for (let i = 0; i < 6; i++) await Promise.resolve();
@@ -504,13 +504,29 @@ check("four-step map keeps discovery at buyer step 1 and carries glossary contex
     assert.equal(steps[1].className, "step external");
     assert.equal(steps[2].className, "step external");
     assert.equal(steps[3].className, "step");
-    assert.equal(steps[0].children[2].children[1].getAttribute("data-i18n"), "map.whoBuyer");
-    assert.equal(steps.slice(1).every(step => step.children.length === 1), true);
+    assert.equal(steps.every(step => step.children.length === 1), true, "No current-step expanded card");
     assert.equal(new URL(steps[0].children[0].href).pathname, "/start.html");
-    const learn = new URL(mounted.children[2].children[0].href);
+    assert.equal(steps[1].children[0].tag, "span", "No tokenless activation link");
+    assert.equal(steps[1].children[0].href, undefined);
+    const operations = new URL(steps[2].children[0].href);
+    assert.equal(operations.pathname, "/admin");
+    const overview = new URL(mounted.children[1].children[1].href);
+    assert.equal(overview.pathname, "/");
+    assert.equal(overview.hash, "#boundary");
+    const learn = new URL(mounted.children[1].children[2].href);
     assert.equal(learn.hash, "#how");
-    assert.equal(learn.searchParams.get("culture"), "ja");
-    assert.equal(learn.searchParams.get("scenario"), "web-azure");
+    for (const link of [operations, overview, learn]) {
+        assert.equal(link.origin, "https://publisher.example");
+        assert.equal(link.searchParams.get("culture"), "ja");
+        assert.equal(link.searchParams.get("scenario"), "web-azure");
+        assert.equal(link.searchParams.has("token"), false);
+        assert.equal(link.searchParams.has("existing"), false);
+    }
+    for (const node of [steps[2].children[0], ...mounted.children[1].children.slice(1, 3)]) {
+        assert.equal(node.target, "_blank");
+        assert.equal(node.rel, "noopener");
+        assert.equal(node.getAttribute("title"), "boundary.newTab");
+    }
 });
 
 check("map is still rendered when publisher config is unavailable", async () => {
@@ -524,6 +540,123 @@ check("map is still rendered when publisher config is unavailable", async () => 
     for (let i = 0; i < 6; i++) await Promise.resolve();
     assert.equal(mounted.children[0].children.length, 4);
     assert.equal(mounted.children[0].children[1].children[0].tag, "span");
+    assert.equal(mounted.children[0].children[2].children[0].href, undefined);
+    assert.equal(mounted.children[1].children[1].href, undefined);
+    assert.equal(mounted.children[1].children[3].textContent, "boundary.configUnavailable");
+});
+
+check("teaching guide precedes product header and owns the role disclosure", () => {
+    const test = runtime();
+    let mounted, before;
+    const parent = { insertBefore: (map, node) => { mounted = map; before = node; } };
+    const anchor = { parentNode: parent };
+    const header = { parentNode: parent };
+    const roles = new Element("details");
+    const summary = new Element("summary");
+    summary.tagName = "SUMMARY";
+    roles.appendChild(summary);
+    roles.appendChild(new Element("p"));
+    roles.appendChild(new Element("nav"));
+    test.sandbox.document.querySelector = selector => selector === "p.page-hint" ? anchor :
+        selector === "body > header" ? header : selector === ".role-switch" ? roles : null;
+    test.sandbox.fetch = () => new Promise(() => {});
+    test.load("demo-map.js");
+    test.ready.at(-1)();
+    assert.equal(before, header);
+    assert.equal(mounted.children[1].children.at(-1), roles);
+    const menu = roles.children.at(-1);
+    assert.equal(menu.className, "role-menu");
+    assert.equal(menu.children.length, 2);
+    assert.equal(menu.children.includes(summary), false);
+});
+
+check("role tools and all current-step markers render before a slow configuration response", () => {
+    for (const current of ["1", "2", "3", "4", ""]) {
+        const test = runtime("?scenario=azure-portal&offer=one&plan=two&draft=existing&token=secret", "ja");
+        let mounted, timeout;
+        const list = new Element("ul");
+        const anchor = { parentNode: { insertBefore: map => { mounted = map; } } };
+        test.sandbox.document.body.setAttribute("data-demo-step", current);
+        test.sandbox.document.querySelector = selector => selector === "p.page-hint" ? anchor :
+            selector === ".role-switch nav ul" ? list : null;
+        test.sandbox.fetch = () => new Promise(() => {});
+        test.sandbox.setTimeout = run => { timeout = run; };
+        test.load("demo-map.js");
+        test.ready.at(-1)();
+        assert.ok(mounted, "Guide does not wait for config");
+        const steps = mounted.children[0].children;
+        assert.equal(steps.length, 4);
+        assert.equal(steps.filter(step => step.getAttribute("aria-current") === "step").length, current ? 1 : 0);
+        if (current) assert.equal(steps[Number(current) - 1].getAttribute("aria-current"), "step");
+        const links = list.children.map(item => item.children[0]);
+        assert.deepEqual(links.map(link => new URL(link.href).pathname), [
+            "/start.html", "/subscriptions.html", "/", "/landing.html", "/offers.html", "/config.html",
+            "/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues"
+        ]);
+        for (const link of links.slice(0, -1)) {
+            const url = new URL(link.href);
+            assert.equal(url.searchParams.get("culture"), "ja");
+            assert.equal(url.searchParams.get("scenario"), "azure-portal");
+            assert.equal(url.searchParams.has("token"), false);
+        }
+        assert.equal(test.sandbox.location.searchParams.get("draft"), "existing");
+        assert.equal(test.sandbox.location.searchParams.get("offer"), "one");
+        assert.equal(test.sandbox.location.searchParams.get("plan"), "two");
+        timeout();
+        assert.equal(mounted.children[1].children[3].textContent, "boundary.configUnavailable");
+    }
+});
+
+check("invalid or unsafe partner configuration leaves mapping visible without invented links", async () => {
+    for (const config of [null, {}, { landingPageUrl: "not-a-url" },
+        { landingPageUrl: "javascript:alert(1)" }, { landingPageUrl: "ftp://example.test/" },
+        { landingPageUrl: "https://user:password@example.test/" }]) {
+        const test = runtime();
+        let mounted;
+        const anchor = { parentNode: { insertBefore: map => { mounted = map; } } };
+        test.sandbox.document.querySelector = selector => selector === "p.page-hint" ? anchor : null;
+        test.sandbox.fetch = async () => ({ ok: true, json: async () => config });
+        test.load("demo-map.js");
+        test.ready.at(-1)();
+        for (let i = 0; i < 8; i++) await Promise.resolve();
+        assert.equal(mounted.children[0].children.length, 4);
+        assert.equal(mounted.children[0].children[2].children[0].href, undefined);
+        assert.equal(mounted.children[1].children[1].href, undefined);
+        assert.equal(mounted.children[1].children[3].textContent, "boundary.configUnavailable");
+    }
+});
+
+check("language control lives outside tool navigation and reload preserves offer, plan and checkout draft", () => {
+    const test = runtime("?culture=ja&scenario=web-card&offer=one&plan=two&draft=existing&stage=complete");
+    const list = new Element("ul");
+    list.querySelector = () => null;
+    const links = ["en", "ja"].map(language => {
+        const link = new Element("a");
+        link.setAttribute("data-lang", language);
+        return link;
+    });
+    const createElement = test.sandbox.document.createElement;
+    test.sandbox.document.createElement = tag => {
+        const node = createElement(tag);
+        if (tag === "li") node.querySelectorAll = () => links;
+        return node;
+    };
+    test.sandbox.document.querySelector = selector => selector === ".header-language ul" ? list : null;
+    test.sandbox.document.documentElement = {};
+    const jq = { find() { return this; }, addBack() { return this; }, each() { return this; } };
+    test.sandbox.$ = () => jq;
+    let reloads = 0;
+    test.sandbox.location.reload = () => { reloads++; };
+    test.load("i18n.js");
+    test.ready.at(-1)();
+    assert.equal(list.children.length, 1);
+    assert.equal(links[1].className, "active-lang");
+    links[0].listeners.click({ preventDefault() {} });
+    assert.equal(test.sandbox.localStorage.getItem("emu-lang"), "en");
+    assert.equal(reloads, 1);
+    for (const [key, value] of Object.entries({ scenario: "web-card", offer: "one", plan: "two", draft: "existing", stage: "complete" })) {
+        assert.equal(test.sandbox.location.searchParams.get(key), value);
+    }
 });
 
 check("all scenarios leave generateToken payload identical and Continue adds no API request", async () => {
@@ -579,7 +712,7 @@ check("new text has JP/EN pairs, markup labels, viewport and shared map assets",
     const test = runtime();
     test.load("i18n.js");
     const { en, ja } = test.sandbox.I18N;
-    for (const key of Object.keys(en).filter(key => key.startsWith("journey.") || key.startsWith("experience."))) {
+    for (const key of Object.keys(en).filter(key => /^(journey|experience|boundary|map|nav)\./.test(key))) {
         assert.ok(en[key] && ja[key], key);
     }
     for (const file of ["start.html", "index.html", "checkout.html"]) {
@@ -606,6 +739,62 @@ check("new text has JP/EN pairs, markup labels, viewport and shared map assets",
     for (const name of ["purchase-journey.js", "purchase-experience.js", "start.js", "checkout.js", "index.js", "demo-map.js", "i18n.js"]) {
         assert.doesNotThrow(() => new vm.Script(source(name), { filename: name }));
     }
+});
+
+check("all pages have fallback responsibility headers and closed teaching navigation rather than mixed product tabs", () => {
+    const test = runtime();
+    test.load("i18n.js");
+    const { en, ja } = test.sandbox.I18N;
+    for (const file of ["start.html", "checkout.html", "index.html", "subscriptions.html", "landing.html", "offers.html", "config.html"]) {
+        const html = source(file);
+        const tools = html.match(/<details\b([^>]*class="role-switch"[^>]*)>([\s\S]*?)<\/details>/);
+        assert.ok(tools, file);
+        assert.doesNotMatch(tools[1], /\bopen\b/);
+        assert.match(tools[2], /<summary data-i18n="boundary.roleSwitch">Demonstration role switch<\/summary>/);
+        assert.match(tools[2], /boundary.roleNotice/);
+        for (const route of ["/start.html", "/subscriptions.html", "/landing.html", "/offers.html", "/config.html", "/"]) {
+            assert.ok(tools[2].includes(`href="${route}"`), `${file}: fallback route ${route}`);
+        }
+        const header = html.match(/<header class="boundary-header[\s\S]*?<\/header>/)[0];
+        assert.match(header, /class="header-language"/);
+        assert.doesNotMatch(header, /href="\/(?:start|subscriptions|landing|offers|config)\.html"/);
+        assert.match(html, /name="viewport"/);
+        assert.match(html, /data-i18n="boundary.location">Location/);
+        assert.match(html, /data-i18n="map.operatedBy">Operated by/);
+        if (["start.html", "checkout.html"].includes(file)) {
+            assert.match(header, /marketplace-header/);
+            assert.match(header, /Microsoft Marketplace \[simulated\]/);
+            assert.match(header, /<svg/);
+            assert.match(html, /boundary.productionProvider">Production provider/);
+            assert.match(html, /boundary.notPartnerCheckout/);
+            assert.match(html, /map.whoBuyer">Buyer/);
+        } else {
+            assert.match(header, /tool-header/);
+            assert.match(html, /boundary.demoOperator">Demo operator/);
+            assert.match(html, /boundary.emulatorProvider">Sample emulator/);
+        }
+        for (const [, key] of html.matchAll(/data-i18n(?:-html)?="([^"]+)"/g)) {
+            assert.ok(en[key] && ja[key], `${file}: paired ${key}`);
+        }
+        for (const [, attrs] of html.matchAll(/data-i18n-attr="([^"]+)"/g)) {
+            for (const attr of attrs.split(";")) assert.ok(en[attr.split(":")[1]] && ja[attr.split(":")[1]], `${file}: ${attr}`);
+        }
+        assert.doesNotMatch(html, /自社/);
+    }
+    assert.match(source("subscriptions.html"), /data-demo-step="4"/);
+    assert.match(source("subscriptions.html"), /boundary.emulatorData/);
+    assert.match(source("subscriptions.html"), /boundary.deliverySeparate/);
+    assert.match(source("subscriptions.html"), /onclick="resetDemo_click\(\)"/);
+    assert.match(source("subscriptions.js"), /subs.resetConfirmHtml/);
+    assert.match(source("landing.html"), /boundary.notPartnerLanding/);
+    assert.match(en["landing.marketplaceSso"], /customer company ID is not/);
+    assert.match(ja["landing.marketplaceSso"], /顧客企業 ID.*異なります/);
+    assert.doesNotMatch(source("i18n.js"), /自社|"You build"|"Your subscription database"|"Publisher \(you\)"/);
+    const css = source("core.css");
+    assert.match(css, /\.demo-map \.lbl \{[^}]*font-size:\s*\.85rem;[^}]*line-height:\s*1\.35;[^}]*font-weight:\s*600/);
+    assert.match(css, /\.demo-map \.n \{[^}]*font-size:\s*\.82rem/);
+    assert.match(css, /background:\s*#152942/);
+    assert.doesNotMatch(css, /\.demo-map \.desc|\.demo-map \.step-meta/);
 });
 
 check("product detail is the primary entry, presenter controls start collapsed, and legacy technical form remains linked", () => {

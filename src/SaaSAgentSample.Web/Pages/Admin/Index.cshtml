@@ -26,7 +26,7 @@
 }
 @* The data comes first. Everything explanatory sits below it, behind one summary. *@
 <h1 class="page-title">@L["Subscriptions"]</h1>
-<p class="subtitle">@L["Your subscription database. Read-only here."]</p>
+<p class="subtitle">@L["The partner company records and synchronizes contracts. This management UI is optional and can reuse existing tools."]</p>
 
 @if (Model.Subscriptions.Count == 0)
 {
@@ -34,8 +34,9 @@
 }
 else
 {
-    <div class="table-wrap">
+    <div class="table-wrap" tabindex="0" role="region" aria-label="@L["Saved partner contracts"]">
         <table>
+            <caption class="data-source">@L["Sample operations screen reading the partner company's contract DB. Not the emulator's state."]</caption>
             <thead>
                 <tr>
                     <th>@L["Marketplace subscription"]</th>
@@ -68,12 +69,14 @@ else
     </div>
 }
 
+<p class="sync-notice">@L["Notifications appear after receipt and database save. Reload to read the latest stored records; this screen cannot detect notifications still in transit."]</p>
+<p><a class="btn secondary" href="@DemoNavigation.PublisherLink("/admin", scenario)">@L["Reload partner company DB"]</a></p>
 @if (emu is not null)
 {
     <p class="next-line">
         <span class="ico" aria-hidden="true">&#8644;</span>
         @L["Step 4 — change, suspend or cancel in the emulator. It arrives here as a webhook; reload to see it."]
-        <a href="@emu" target="_blank" rel="noopener">@L["Open the emulator →"]</a>
+        <a href="@emu" target="_blank" rel="noopener">@L["Demo role switch: Microsoft-side event operator ↗"]</a>
     </p>
 }
 
@@ -81,6 +84,7 @@ else
     <summary>@L["How this works"]</summary>
     <div class="body">
         <h3 class="learn-h">@L["Who drives the lifecycle"]</h3>
+        <p class="learn-lead">@L["Contract recording and synchronization belong to the partner implementation. This operations screen and its design are examples, not a required Marketplace management UI."]</p>
         <p class="learn-lead">@L["Microsoft drives it. This app activates a purchase, then keeps its database in sync with the events Microsoft sends. It never invents state."]</p>
         <div class="lc-cols">
             <div class="lc-group">
