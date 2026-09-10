@@ -421,4 +421,48 @@
   <data name="Reload partner company DB" xml:space="preserve"><value>パートナー企業のDBを再読み込み</value></data>
   <data name="Demo role switch: Microsoft-side event operator ↗" xml:space="preserve"><value>説明用の役割切替：Microsoft側の通知テストへ ↗</value></data>
   <data name="Contract recording and synchronization belong to the partner implementation. This operations screen and its design are examples, not a required Marketplace management UI." xml:space="preserve"><value>契約の記録・同期はパートナー企業の実装範囲です。この管理画面やデザインは一例であり、Marketplace指定の必須管理UIではありません。</value></data>
+  <!-- Experience-first guidance: optional depth, unchanged transaction behavior -->
+  <data name="Demo" xml:space="preserve"><value>デモ</value></data>
+  <data name="Purchase actions here do not place real orders or take payments. Azure hosting can still incur charges." xml:space="preserve"><value>この購入操作では実際の注文・決済は行いません。Azureでのホスティングには費用がかかる場合があります。</value></data>
+  <data name="Purchase to activation" xml:space="preserve"><value>購入から有効化まで</value></data>
+  <data name="Choose a service, complete a purchase, and follow it to activation on the partner site." xml:space="preserve"><value>サービスを選んで購入し、パートナー企業のサイトで有効化するまでを体験します。</value></data>
+  <data name="Start the purchase experience →" xml:space="preserve"><value>購入体験を始める →</value></data>
+  <data name="View the whole flow" xml:space="preserve"><value>全体図を見る</value></data>
+  <data name="Activation complete" xml:space="preserve"><value>有効化が完了しました</value></data>
+  <data name="This completes the buyer walkthrough. Product access is not implemented by this sample." xml:space="preserve"><value>購入者としての体験はここまでです。製品そのものの利用機能は本サンプルには含まれません。</value></data>
+  <data name="See behind the partner site" xml:space="preserve"><value>提供元の裏側を見る</value></data>
+  <data name="What happened" xml:space="preserve"><value>何が起きたか</value></data>
+  <data name="Microsoft accepted activation. The partner result is recorded separately below." xml:space="preserve"><value>Microsoft側が有効化を受け付けました。パートナー企業側の保存結果は次のとおりです。</value></data>
+  <data name="Microsoft returned an already active purchase. The partner record is shown separately." xml:space="preserve"><value>Microsoft側から有効化済みの契約が返りました。パートナー企業側の保存記録は別に表示します。</value></data>
+  <data name="Partner saved state" xml:space="preserve"><value>パートナー企業の保存状態</value></data>
+  <data name="View this saved contract →" xml:space="preserve"><value>この契約の保存記録を見る →</value></data>
+  <data name="View all saved contracts" xml:space="preserve"><value>保存された契約をすべて見る</value></data>
+  <data name="No saved partner record was found for this purchase." xml:space="preserve"><value>この購入に対応するパートナー企業の保存記録は見つかりませんでした。</value></data>
+  <data name="Choose what to explore (optional)" xml:space="preserve"><value>見どころを選ぶ（任意）</value></data>
+  <data name="Your interests — not your role in the demo" xml:space="preserve"><value>知りたい内容 — デモ内で演じる役とは別です</value></data>
+  <data name="Business and sales" xml:space="preserve"><value>営業・事業</value></data>
+  <data name="Buying organization" xml:space="preserve"><value>購入企業</value></data>
+  <data name="Implementation" xml:space="preserve"><value>実装エンジニア</value></data>
+  <data name="Operations" xml:space="preserve"><value>運用</value></data>
+  <data name="Follow what the customer buys, where setup starts, and what activation completes. No API knowledge is needed." xml:space="preserve"><value>何を購入し、どこで設定し、有効化によって何が完了するのかを追います。APIの知識は不要です。</value></data>
+  <data name="Follow purchase, account setup and the confirmation. Purchase permission and service access are separate." xml:space="preserve"><value>購入・アカウント設定・完了結果を追います。購入権限とサービスの利用権は別です。</value></data>
+  <data name="Expand implementation details to connect the observed result to partner code, API calls and storage." xml:space="preserve"><value>実装詳細を開くと、操作結果をパートナー企業のコード・API呼び出し・保存処理に対応付けられます。</value></data>
+  <data name="Inspect the saved record, trigger one change, then compare stored plan, state and event history." xml:space="preserve"><value>保存記録を確認し、変更を一度起こして、プラン・状態・更新履歴を見比べます。</value></data>
+  <data name="Implementation details and code" xml:space="preserve"><value>実装詳細・関連コード</value></data>
+  <data name="The partner company implements the landing, server-side API calls, validated webhook receiver and contract storage." xml:space="preserve"><value>ランディング、サーバーからのAPI呼び出し、通知の検証・受信、契約の保存はパートナー企業が実装します。</value></data>
+  <data name="Source: partner contract DB" xml:space="preserve"><value>表示元：パートナー企業の契約DB</value></data>
+  <data name="Selected contract" xml:space="preserve"><value>選択中の契約</value></data>
+  <data name="Open a contract to try a change and inspect its saved history." xml:space="preserve"><value>契約を開くと、変更を試して保存履歴を確認できます。</value></data>
+  <data name="Behind the saved records" xml:space="preserve"><value>保存記録の裏側を見る</value></data>
+  <data name="Follow one contract through a change" xml:space="preserve"><value>同じ契約の変更を追う</value></data>
+  <data name="Note the saved plan and state, make one change on the Microsoft side, then reload this record." xml:space="preserve"><value>今の保存プラン・状態を確認し、Microsoft側で一度変更してから、この記録を再読み込みします。</value></data>
+  <data name="Try a change for this contract ↗" xml:space="preserve"><value>この契約の変更を試す ↗</value></data>
+  <data name="Reload this saved record" xml:space="preserve"><value>この保存記録を再読み込み</value></data>
+  <data name="Saved changes and processing history" xml:space="preserve"><value>保存された変更・処理履歴</value></data>
+  <data name="Who implements this" xml:space="preserve"><value>誰が実装するか</value></data>
+  <data name="Illustrative capacity" xml:space="preserve"><value>容量表示の例</value></data>
+  <data name="Recorded plan changes" xml:space="preserve"><value>記録されたプラン変更</value></data>
+  <data name="Previously recorded plan" xml:space="preserve"><value>それまでの記録プラン</value></data>
+  <data name="Newly recorded plan" xml:space="preserve"><value>新しく記録されたプラン</value></data>
+  <data name="Not recorded" xml:space="preserve"><value>記録なし</value></data>
 </root>

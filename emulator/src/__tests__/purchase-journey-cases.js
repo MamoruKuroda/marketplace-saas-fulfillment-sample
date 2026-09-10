@@ -492,7 +492,7 @@ check("compact teaching map keeps step 1 current and links only to partner overv
     let mounted;
     const anchor = { parentNode: { insertBefore: map => { mounted = map; } }, nextSibling: null };
     test.sandbox.document.body.setAttribute("data-demo-step", "1");
-    test.sandbox.document.querySelector = selector => selector === "p.page-hint" ? anchor : null;
+    test.sandbox.document.querySelector = selector => selector === "body > header" ? anchor : null;
     test.sandbox.fetch = async () => ({ ok: true, json: async () => ({ landingPageUrl: "https://publisher.example/landing?token=DO-NOT-DISPLAY&existing=yes" }) });
     test.load("demo-map.js");
     test.ready[test.ready.length - 1]();
@@ -533,7 +533,7 @@ check("map is still rendered when publisher config is unavailable", async () => 
     const test = runtime();
     let mounted;
     const anchor = { parentNode: { insertBefore: map => { mounted = map; } }, nextSibling: null };
-    test.sandbox.document.querySelector = selector => selector === "p.page-hint" ? anchor : null;
+    test.sandbox.document.querySelector = selector => selector === "body > header" ? anchor : null;
     test.sandbox.fetch = async () => { throw new Error("offline"); };
     test.load("demo-map.js");
     test.ready[test.ready.length - 1]();
@@ -549,7 +549,6 @@ check("teaching guide precedes product header and owns the role disclosure", () 
     const test = runtime();
     let mounted, before;
     const parent = { insertBefore: (map, node) => { mounted = map; before = node; } };
-    const anchor = { parentNode: parent };
     const header = { parentNode: parent };
     const roles = new Element("details");
     const summary = new Element("summary");
@@ -557,8 +556,7 @@ check("teaching guide precedes product header and owns the role disclosure", () 
     roles.appendChild(summary);
     roles.appendChild(new Element("p"));
     roles.appendChild(new Element("nav"));
-    test.sandbox.document.querySelector = selector => selector === "p.page-hint" ? anchor :
-        selector === "body > header" ? header : selector === ".role-switch" ? roles : null;
+    test.sandbox.document.querySelector = selector => selector === "body > header" ? header : selector === ".role-switch" ? roles : null;
     test.sandbox.fetch = () => new Promise(() => {});
     test.load("demo-map.js");
     test.ready.at(-1)();
@@ -577,7 +575,7 @@ check("role tools and all current-step markers render before a slow configuratio
         const list = new Element("ul");
         const anchor = { parentNode: { insertBefore: map => { mounted = map; } } };
         test.sandbox.document.body.setAttribute("data-demo-step", current);
-        test.sandbox.document.querySelector = selector => selector === "p.page-hint" ? anchor :
+        test.sandbox.document.querySelector = selector => selector === "body > header" ? anchor :
             selector === ".role-switch nav ul" ? list : null;
         test.sandbox.fetch = () => new Promise(() => {});
         test.sandbox.setTimeout = run => { timeout = run; };
@@ -614,7 +612,7 @@ check("invalid or unsafe partner configuration leaves mapping visible without in
         const test = runtime();
         let mounted;
         const anchor = { parentNode: { insertBefore: map => { mounted = map; } } };
-        test.sandbox.document.querySelector = selector => selector === "p.page-hint" ? anchor : null;
+        test.sandbox.document.querySelector = selector => selector === "body > header" ? anchor : null;
         test.sandbox.fetch = async () => ({ ok: true, json: async () => config });
         test.load("demo-map.js");
         test.ready.at(-1)();
@@ -750,8 +748,8 @@ check("all pages have fallback responsibility headers and closed teaching naviga
         const tools = html.match(/<details\b([^>]*class="role-switch"[^>]*)>([\s\S]*?)<\/details>/);
         assert.ok(tools, file);
         assert.doesNotMatch(tools[1], /\bopen\b/);
-        assert.match(tools[2], /<summary data-i18n="boundary.roleSwitch">Demonstration role switch<\/summary>/);
-        assert.match(tools[2], /boundary.roleNotice/);
+        assert.match(tools[2], /<summary data-i18n="boundary.roleSwitch">Tools<\/summary>/);
+        assert.doesNotMatch(tools[2], /boundary.roleNotice/);
         for (const route of ["/start.html", "/subscriptions.html", "/landing.html", "/offers.html", "/config.html", "/"]) {
             assert.ok(tools[2].includes(`href="${route}"`), `${file}: fallback route ${route}`);
         }
@@ -763,14 +761,15 @@ check("all pages have fallback responsibility headers and closed teaching naviga
         assert.match(html, /data-i18n="map.operatedBy">Operated by/);
         if (["start.html", "checkout.html"].includes(file)) {
             assert.match(header, /marketplace-header/);
-            assert.match(header, /Microsoft Marketplace \[simulated\]/);
+            assert.match(header, /Microsoft Marketplace/);
+            assert.match(header, /<details class="demo-scope"><summary>Demo<\/summary>/);
             assert.match(header, /<svg/);
             assert.match(html, /boundary.productionProvider">Production provider/);
-            assert.match(html, /boundary.notPartnerCheckout/);
+            assert.doesNotMatch(html, /boundary.notPartnerCheckout/);
             assert.match(html, /map.whoBuyer">Buyer/);
         } else {
             assert.match(header, /tool-header/);
-            assert.match(html, /boundary.demoOperator">Demo operator/);
+            assert.match(html, /boundary.demoOperator">Operator/);
             assert.match(html, /boundary.emulatorProvider">Sample emulator/);
         }
         for (const [, key] of html.matchAll(/data-i18n(?:-html)?="([^"]+)"/g)) {
@@ -786,7 +785,7 @@ check("all pages have fallback responsibility headers and closed teaching naviga
     assert.match(source("subscriptions.html"), /boundary.deliverySeparate/);
     assert.match(source("subscriptions.html"), /onclick="resetDemo_click\(\)"/);
     assert.match(source("subscriptions.js"), /subs.resetConfirmHtml/);
-    assert.match(source("landing.html"), /boundary.notPartnerLanding/);
+    assert.match(source("landing.html"), /boundary.embeddedLocation/);
     assert.match(en["landing.marketplaceSso"], /customer company ID is not/);
     assert.match(ja["landing.marketplaceSso"], /顧客企業 ID.*異なります/);
     assert.doesNotMatch(source("i18n.js"), /自社|"You build"|"Your subscription database"|"Publisher \(you\)"/);

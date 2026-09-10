@@ -32,38 +32,55 @@ snapshot** of commit `bb7bc6317128605b2f777ebe1c9969198733ae85`, with local teac
 it is not fetched from upstream at runtime. See [emulator/NOTICE.md](emulator/NOTICE.md).
 
 **New to marketplace SaaS?** Start with the [experience walkthrough](docs/walkthrough.md) —
-a plain-language map of who does what, and how it maps to the code here.
+try the purchase first, then optionally explore who does what and the code behind it.
 
 ## What it looks like
 
-Four views across **three responsibility areas**, not numbered journey steps. These screenshots
+The app's `/` starts with one short sentence and **Start the purchase experience →**, not a required role or
+interest selection. The **activation result ends the buyer walkthrough**: it is enough for a
+business/sales or buyer demonstration. Inspecting the implementation or operations is optional.
+See the [start page](docs/images/screenshots/experience-en-home.png) and
+[activation result](docs/images/screenshots/experience-en-result.png).
+
+The four views below show **three responsibility areas**, not numbered journey steps. These screenshots
 show the real client UI and partner app using an isolated local HTTP fixture for the emulator APIs.
 They use synthetic data — no real purchase or payment, and are not design-approval mockups.
 Click an image for full size.
 
-The screenshot session did not run the full Node emulator: dependency restoration was blocked by
-the configured npm feed, and the local Docker engine was unavailable. The HTTP fixture is not a
-replacement for full-emulator integration validation.
+Targeted Node checks passed for this preview: journey (36), experience (14), checkout (18), and
+subscription selection (10). These are not the full Jest suite.
+The full Node emulator and Jest suite were not validated in this environment: the configured npm
+feed returned 404 for required dependencies, and the local Docker engine was unavailable.
+Browser checks with the HTTP fixture are not a replacement for full-emulator integration validation.
 
 | | |
 | --- | --- |
-| **Microsoft purchase area** — navy simulated storefront; operated by the buyer, not built by the partner in production.<br>[![Local simulated Microsoft purchase screen with a navy storefront header.](docs/images/screenshots/boundary-en-purchase.png)](docs/images/screenshots/boundary-en-purchase.png) | **Purchase-to-partner handoff** — simulated completion explains the boundary; **Continue on the partner site** opens the purchased landing.<br>[![Local simulated purchase completion showing the responsibility boundary and partner-site link.](docs/images/screenshots/boundary-en-handoff.png)](docs/images/screenshots/boundary-en-handoff.png) |
+| **Microsoft purchase area** — navy simulated storefront; operated by the buyer, not built by the partner in production.<br>[![Local simulated Microsoft purchase screen with a navy storefront header.](docs/images/screenshots/boundary-en-purchase.png)](docs/images/screenshots/boundary-en-purchase.png) | **Purchase-to-partner handoff** — **Continue on the partner site** opens the purchased landing; the whole-flow diagram is an optional, initially closed reference.<br>[![Local simulated purchase completion with a partner-site link and optional whole-flow reference.](docs/images/screenshots/boundary-en-handoff.png)](docs/images/screenshots/boundary-en-handoff.png) |
 | **Partner buyer site** — teal/white buyer-facing header, with **Partner implementation starts here**; Resolve precedes explicit Activate.<br>[![Partner buyer landing in the local sample, visually separated from the Microsoft purchase screen.](docs/images/screenshots/boundary-en-landing.png)](docs/images/screenshots/boundary-en-landing.png) | **Partner operations area** — charcoal header/sidebar for operators; reads contract records actually saved in the partner database.<br>[![Partner operations console in the local sample, showing saved partner contract records.](docs/images/screenshots/boundary-en-admin.png)](docs/images/screenshots/boundary-en-admin.png) |
 
-Only the small **Teaching guide / 教材ガイド** is common across these areas. The buyer site
-and operations console are not same-privilege Home/Admin tabs. Cross-role links are explicitly
-**Demonstration role switch / 説明用の役割切替**: these teaching labels do **not** authenticate,
-authorize, or grant access. This presentation separation does not change the existing
-authentication, database, API, or lifecycle behavior.
+Microsoft and partner headers remain distinct; the buyer site and operations console are not
+same-privilege Home/Admin tabs. **See behind the partner site / 提供元の裏側を見る** is an
+optional explanation after the result, showing the actual stored partner state and a direct link
+to this contract's `/admin/{guid}`. It is not a required role switch.
+
+Optional interests — **Business/sales, buyer organization, implementation, operations** — appear
+inside explanations, not before purchase. They guide reading; they do **not** simulate roles,
+authenticate, authorize, or grant access. Server APIs, authentication, billing, state transitions,
+and database schema are unchanged; new view lookups only read saved records for links and filters.
 
 The console is labelled **Example operations UI implemented by the partner company**.
 The partner company handles contract recording and synchronization; this management UI is
 optional and may reuse existing tools. Implementation ownership does not make this exact screen mandatory.
 
-The guide's step map is separate: **1 Microsoft purchase → 2 Partner activation → 3 Partner
-contract DB → 4 Notification test**. Steps 1 and 4 use the emulator; steps 2 and 3 use this
-app. Step 2 is informational: without a purchase token it cannot open a valid purchased
-landing. The UI ships in English and Japanese.
+**View the whole flow** starts closed in `<details id="boundary">`; the app's initially closed `#how` reference
+offers **what happened → who implements it → code** in increasing depth. The reference map
+connects Microsoft purchase, partner activation, partner contract storage, and notification tests;
+it is not a mandatory four-step buyer journey. A purchased landing still needs its purchase token.
+The UI ships in English and Japanese.
+
+One common small **Demo** disclosure per page explains that the purchase is simulated and does not take
+real payment; **Azure hosting may still incur costs**. Order confirmation retains the precise
+note that no real order or payment is created. Activation does not implement product entitlements.
 
 ## Two ways to run it
 
@@ -102,21 +119,29 @@ azd down    # remove everything when you're done
 
 Buyer sign-in is **off** by default, so there's nothing to configure. `azd up` prints an
 **Endpoint** URL for each service — the **emulator** and the **app** (run `azd show` to see them
-again). Start at the **app endpoint `/`**, the partner overview, then use the teaching guide:
+again). Start at the **app endpoint `/`** and select **Start the purchase experience →**:
 
 1. Open the emulator's **`/start.html`** product page, then **`/checkout.html`**. `web-card`,
    `web-azure`, and `azure-portal` are illustrative purchase routes; none takes real payment.
-2. On simulated completion, review the responsibility boundary and select **Continue on the partner site**.
+2. On simulated completion, select **Continue on the partner site**.
    The browser opens the partner's `GET /?token=<purchase-token>` (placeholder only).
 3. The partner server calls **Resolve**. The buyer reviews the result and explicitly confirms
-   **Activate**. Inspect the actual saved partner record through the **Demonstration role
-   switch** to `/admin`, then `/admin/{guid}` — not through buyer navigation.
-4. Switch to the emulator's **`/subscriptions.html`** notification test tool to simulate
-   **Suspend**, **Reinstate**, **Change plan**, or **Unsubscribe**. This is a demo operator
-   tool, not a customer storefront tab.
-5. Refresh the partner operations console to inspect recorded changes. Notification delivery
-   and storage updates are asynchronous; a screen alone does not prove that both systems are
-   in sync or that an unseen event is pending.
+   **Activate**. The result completes the buyer walkthrough; there is no required admin step.
+4. **Optional:** open **See behind the partner site**, inspect the stored state, and follow the
+   direct `/admin/{guid}` link for this same saved contract. A list link using
+   `/admin?marketplaceSubscriptionId=<actual-id>` matches only that saved Marketplace ID;
+   no match shows an empty result, not another contract or a fabricated detail link.
+5. **Optional:** from the detail page, choose **Try a change for this contract**. The emulator's
+   `/subscriptions.html?subscriptionId=<actual-marketplace-id>` selects the same contract for
+   **Suspend**, **Reinstate**, **Change plan**, or **Unsubscribe** notification tests.
+   **Show all** deliberately clears the emulator selection while preserving demo context.
+   Its partner-record link uses the configured partner origin and this exact Marketplace ID.
+6. **After an optional test:** return to the same partner detail and reload **`#history`** to inspect saved events and the
+   recorded plan comparison. An unknown previous plan is **Not recorded**, not inferred from the
+   current plan. Delivery and storage are asynchronous; a screen alone does not prove synchronization.
+
+The IDs above are explanatory placeholders. Follow the UI's saved-record links; the partner
+record GUID and Marketplace subscription ID serve different purposes.
 
 The emulator's legacy `/` token form and `/landing.html` API test page remain technical tools,
 not a Microsoft-provided landing page or the partner's product UI. The supported browser
@@ -142,7 +167,7 @@ cd marketplace-saas-fulfillment-sample
 # Docker-free; does not start the full emulator for browser use.
 dotnet test --filter FullyQualifiedName~SyntheticL2LifecycleTests
 
-# Start just the partner app, then open its overview:
+# Start just the partner app, then open its start page:
 dotnet run --project src/SaaSAgentSample.Web
 #   → http://localhost:5134/
 ```
@@ -155,10 +180,10 @@ URL, emulator landing URL, and webhook URL to the selected local ports; developm
 and Docker ports differ.
 
 For setup/configuration see [docs/develop.md](docs/develop.md) and the manual emulator section
-of [docs/l2-demo.md](docs/l2-demo.md). Once both processes are running, follow **partner
-overview `/` → emulator `/start.html` → `/checkout.html` → Continue on the partner site → partner landing →
-explicit Activate → operations console** as above. The technical token-form path in the L2
-reference is an API exercise, not the buyer storefront.
+of [docs/l2-demo.md](docs/l2-demo.md). Once both processes are running, follow **app `/` → Start
+the purchase experience → emulator `/start.html` → `/checkout.html` → Continue on the partner site → partner landing →
+explicit Activate → result**. Stop there, or optionally inspect and test the same contract as
+above. The technical token-form path in the L2 reference is an API exercise, not the buyer storefront.
 
 <details>
 <summary>Terminology (v0, L2, Tier-1…)</summary>
@@ -248,7 +273,7 @@ A few rules this sample never breaks:
   subscription information. The separate stores are not asserted to be in sync without evidence.
 - `ChangeQuantity` is recorded and acknowledged; the partner domain has no quantity dimension.
   Product entitlements and real account mapping are outside this minimal sample.
-- Teaching role-switch labels are explanations, not access-control rules or grants.
+- Optional interests and behind-the-scenes links are explanations, not simulated roles or access grants.
 - Buyer/admin activation requires explicit confirmation.
 - No purchase/bearer tokens, secrets, or unnecessary PII in logs.
 - Webhook validation is server-side (Get Operation, plus Entra JWT when signed-token validation

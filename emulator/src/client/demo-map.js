@@ -65,7 +65,7 @@
   function start() {
     roleLinks();
     if (document.querySelector(".demo-map")) return;
-    var anchor = document.querySelector("p.page-hint");
+    var anchor = document.querySelector("body > header");
     if (!anchor || !anchor.parentNode) return;
     var current = document.body.getAttribute("data-demo-step") || "";
     var wrap = el("aside", "demo-map");

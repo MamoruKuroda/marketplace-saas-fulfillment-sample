@@ -12,6 +12,7 @@
     <script src="i18n.js"></script>
     <script src="purchase-journey.js"></script>
     <script src="demo-map.js"></script>
+    <script src="subscription-selection.js"></script>
     <script src="subscriptions.js"></script>
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png" />
@@ -19,9 +20,9 @@
     <link rel="manifest" href="images/site.webmanifest" />
   </head>
   <body data-demo-step="4">
-    <header class="boundary-header tool-header"><span class="boundary-icon" aria-hidden="true">⚙</span><div><h1 data-i18n="boundary.eventTitle">Microsoft-side event simulator</h1><p class="side-tag" data-i18n="boundary.toolSubtitle">Demonstration tools · not a Microsoft customer product</p></div><nav class="header-language" aria-label="Language" data-i18n-attr="aria-label:boundary.language"><ul></ul></nav></header>
-    <div class="boundary-meta tool-meta"><span><span data-i18n="boundary.location">Location</span><strong data-i18n="boundary.eventsLocation">Microsoft-side event tests</strong></span><span><span data-i18n="map.operatedBy">Operated by</span><strong data-i18n="boundary.demoOperator">Demo operator</strong></span><span><span data-i18n="boundary.toolProvider">Tool provided by</span><strong data-i18n="boundary.emulatorProvider">Sample emulator</strong></span><strong class="boundary-badge" data-i18n="boundary.notBuyerPage">Not a buyer product page</strong></div>
-    <details class="role-switch"><summary data-i18n="boundary.roleSwitch">Demonstration role switch</summary><p data-i18n="boundary.roleNotice">Teaching navigation between buyer and demo operator tools. Role labels are not authorization.</p>
+    <header class="boundary-header tool-header"><span class="boundary-icon" aria-hidden="true">⚙</span><div><h1 data-i18n="boundary.eventTitle">Microsoft-side event simulator</h1><p class="side-tag" data-i18n="boundary.toolSubtitle">Marketplace API Emulator</p></div><details class="demo-scope"><summary>Demo</summary><div><p data-i18n="scope.simulation">Simulated screens: no real purchase or payment. Azure hosting may incur costs.</p><p data-i18n="scope.roles">Role labels are teaching navigation, not authorization. This experimental sample is not supported for production use.</p></div></details><nav class="header-language" aria-label="Language" data-i18n-attr="aria-label:boundary.language"><ul></ul></nav></header>
+    <div class="boundary-meta tool-meta"><span><span data-i18n="boundary.location">Location</span><strong data-i18n="boundary.eventsLocation">Microsoft-side event tests</strong></span><span><span data-i18n="map.operatedBy">Operated by</span><strong data-i18n="boundary.demoOperator">Operator</strong></span><span><span data-i18n="boundary.toolProvider">Tool provided by</span><strong data-i18n="boundary.emulatorProvider">Sample emulator</strong></span></div>
+    <details class="role-switch"><summary data-i18n="boundary.roleSwitch">Tools</summary>
     <nav aria-label="Demonstration tools" data-i18n-attr="aria-label:journey.emulatorNavigation"><ul>
                 <li><a href="/start.html" data-i18n="nav.marketplace">Marketplace</a></li>
                 <li><a href="/subscriptions.html" class="active" data-i18n="nav.subscriptions">Subscriptions</a></li>
@@ -33,13 +34,13 @@
                 </a></li>
                 <li><a href="/" data-i18n="boundary.tokenTool">Technical purchase-token tool (legacy)</a></li>
             </ul></nav></details>
-        <p class="page-hint" data-i18n="hint.subscriptions">The demo operator initiates simulated Microsoft-side lifecycle events. This is not a buyer subscription-management product.</p>
     <main>
-      <section class="info"><header data-i18n="subs.workflow">Subscription Workflow</header><article data-i18n-html="subs.infoHtml"></article></section>
       <section class="main">
         <header data-i18n="subs.testWebhookActions">Emulator subscriptions: event tests</header>
-        <p class="data-source" data-i18n="boundary.emulatorData">Source: emulator state — not the partner company's subscription database.</p>
-        <p class="data-boundary" data-i18n="boundary.deliverySeparate">Webhook delivery, partner database storage and partner console reload are separate steps. This table and HTTP operation responses do not confirm that the partner database is up to date.</p>
+        <p class="data-source" data-i18n="boundary.emulatorData">Source: emulator saved state.</p>
+        <p data-i18n="subs.nextStep">Change the plan, then inspect the partner saved record and the webhook / operation feedback.</p>
+        <div class="subscription-selection"><p id="subscription-selection-status" role="status" aria-live="polite"></p><a id="subscriptions-show-all" href="/subscriptions.html" hidden data-i18n="subs.showAll">Show all subscriptions</a><a id="partner-record" target="_blank" rel="noopener" hidden data-i18n="subs.partnerRecord">View partner saved record</a><p id="partner-record-status" role="status" hidden></p></div>
+        <p id="subscriptions-error" class="error" role="alert" hidden></p>
         <a class="template copy-icon"><svg class="copy" xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 96 960 960" width="16"><path d="M180 975q-24 0-42-18t-18-42V312h60v603h474v60H180Zm120-120q-24 0-42-18t-18-42V235q0-24 18-42t42-18h440q24 0 42 18t18 42v560q0 24-18 42t-42 18H300Zm0-60h440V235H300v560Zm0 0V235v560Z"/></svg><svg class="done hidden" xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 96 960 960" width="16"><path d="M378 810 154 586l43-43 181 181 384-384 43 43-427 427Z"/></svg></a>
         <div class="table-scroll" role="region" tabindex="0" aria-label="Emulator subscriptions: event tests" data-i18n-attr="aria-label:subs.testWebhookActions">
         <table><thead><tr><th width="120" data-i18n="subs.col.subscriptionId">Subscription Id</th><th width="170" data-i18n="subs.col.name">Name</th><th width="170" data-i18n="subs.col.offer">Offer</th><th width="170" data-i18n="subs.col.plan">Plan</th><th width="45" data-i18n="subs.col.qty">Qty</th><th width="70" data-i18n="common.status">Status</th><th data-i18n="common.availableActions">Available Actions</th></tr></thead>
@@ -57,11 +58,11 @@
             <button class="state" data-requiredStatus="Subscribed" onclick="renew_click(event)" aria-label="Renew" data-i18n="action.renew" data-i18n-attr="aria-label:action.renew">Renew</button>
           </td></tr>
         </tbody></table></div>
-        <div class="key"><p data-i18n-html="subs.buttonColourKeyHtml">Button Colour Key - emulate action changing the subscription <button class="detail" disabled="disabled">Detail</button> <button class="state" disabled="disabled">State</button></p><p data-i18n="subs.renewNote">Renew: an HTTP operation response may appear without a table change. It is not a partner database acknowledgement.</p></div>
-        <div class="reset-demo">
+        <details class="behind-scenes"><summary data-i18n="scope.behind">Behind the scenes</summary><h3 data-i18n="scope.what">What happened</h3><p data-i18n="boundary.deliverySeparate">Webhook delivery, partner database storage and reload are separate steps. Emulator responses do not confirm the partner record.</p><h3 data-i18n="scope.who">Who implements this</h3><p data-i18n="subs.ownership">The emulator initiates Microsoft-side events; the partner company implements the webhook and saves its own subscription record.</p><details><summary data-i18n="scope.details">Implementation details / code</summary><article data-i18n-html="subs.infoHtml"></article><div class="key"><p data-i18n-html="subs.buttonColourKeyHtml">Button colours indicate Detail or State changes.</p><p data-i18n="subs.renewNote">Renew: an HTTP response can appear without a table change.</p></div><p data-i18n="scope.references">Use “How this works” in the guide for implementation, code and glossary references.</p></details></details>
+        <details class="reset-demo"><summary data-i18n="subs.resetDemo">Reset the demo</summary>
           <button class="danger" onclick="resetDemo_click()" data-i18n="subs.resetDemo">Reset the demo</button>
           <p data-i18n="subs.resetNote">Clears every subscription here and in the publisher app, so a demo can start over. Offers and plans are kept. Test-harness convenience only — the real Marketplace has no way to delete a publisher's records.</p>
-        </div>
+        </details>
       </section>
       <div class="template" id="change-quantity-dialog"><p data-i18n="subs.howManyLicenses">How many licenses?</p><input type="number" /></div>
       <div class="template" id="change-plan-dialog"><p data-i18n="subs.changePlanTo">Change plan to?</p><select></select></div>

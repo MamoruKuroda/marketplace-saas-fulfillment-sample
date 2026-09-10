@@ -1,16 +1,18 @@
 @page
 @model SaaSAgentSample.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = (Model.ShowHome ? L["Start here"] :
+    ViewData["Title"] = (Model.ShowHome ? L["Start here"] : Model.IsActivated ? L["Activation complete"] :
         Model.AlreadyActive ? L["Return to your subscription"] : L["Activate your subscription"]).Value;
     var r = Model.Resolved;
     var sub = r?.Subscription;
     var signedIn = User?.Identity?.IsAuthenticated == true;
     var adminUrl = DemoNavigation.PublisherLink("/admin", Model.DemoScenario);
+    var saved = Model.SavedSubscription;
+    var savedUrl = saved is null ? null : DemoNavigation.PublisherLink($"/admin/{saved.Id}", Model.DemoScenario);
 
     // What the map may tick off. Arriving with a purchase token is proof step 1 happened; an
     // activated subscription is proof step 2 did. The home page proves nothing yet.
-    if (!Model.ShowHome && r is not null)
+    if (!Model.ShowHome && (r is not null || Model.IsActivated))
     {
         ViewData["DemoCompletedThrough"] = (Model.IsActivated || Model.AlreadyActive) ? 2 : 1;
     }
@@ -18,13 +20,12 @@
 @if (Model.ShowHome)
 {
     <h1 class="page-title">@L["Start here"]</h1>
-    <p class="subtitle">@L["A hands-on tour of a Marketplace SaaS purchase — the map above is the whole demo."]</p>
+    <p class="subtitle">@L["Choose a service, complete a purchase, and follow it to activation on the partner site."]</p>
 
     @if (Model.EmulatorUrl is not null)
     {
         <p class="cta-line">
-            <a class="btn primary" href="@Model.EmulatorUrl" target="_blank" rel="noopener">@L["Step 1 — buy in the Marketplace (opens the emulator) →"]</a>
-            <span class="hint">@L["The emulator plays Microsoft. Buy there, and it sends you back here to activate."]</span>
+            <a class="btn primary" href="@Model.EmulatorUrl" target="_blank" rel="noopener">@L["Start the purchase experience →"]</a>
         </p>
     }
     else
@@ -32,12 +33,14 @@
         <p class="notice">@L["To begin, open your Fulfillment API Emulator and use its Marketplace tab."]</p>
     }
 
-    <div id="boundary">
-        @(await Html.PartialAsync("_ResponsibilityMap"))
-    </div>
+    <details class="explainer learn" id="boundary">
+        <summary>@L["View the whole flow"]</summary>
+        <div class="body">@(await Html.PartialAsync("_ResponsibilityMap"))</div>
+    </details>
     <details class="explainer learn" id="how">
         <summary>@L["How this works"]</summary>
         <div class="body">
+            @(await Html.PartialAsync("_LearningFocus"))
             <h3 class="learn-h">@L["Who's who"]</h3>
             <div class="actors">
                 <div class="actor">
@@ -56,19 +59,23 @@
                     <p>@L["Purchases from the Marketplace, then signs in on the landing page to activate."]</p>
                 </div>
             </div>
-            @(await Html.PartialAsync("_PurchasePermissions"))
-            @(await Html.PartialAsync("_KeyTerms"))
+            @(await Html.PartialAsync("_ImplementationLinks"))
+            <details class="reference-details"><summary>@L["Purchase routes and permissions"]</summary>@(await Html.PartialAsync("_PurchasePermissions"))</details>
+            <details class="reference-details"><summary>@L["Key terms"]</summary>@(await Html.PartialAsync("_KeyTerms"))</details>
         </div>
     </details>
 }
 else
 {
-    <h1 class="page-title">@(Model.AlreadyActive ? L["Return to your subscription"] : L["Activate your subscription"])</h1>
+    <h1 class="page-title">@(Model.IsActivated ? L["Activation complete"] : Model.AlreadyActive ? L["Return to your subscription"] : L["Activate your subscription"])</h1>
+    @if (!Model.IsActivated)
+    {
     <p class="subtitle">@(Model.AlreadyActive
         ? L["This purchase is already active. Returning here does not activate it again."]
         : L["Review the plan below, then confirm. Activation starts billing."])</p>
+    }
 
-    @if (Model.DemoScenario is not null)
+    @if (Model.DemoScenario is not null && !Model.IsActivated && !Model.AlreadyActive)
     {
         <aside class="purchase-arrival" aria-label="@L["Illustrative purchase route"]">
             <span>@L["Microsoft checkout"]</span>
@@ -84,27 +91,35 @@ else
 
     @if (Model.IsActivated || Model.AlreadyActive)
     {
-        @* One primary action — step 3 — because that is the single next thing to do. Step 4 comes
-           after it, so it is a quiet note rather than a second link of equal weight. *@
-        <div class="banner">
-            <span class="ico">&#10003;</span>
+        <div class="banner buyer-result" role="status">
+            <span class="ico" aria-hidden="true">&#10003;</span>
             <div>
-                <strong>@(Model.IsActivated ? L["Activated."] : L["Already active."])</strong> @Model.Message
-                @if (Model.AlreadyActive)
-                {
-                    <p class="banner-next">@L["In your product, this return visit leads to the buyer's account or settings. This sample shows the publisher's subscription record instead."]</p>
-                }
-                <p class="banner-next">@L["Next in the demo: switch to the partner company operator and inspect the saved contract. This is not the buyer's product navigation."]</p>
-                <p class="banner-cta"><a class="btn primary" href="@adminUrl">@L["Demo role switch: partner company operator →"]</a></p>
-                @if (Model.EmulatorUrl is not null)
-                {
-                    <p class="banner-later">
-                        @L["After that, step 4: act on it in the emulator and the change arrives here as a webhook."]
-                        <a href="@Model.EmulatorSubscriptionsUrl" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a>
-                    </p>
-                }
+                <strong>@(Model.IsActivated ? L["Activated."] : L["Already active."])</strong>
+                <p>@L["This completes the buyer walkthrough. Product access is not implemented by this sample."]</p>
             </div>
         </div>
+        <details class="explainer learn behind-scenes" id="behind-scenes">
+            <summary>@L["See behind the partner site"]</summary>
+            <div class="body">
+                <h2 class="learn-h">@L["What happened"]</h2>
+                <p>@(Model.IsActivated ? L["Microsoft accepted activation. The partner result is recorded separately below."] : L["Microsoft returned an already active purchase. The partner record is shown separately."])</p>
+                @if (saved is not null)
+                {
+                    <dl class="kv saved-result">
+                        <dt>@L["Partner saved state"]</dt><dd>@saved.State</dd>
+                        <dt>@L["Plan"]</dt><dd>@saved.PlanId</dd>
+                        <dt>@L["Updated (UTC)"]</dt><dd>@saved.UpdatedAt.UtcDateTime.ToString("u")</dd>
+                    </dl>
+                    <p><a class="btn secondary saved-record-link" href="@savedUrl">@L["View this saved contract →"]</a></p>
+                }
+                else
+                {
+                    <p>@L["No saved partner record was found for this purchase."]</p>
+                    <a href="@adminUrl">@L["View all saved contracts"]</a>
+                }
+                @(await Html.PartialAsync("_ImplementationLinks"))
+            </div>
+        </details>
     }
     else if (r is not null)
     {
@@ -154,7 +169,6 @@ else
     {
         <div class="card"><p class="muted">@(Model.Message ?? L["Nothing to show."].Value)</p></div>
     }
-    <p class="design-note">@L["This is a partner-designed screen, not a mandatory Microsoft UI design."]</p>
     <details class="explainer learn" id="boundary">
         <summary>@L["Responsibility map"]</summary>
         <div class="body">@(await Html.PartialAsync("_ResponsibilityMap"))</div>
@@ -162,6 +176,8 @@ else
     <details class="explainer learn" id="how">
         <summary>@L["How this works"]</summary>
         <div class="body">
+            @(await Html.PartialAsync("_LearningFocus"))
+            <p class="design-note">@L["This is a partner-designed screen, not a mandatory Microsoft UI design."]</p>
             @if (Model.DemoScenario is not null)
             {
                 @(await Html.PartialAsync("_PurchaseArrival", Model.DemoScenario))
@@ -180,8 +196,12 @@ else
                 </dd>
             </dl>
             <p class="learn-foot">@L["Offers can also auto-activate, skipping this page."]</p>
-            @(await Html.PartialAsync("_PurchasePermissions"))
-            @(await Html.PartialAsync("_KeyTerms"))
+            @if (!Model.IsActivated && !Model.AlreadyActive)
+            {
+                @(await Html.PartialAsync("_ImplementationLinks"))
+            }
+            <details class="reference-details"><summary>@L["Purchase routes and permissions"]</summary>@(await Html.PartialAsync("_PurchasePermissions"))</details>
+            <details class="reference-details"><summary>@L["Key terms"]</summary>@(await Html.PartialAsync("_KeyTerms"))</details>
         </div>
     </details>
 }

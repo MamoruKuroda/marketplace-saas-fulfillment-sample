@@ -20,9 +20,9 @@
     <link rel="manifest" href="images/site.webmanifest" />
   </head>
   <body>
-    <header class="boundary-header tool-header"><span class="boundary-icon" aria-hidden="true">⚙</span><div><h1 data-i18n="boundary.offersTitle">Emulator offer tools</h1><p class="side-tag" data-i18n="boundary.toolSubtitle">Demonstration tools · not a Microsoft customer product</p></div><nav class="header-language" aria-label="Language" data-i18n-attr="aria-label:boundary.language"><ul></ul></nav></header>
-    <div class="boundary-meta tool-meta"><span><span data-i18n="boundary.location">Location</span><strong data-i18n="boundary.offersLocation">Sample offers and plans</strong></span><span><span data-i18n="map.operatedBy">Operated by</span><strong data-i18n="boundary.demoOperator">Demo operator</strong></span><span><span data-i18n="boundary.toolProvider">Tool provided by</span><strong data-i18n="boundary.emulatorProvider">Sample emulator</strong></span><strong class="boundary-badge" data-i18n="boundary.notPartnerCenter">Not Partner Center</strong></div>
-    <details class="role-switch"><summary data-i18n="boundary.roleSwitch">Demonstration role switch</summary><p data-i18n="boundary.roleNotice">Teaching navigation between buyer and demo operator tools. Role labels are not authorization.</p>
+    <header class="boundary-header tool-header"><span class="boundary-icon" aria-hidden="true">⚙</span><div><h1 data-i18n="boundary.offersTitle">Emulator offer tools</h1><p class="side-tag" data-i18n="boundary.toolSubtitle">Marketplace API Emulator</p></div><details class="demo-scope"><summary>Demo</summary><div><p data-i18n="scope.simulation">Simulated screens: no real purchase or payment. Azure hosting may incur costs.</p><p data-i18n="scope.roles">Role labels are teaching navigation, not authorization. This experimental sample is not supported for production use.</p></div></details><nav class="header-language" aria-label="Language" data-i18n-attr="aria-label:boundary.language"><ul></ul></nav></header>
+    <div class="boundary-meta tool-meta"><span><span data-i18n="boundary.location">Location</span><strong data-i18n="boundary.offersLocation">Sample offers and plans</strong></span><span><span data-i18n="map.operatedBy">Operated by</span><strong data-i18n="boundary.demoOperator">Operator</strong></span><span><span data-i18n="boundary.toolProvider">Tool provided by</span><strong data-i18n="boundary.emulatorProvider">Sample emulator</strong></span></div>
+    <details class="role-switch"><summary data-i18n="boundary.roleSwitch">Tools</summary>
     <nav aria-label="Demonstration tools" data-i18n-attr="aria-label:journey.emulatorNavigation"><ul>
                 <li><a href="/start.html" data-i18n="nav.marketplace">Marketplace</a></li>
                 <li><a href="/subscriptions.html" data-i18n="nav.subscriptions">Subscriptions</a></li>
@@ -32,9 +32,8 @@
                 <li><a href="https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues" target="_blank"><svg height="24" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="24" data-view-component="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path></svg></a></li>
                 <li><a href="/" data-i18n="boundary.tokenTool">Technical purchase-token tool (legacy)</a></li>
             </ul></nav></details>
-        <p class="page-hint" data-i18n="hint.offers">Demo operator setup: sample offers and plans for this emulator only. This tool is not Partner Center.</p>
     <main>
-      <section class="info"><header data-i18n="common.introduction">Introduction</header><article data-i18n-html="offers.infoHtml"></article></section>
+      <details class="behind-scenes"><summary data-i18n="scope.behind">Behind the scenes</summary><article data-i18n-html="offers.infoHtml"></article><p data-i18n="scope.references">Use “How this works” in the guide for implementation, code and glossary references.</p></details>
       <section class="main">
         <header data-i18n="common.offerCentral">Offer Central</header>
         <section class="offers"></section>

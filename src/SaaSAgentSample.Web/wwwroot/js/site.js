@@ -19,10 +19,13 @@
   // The emulator links here with #how so a reader looking for a term lands on the
   // explanation already open, instead of on a closed summary they have to spot.
   function openHow() {
-    if (window.location.hash !== "#how" && window.location.hash !== "#boundary") return;
+    if (!["#how", "#boundary", "#behind-scenes", "#history", "#implementation-details"].includes(window.location.hash)) return;
     var how = document.getElementById(window.location.hash.substring(1));
     if (!how) return;
     if (how.tagName === "DETAILS") how.open = true;
+    for (var ancestor = how.parentElement; ancestor; ancestor = ancestor.parentElement) {
+      if (ancestor.tagName === "DETAILS") ancestor.open = true;
+    }
     // Scroll by hand rather than with scrollIntoView: the header is sticky, so aligning the
     // element with the top of the viewport would park it underneath the header.
     var header = document.querySelector(".site-header");
@@ -30,6 +33,17 @@
     var top = how.getBoundingClientRect().top + window.pageYOffset - offset;
     window.scrollTo(0, top > 0 ? top : 0);
   }
+
+  function applyLearningFocus() {
+    var select = document.querySelector("[data-learning-focus]");
+    if (!select) return;
+    document.querySelectorAll("[data-focus-note]").forEach(function (note) {
+      note.hidden = note.getAttribute("data-focus-note") !== select.value;
+    });
+  }
+  document.addEventListener("change", function (e) {
+    if (e.target.matches("[data-learning-focus]")) applyLearningFocus();
+  });
 
   document.addEventListener("click", function (e) {
     var link = e.target.closest(".site-header .lang a");
@@ -41,6 +55,9 @@
     if (!href) return;
 
     e.preventDefault();
+    var openPanels = Array.from(document.querySelectorAll("details[open][id]")).map(function (panel) { return panel.id; });
+    var focus = document.querySelector("[data-learning-focus]");
+    var interest = focus ? focus.value : null;
 
     fetch(href, { headers: { "X-Requested-With": "fetch" }, credentials: "same-origin" })
       .then(function (res) {
@@ -70,6 +87,13 @@
         var title = doc.querySelector("title");
         if (title) document.title = title.textContent;
 
+        openPanels.forEach(function (id) {
+          var panel = document.getElementById(id);
+          if (panel && panel.tagName === "DETAILS") panel.open = true;
+        });
+        var nextFocus = document.querySelector("[data-learning-focus]");
+        if (nextFocus && interest) nextFocus.value = interest;
+        applyLearningFocus();
         // The swap rebuilds <main>, so a details opened via #how closes again.
         openHow();
       })
@@ -80,8 +104,9 @@
   });
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", openHow);
+    document.addEventListener("DOMContentLoaded", function () { applyLearningFocus(); openHow(); });
   } else {
+    applyLearningFocus();
     openHow();
   }
   window.addEventListener("hashchange", openHow);

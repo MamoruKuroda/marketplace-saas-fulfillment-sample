@@ -138,6 +138,15 @@ public class PurchaseJourneyTests
             .GetByMarketplaceSubscriptionIdAsync("journey-sub");
         Assert.Equal("purchased-plan", record!.PlanId);
         Assert.Equal(SubscriptionState.Subscribed, record.State);
+        var decoded = WebUtility.HtmlDecode(result);
+        var resultBanner = Regex.Match(decoded, "<div class=\"banner buyer-result\".*?</div>\\s*</div>", RegexOptions.Singleline).Value;
+        Assert.NotEmpty(resultBanner);
+        Assert.DoesNotContain("<a ", resultBanner);
+        Assert.DoesNotContain("role switch", resultBanner, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("This completes the buyer walkthrough.", resultBanner);
+        Assert.Contains($"href=\"/admin/{record.Id}?scenario=web-azure&culture=en\"", decoded);
+        Assert.Contains("id=\"behind-scenes\"", decoded);
+        Assert.Contains("class=\"kv saved-result\"", decoded);
     }
 
     [Theory]
@@ -232,17 +241,18 @@ public class PurchaseJourneyTests
         var buyerHeader = Regex.Match(buyer, "<header class=\"site-header\">.*?</header>", RegexOptions.Singleline).Value;
         var adminHeader = Regex.Match(admin, "<header class=\"site-header\">.*?</header>", RegexOptions.Singleline).Value;
         Assert.Contains(culture == "ja" ? "パートナー企業のサイト / 購入者向け" : "Partner company site / for buyers", buyerHeader);
-        Assert.Contains(culture == "ja" ? "ここからパートナー企業が実装" : "Partner implementation starts here", buyerHeader);
-        Assert.Contains(culture == "ja" ? "購入者向けの画面ではありません" : "Not a buyer-facing screen", adminHeader);
+        Assert.Contains(culture == "ja" ? "パートナー企業（SaaS提供者）" : "Partner company (SaaS publisher)", buyerHeader);
+        Assert.Contains(culture == "ja" ? "運用担当者向け" : "for operators", adminHeader);
         Assert.Contains(culture == "ja" ? "パートナー企業が実装する運用管理画面の例" : "Example operations UI implemented by the partner company", adminHeader);
         var implementationNote = culture == "ja" ? "この管理UIは任意で、既存の管理機能でも構いません" : "This management UI is optional and can reuse existing tools";
-        Assert.Contains(implementationNote, admin[..admin.IndexOf("<details class=\"explainer learn\"", StringComparison.Ordinal)]);
+        Assert.DoesNotContain(implementationNote, admin[..admin.IndexOf("<details class=\"explainer learn\"", StringComparison.Ordinal)]);
+        Assert.Contains(implementationNote, admin);
         Assert.Contains("<caption class=\"data-source\">", admin);
         var detailLink = Regex.Match(admin, "href=\"(/admin/[0-9a-f-]+[^\\\"]*)\"").Groups[1].Value;
         Assert.NotEmpty(detailLink);
         var detail = WebUtility.HtmlDecode(await client.GetStringAsync(detailLink));
         Assert.Contains(implementationNote, detail);
-        Assert.Contains(culture == "ja" ? "エミュレーターの状態ではありません" : "Not the emulator's state", detail);
+        Assert.Contains(culture == "ja" ? "表示元：パートナー企業の契約DB" : "Source: partner contract DB", detail);
         Assert.DoesNotContain("href=\"/admin", buyerHeader);
         Assert.DoesNotContain("class=\"top\"", buyer);
         Assert.Contains("class=\"demo-role-switch\"", buyer);
@@ -266,11 +276,92 @@ public class PurchaseJourneyTests
         using var client = app.CreateClient();
         var home = WebUtility.HtmlDecode(await client.GetStringAsync($"/?culture={culture}"));
         Assert.Contains("id=\"boundary\"", home);
+        Assert.Contains("<details class=\"explainer learn\" id=\"boundary\">", home);
+        var main = home[home.IndexOf("<main ", StringComparison.Ordinal)..];
+        var primary = main[..main.IndexOf("<details", StringComparison.Ordinal)];
+        Assert.Contains(culture == "ja" ? "購入体験を始める" : "Start the purchase experience", primary);
+        Assert.DoesNotContain("responsibility-map", primary);
+        Assert.DoesNotContain("<select", primary);
+        Assert.Single(Regex.Matches(home, "class=\"demo-notice\""));
         foreach (var marker in new[] { "microsoft-side", "partner-side", "screen-node", "server-node", "database-node", "service-node", "boundary-flows" })
             Assert.Contains(marker, home);
         Assert.Contains(culture == "ja" ? "製品の利用制御は本サンプルの範囲外" : "Product access enforcement is outside this sample", home);
         Assert.Contains(culture == "ja" ? "2つの状態ストアは別物" : "The two stores are separate", home);
         Assert.Contains(culture == "ja" ? "パートナー企業が実装" : "Partner company implements", home);
+    }
+
+    [Theory]
+    [InlineData("en")]
+    [InlineData("ja")]
+    public async Task Selected_contract_filter_is_exact_and_reload_preserves_it(string culture)
+    {
+        using var source = new L2AppFactory("http://127.0.0.1:1/api");
+        var fake = Fulfillment("PendingFulfillmentStart");
+        using var app = CreateApp(source, fake);
+        using var client = app.CreateClient();
+        await client.GetStringAsync("/?token=demo");
+        using (var scope = app.Services.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<ISubscriptionRepository>();
+            await repository.AddAsync(new Subscription(Guid.NewGuid(), "unrelated-sub", "other-offer", "other-plan", DateTimeOffset.UtcNow));
+            await repository.SaveChangesAsync();
+        }
+        var selected = WebUtility.HtmlDecode(await client.GetStringAsync($"/admin?marketplaceSubscriptionId=journey-sub&scenario=web-card&culture={culture}"));
+        Assert.Contains("journey-sub", selected);
+        Assert.DoesNotContain("unrelated-sub", selected);
+        Assert.Contains($"href=\"/admin?marketplaceSubscriptionId=journey-sub&scenario=web-card&culture={culture}\"", selected);
+        var detailPath = Regex.Match(selected, "href=\"(/admin/[0-9a-f-]+[^\\\"]*)\"").Groups[1].Value;
+        var detail = WebUtility.HtmlDecode(await client.GetStringAsync(detailPath));
+        Assert.Contains($"subscriptions.html?culture={culture}&scenario=web-card&subscriptionId=journey-sub", detail);
+        Assert.Contains("class=\"reload-record\" method=\"get\"", detail);
+        var refresh = Regex.Match(detail, "name=\"refresh\" value=\"([0-9a-f]+)\"").Groups[1].Value;
+        Assert.NotEmpty(refresh);
+        var reloaded = WebUtility.HtmlDecode(await client.GetStringAsync(detailPath));
+        Assert.DoesNotContain($"name=\"refresh\" value=\"{refresh}\"", reloaded);
+        Assert.Contains($"name=\"culture\" value=\"{culture}\"", detail);
+        Assert.Contains("name=\"scenario\" value=\"web-card\"", detail);
+        foreach (var invalid in new[] { "journey", "JOURNEY-SUB", "<script>bad</script>" })
+        {
+            var missing = WebUtility.HtmlDecode(await client.GetStringAsync($"/admin?marketplaceSubscriptionId={Uri.EscapeDataString(invalid)}&culture={culture}"));
+            Assert.DoesNotContain("<tbody>", missing[..missing.IndexOf("<details class=\"explainer learn\"", StringComparison.Ordinal)]);
+            Assert.Contains(culture == "ja" ? "保存記録は見つかりませんでした" : "No saved partner record was found", missing);
+        }
+        Assert.Equal(0, fake.ActivateCallCount);
+    }
+
+    [Fact]
+    public async Task Active_return_does_not_fabricate_the_partner_state()
+    {
+        using var source = new L2AppFactory("http://127.0.0.1:1/api");
+        using var app = CreateApp(source, Fulfillment("Subscribed"));
+        using var client = app.CreateClient();
+        var html = WebUtility.HtmlDecode(await client.GetStringAsync("/?token=demo&culture=en"));
+        Assert.Contains("Already active.", html);
+        var saved = Regex.Match(html, "<dl class=\"kv saved-result\">.*?</dl>", RegexOptions.Singleline).Value;
+        Assert.Contains("PendingFulfillmentStart", saved); // Existing resolve storage behavior, not a claimed sync.
+        Assert.DoesNotContain("Subscribed", saved);
+    }
+
+    [Fact]
+    public async Task Plan_comparison_uses_only_recorded_plan_values()
+    {
+        using var source = new L2AppFactory("http://127.0.0.1:1/api");
+        using var app = CreateApp(source, Fulfillment("PendingFulfillmentStart"));
+        using var client = app.CreateClient();
+        var id = Guid.NewGuid();
+        using (var scope = app.Services.CreateScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<ISubscriptionRepository>();
+            await repository.AddAsync(new Subscription(id, "history-only", "offer", "current-not-history", DateTimeOffset.UtcNow));
+            var events = scope.ServiceProvider.GetRequiredService<ISubscriptionEventLog>();
+            events.Record("history-only", SubscriptionEventSource.Webhook, "ChangePlan", "recorded-new-plan");
+            await repository.SaveChangesAsync();
+        }
+        var html = WebUtility.HtmlDecode(await client.GetStringAsync($"/admin/{id}?culture=en"));
+        var comparison = Regex.Match(html, "<div class=\"recorded-plan-changes.*?</div>", RegexOptions.Singleline).Value;
+        Assert.Contains("Not recorded", comparison);
+        Assert.Contains("recorded-new-plan", comparison);
+        Assert.DoesNotContain("current-not-history", comparison);
     }
 
     [Fact]

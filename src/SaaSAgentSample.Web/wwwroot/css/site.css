@@ -27,6 +27,33 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex="0"]:foc
 .role-menu p { margin:0 0 .5rem; font-size:.85rem; color:#53677b; }
 .role-menu a { display:block; padding:.5rem; border-radius:4px; }
 .role-menu a:hover { background:#edf3f8; }
+.demo-notice { position:relative; font-size:.8rem; }
+.demo-notice > summary { cursor:pointer; padding:.15rem .5rem; border:1px solid #b6c5d5; border-radius:20px; }
+.demo-notice-body { position:absolute; top:100%; left:0; z-index:40; width:min(23rem,80vw); background:#fff; border:1px solid var(--border); border-radius:6px; padding:.6rem 1rem; color:var(--text); box-shadow:var(--shadow); }
+.demo-notice-body p { margin:.4rem 0; }
+.learning-focus { margin:.6rem 0 1.2rem; }
+.learning-focus summary,.implementation-details summary,.reference-details summary { cursor:pointer; padding:.6rem 0; font-weight:600; }
+.learning-focus label { display:block; margin:.4rem 0; }
+.learning-focus select { max-width:100%; font:inherit; padding:.4rem; color:var(--text); background:#fff; border:1px solid #8fa5b4; border-radius:4px; }
+.focus-notes p { font-size:.95rem; color:var(--text-2); }
+.implementation-details { border-top:1px solid var(--border); margin-top:1rem; }
+.reference-details { margin:.7rem 0; }
+.code-links { padding-left:1.25rem; overflow-wrap:anywhere; }
+.code-links li { margin:.5rem 0; }
+.buyer-result { margin-top:1rem; }
+.buyer-result p { margin:.6rem 0 0; }
+.behind-scenes .saved-result { margin:1rem 0; grid-template-columns:minmax(0,10rem) minmax(0,1fr); }
+.change-exercise { max-width:700px; margin:1.5rem 0; }
+.change-exercise h2 { font-size:1.1rem; }
+.change-exercise p { color:var(--text-2); }
+.exercise-actions { display:flex; flex-wrap:wrap; gap:.75rem; }
+.recorded-plan-changes { margin:1rem 0; }
+.recorded-plan-changes caption { text-align:left; padding:.6rem; font-weight:600; }
+.recorded-plan-changes td { overflow-wrap:anywhere; }
+.contract-context { overflow-wrap:anywhere; }
+@media(max-width:720px){
+  .demo-notice-body { position:fixed; top:4rem; left:5vw; width:90vw; }
+}
 .partner-page .site-header { background:#fff; border-bottom:3px solid var(--brand); backdrop-filter:none; }
 .partner-page .site-header .bar { max-width:1400px; padding:1rem 1.5rem; }
 .partner-page .brand { font-size:1.35rem; color:var(--brand); min-width:0; }

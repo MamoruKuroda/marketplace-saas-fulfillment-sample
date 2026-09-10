@@ -16,11 +16,12 @@
   <body data-demo-step="1" class="journey-page">
     <header class="boundary-header marketplace-header">
       <span class="boundary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9l2-6h14l2 6M3 9h18M4 9v12h16V9M9 21v-7h6v7M8 3L7 9M16 3l1 6"/></svg></span>
-      <div><h1 data-i18n="boundary.marketplaceTitle">Microsoft Marketplace [simulated]</h1><p class="side-tag" data-i18n="boundary.purchaseSimulation">Purchase experience · no real sign-in or payment</p></div>
+      <div><h1 data-i18n="boundary.marketplaceTitle">Microsoft Marketplace</h1><p class="side-tag" data-i18n="boundary.purchaseSimulation">marketplace.microsoft.com</p></div>
+      <details class="demo-scope"><summary>Demo</summary><div><p data-i18n="scope.simulation">Simulated screens: no real purchase or payment. Azure hosting may incur costs.</p><p data-i18n="scope.roles">Role labels are teaching navigation, not authorization. This experimental sample is not supported for production use.</p></div></details>
       <nav class="header-language" aria-label="Language" data-i18n-attr="aria-label:boundary.language"><ul></ul></nav>
     </header>
-    <div class="boundary-meta"><span><span data-i18n="boundary.location">Location</span><strong data-i18n="boundary.storeLocation">Product and purchase</strong></span><span><span data-i18n="map.operatedBy">Operated by</span><strong data-i18n="map.whoBuyer">Buyer</strong></span><span><span data-i18n="boundary.productionProvider">Production provider</span><strong>Microsoft</strong></span><strong class="boundary-badge" data-i18n="boundary.notPartnerCheckout">The partner company does not build this checkout</strong></div>
-    <details class="role-switch"><summary data-i18n="boundary.roleSwitch">Demonstration role switch</summary><p data-i18n="boundary.roleNotice">Teaching navigation between buyer and demo operator tools. Role labels are not authorization.</p>
+    <div class="boundary-meta"><span><span data-i18n="boundary.location">Location</span><strong data-i18n="boundary.storeLocation">Product and purchase</strong></span><span><span data-i18n="map.operatedBy">Operated by</span><strong data-i18n="map.whoBuyer">Buyer</strong></span><span><span data-i18n="boundary.productionProvider">Production provider</span><strong>Microsoft</strong></span></div>
+    <details class="role-switch"><summary data-i18n="boundary.roleSwitch">Tools</summary>
     <nav aria-label="Demonstration tools" data-i18n-attr="aria-label:journey.emulatorNavigation"><ul>
       <li><a href="/start.html" class="active" aria-current="page" data-i18n="nav.marketplace">Marketplace</a></li>
       <li><a href="/subscriptions.html" data-i18n="nav.subscriptions">Subscriptions</a></li>
@@ -29,10 +30,8 @@
       <li><a href="/config.html" data-i18n="nav.config">Config</a></li>
       <li><a href="/" data-i18n="boundary.tokenTool">Technical purchase-token tool (legacy)</a></li>
     </ul></nav></details>
-    <p class="page-hint" data-i18n="journey.startHint">Discover a service → simulated checkout → the partner company's site.</p>
     <main class="experience-shell">
       <div class="experience-toolbar">
-        <span class="demo-badge" data-i18n="experience.demoNotice">Purchase demo · no real charge</span>
         <details class="presenter-tools">
           <summary data-i18n="experience.presenterControls">Presenter controls</summary>
           <fieldset class="scenario-picker">
@@ -65,7 +64,7 @@
             <div class="product-hero">
               <div class="product-identity">
                 <span class="product-icon" aria-hidden="true">W</span>
-                <div><span class="product-category" data-i18n="experience.fictionalProduct">Fictional product for this demo</span>
+                <div><span class="product-category" data-i18n="experience.fictionalProduct">Productivity · SaaS</span>
                   <h2 id="product-name" data-i18n="experience.productName">Workspace Automation</h2>
                   <p id="product-publisher"></p>
                 </div>
@@ -78,7 +77,6 @@
                 <p id="product-price" class="price-display" aria-live="polite"></p>
                 <p id="product-period" class="subtle"></p>
                 <button type="submit" id="discovery-continue" class="primary" disabled data-i18n="common.getItNow">Get it now</button>
-                <p class="subtle" data-i18n="experience.priceNotice">Sample price: US$50 / ¥7,500 — fixed demo values, not a real exchange rate.</p>
               </form>
             </div>
             <section id="overview" class="product-overview">
@@ -90,10 +88,11 @@
               </div>
             </section>
             <section id="plans" class="product-plans"><h3 data-i18n="experience.plansPricing">Plans + pricing</h3><div id="plan-cards" class="plan-cards"></div></section>
-            <section id="support"><h3 data-i18n="experience.support">Support</h3><p class="subtle" data-i18n="experience.supportNote">This page illustrates buying a service, not a working automation product. Purchase permissions and partner company responsibilities are explained in “How this works” in the teaching guide above.</p></section>
+            <section id="support"><h3 data-i18n="experience.support">Support</h3><p class="subtle" data-i18n="experience.supportNote">See “How this works” in the guide for purchase and service setup help.</p></section>
           </div>
         </div>
       </article>
+      <details class="behind-scenes"><summary data-i18n="scope.behind">Behind the scenes</summary><h3 data-i18n="scope.what">What happened</h3><p data-i18n="scope.discovery">Choose an offer and plan, then review the purchase details.</p><h3 data-i18n="scope.who">Who implements this</h3><p data-i18n="scope.purchaseOwner">Microsoft supplies the purchase experience. The partner company implements service setup after checkout.</p><details><summary data-i18n="scope.details">Implementation details / code</summary><p data-i18n="experience.priceNotice">Sample price: US$50 / ¥7,500 — fixed values, not an exchange rate.</p><p data-i18n="scope.references">Use “How this works” in the guide for implementation, code and glossary references.</p></details></details>
       <noscript><p class="journey-error">JavaScript is required. / JavaScript を有効にしてください。</p></noscript>
     </main>
   </body>

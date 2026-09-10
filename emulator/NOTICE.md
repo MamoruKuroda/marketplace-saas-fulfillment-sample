@@ -25,7 +25,7 @@ Changes we made on top of the upstream snapshot:
   landing page and operations console. Static English headers identify the actor, location
   and provider even without JavaScript. Store and checkout are buyer simulations; subscriptions,
   offers, configuration, the legacy token form and embedded landing are demo-operator tools.
-  Technical navigation stays in a closed-by-default **Demonstration role switch** disclosure;
+  Technical navigation stays in a closed-by-default **Tools** disclosure;
   language controls remain outside it. Role labels do not implement authorization.
   APIs, backend behavior, authentication and storage contracts are unchanged.
 - **Localization** — `src/client/i18n.js` adds an EN / 日本語 catalogue and applies it to the
@@ -81,6 +81,21 @@ Changes we made on top of the upstream snapshot:
   partner database. Webhook delivery, partner storage and operations-console reload are separate.
   Neither the emulator table nor an HTTP operation response acknowledges partner DB persistence.
   Existing lifecycle actions and the reset confirmation remain unchanged.
+- **Operations-first presentation** — each page has one small, keyboard-accessible `Demo`
+  disclosure for simulation limits, possible Azure hosting costs and teaching-only role labels.
+  Optional tools remain available without a role gate. The default product → checkout →
+  confirmation flow keeps a short no-purchase/no-payment note at confirmation and the fake-card
+  warning; implementation explanations live in collapsed sections with the shared `#how` references.
+  The navy Microsoft header and partner handoff remain distinct.
+- **Saved-record navigation** — `/subscriptions.html?subscriptionId=<Marketplace ID>` selects
+  an exact UUID match from the existing emulator response, filters and highlights that row, and
+  preserves selection on reload/language changes. Unknown, empty, invalid or repeated IDs do
+  not select a replacement; the page reports the problem and shows the full list. “Show all”
+  clears selection while preserving culture/scenario. Partner saved-record links are built from
+  the configured landing origin as `/admin?marketplaceSubscriptionId=...`; configured token/query
+  values and caller-supplied partner URLs are not forwarded. These are navigation IDs, not
+  authorization claims, and do not change operation requests. API failures remain visible.
+  No before/after history or partner persistence is inferred from emulator responses.
 - **Embedded landing tool** — `/landing.html` remains an emulator-built Resolve / Activate
   API test utility, not the partner buyer landing page or a Microsoft-provided production UI.
   Its explanation distinguishes the SaaS publisher from the customer's user/company ID.
@@ -88,8 +103,8 @@ Changes we made on top of the upstream snapshot:
   every subscription here (via the emulator's existing `DELETE /api/util/publishers/...` utility
   route — no API change) and then asks the publisher app to clear its own copy. It is a
   test-harness convenience and the button says so: the real Marketplace has no way to delete a
-  publisher's records. The publisher app only accepts that call when it has been configured for
-  demos, and only from this origin.
+  publisher's records. The publisher endpoint is enabled only by its demo setting; CORS limits
+  browser origins but is not authentication or a barrier to non-browser clients.
 
 ## Maintenance notes
 
