@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Marketplace API Emulator</title>
     <link rel="stylesheet" href="core.css" />
     <link rel="stylesheet" href="landing.css" />
@@ -19,8 +20,10 @@
     <link rel="manifest" href="images/site.webmanifest" />
   </head>
   <body>
-    <header><h1>Azure Marketplace API Emulator</h1><p class="side-tag" data-i18n="masthead.side">Microsoft side (stand-in) — storefront, billing, webhooks</p></header>
-    <nav><ul>
+    <header class="boundary-header tool-header"><span class="boundary-icon" aria-hidden="true">⚙</span><div><h1 data-i18n="boundary.landingTool">Embedded Resolve / Activate API test tool</h1><p class="side-tag" data-i18n="boundary.toolSubtitle">Marketplace API Emulator</p></div><details class="demo-scope"><summary>Demo</summary><div><p data-i18n="scope.simulation">Simulated screens: no real purchase or payment. Azure hosting may incur costs.</p><p data-i18n="scope.roles">Role labels are teaching navigation, not authorization. This experimental sample is not supported for production use.</p></div></details><nav class="header-language" aria-label="Language" data-i18n-attr="aria-label:boundary.language"><ul></ul></nav></header>
+    <div class="boundary-meta tool-meta"><span><span data-i18n="boundary.location">Location</span><strong data-i18n="boundary.embeddedLocation">Emulator-built API test page</strong></span><span><span data-i18n="map.operatedBy">Operated by</span><strong data-i18n="boundary.demoOperator">Operator</strong></span><span><span data-i18n="boundary.toolProvider">Tool provided by</span><strong data-i18n="boundary.emulatorProvider">Sample emulator</strong></span></div>
+    <details class="role-switch"><summary data-i18n="boundary.roleSwitch">Tools</summary>
+    <nav aria-label="Demonstration tools" data-i18n-attr="aria-label:journey.emulatorNavigation"><ul>
                 <li><a href="/start.html" data-i18n="nav.marketplace">Marketplace</a></li>
                 <li><a href="/subscriptions.html" data-i18n="nav.subscriptions">Subscriptions</a></li>
                 <li><a href="/landing.html" class="active" data-i18n="nav.landingPage">Landing Page</a></li>
@@ -29,32 +32,27 @@
                 <li><a href="https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator/issues" target="_blank">
                     <svg height="24" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="24" data-view-component="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path></svg>
                 </a></li>
-            </ul></nav>
-        <p class="page-hint" data-i18n="hint.landing">Preview the landing page the emulator redirects to after a purchase.</p>
+                <li><a href="/" data-i18n="boundary.tokenTool">Technical purchase-token tool (legacy)</a></li>
+            </ul></nav></details>
     <main>
-      <section class="info">
-        <header data-i18n="common.introduction">Introduction</header>
-        <article class="hidden with-token" data-i18n-html="landing.withTokenHtml"></article>
-        <article data-i18n-html="landing.noTokenInfoHtml"></article>
-      </section>
       <section class="main">
-        <header data-i18n="landing.configureSubscription">Configure Subscription</header>
-        <div class="no-token" data-i18n-html="landing.noTokenHtml">The url doesn't contain a marketplace token.<br />Go to the <a href="/">Marketplace page</a> and purchase an offer.</div>
+        <header data-i18n="landing.configureSubscription">Resolve / Activate API test</header>
+        <div class="no-token" data-i18n-html="landing.noTokenHtml">No demo purchase token was supplied. For API testing, open the <a href="/">technical purchase-token tool</a>. This is not an activated purchase.</div>
         <div class="with-token">
           <div><label data-i18n="common.offerId">Offer Id</label><div class="offer-id"></div></div>
           <div><label data-i18n="common.planId">Plan Id</label><div class="plan-id"></div></div>
           <div><label data-i18n="common.quantity">Quantity</label><div class="quantity"></div></div>
           <div><label data-i18n="common.subscriptionName">Subscription Name</label><div class="subscription-name"></div></div>
           <div><label data-i18n="common.beneficiaryEmail">Beneficiary Email</label><div class="beneficiary-email"></div></div>
-          <div><label data-i18n="common.publisherId">Publisher Id</label><div class="publisher-id"></div></div>
+          <div><label data-i18n="common.publisherId">Partner company (SaaS publisher) ID</label><div class="publisher-id"></div></div>
           <div class="seperator"></div>
-          <div><p data-i18n="landing.marketplaceSso">For the commercial marketplace, this page must be AAD SSO enabled You should check the user identity against the resolved token to ensure they match Optionally, you can collect additional details from the customer for onboarding (eg below)</p></div>
           <div class="seperator"></div>
           <div><label data-i18n="common.companyName">Company Name</label><input /></div>
           <div><label data-i18n="common.contactTelephone">Contact Telephone</label><input /></div>
-          <div><label></label><button class="activate primary" data-i18n="common.activateSubscription">Activate Subscription</button><button class="subscriptions primary hidden" data-i18n="common.goToSubscriptions">Go to Subscriptions</button></div>
+          <div><label></label><button class="activate primary" data-i18n="common.activateSubscription">Activate Subscription</button><button class="subscriptions primary hidden" data-i18n="common.goToSubscriptions">Switch role: Microsoft-side event tests</button></div>
         </div>
       </section>
     </main>
+    <footer class="implementation-guide"><a data-implementation-guide data-i18n="map.learnMore" href="https://github.com/MamoruKuroda/marketplace-saas-fulfillment-sample/blob/main/docs/walkthrough.md" target="_blank" rel="noopener noreferrer">Implementation guide ↗</a></footer>
   </body>
 </html>

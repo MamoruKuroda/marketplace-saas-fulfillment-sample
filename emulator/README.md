@@ -34,6 +34,37 @@ The emulator is a Node.js application designed to be run as a Docker container f
 
 ## Using the emulator
 
+### Screen responsibilities in this sample
+
+| Route | Actor and purpose |
+| --- | --- |
+| `/start.html`, `/checkout.html` | **Buyer** in Microsoft Marketplace **[simulated]**. In production Microsoft provides checkout; the partner company does not build it. No real sign-in or payment occurs here. |
+| `/subscriptions.html` | **Demo operator** initiating simulated Microsoft-side lifecycle events, not a buyer-facing Microsoft product page. The table reads emulator state, **not the partner company's database**. |
+| `/`, `/index.html` | **Demo operator** using the legacy synthetic purchase-token tool. |
+| `/landing.html` | **Demo operator** using the emulator-built Resolve / Activate API test tool. This is neither the partner landing page nor a production page supplied by Microsoft. |
+| `/offers.html`, `/config.html` | **Demo operator** configuring emulator offers/plans and settings; these tools are not Partner Center. |
+
+Open **Demonstration role switch / 説明用の役割切替** for technical and cross-role navigation.
+It starts closed; these labels do not grant permissions or implement authorization. Existing
+tools and actions remain available. Language controls remain visible outside the disclosure.
+
+The compact four-step map is a **teaching guide**, not product navigation. Links to the partner
+company (SaaS publisher)'s `/admin`, `/#boundary` responsibility overview and `/#how` explanation
+open separately and preserve the selected language and scenario. The overview is not an activated
+landing page. If configuration cannot be read, the guide stays visible without inventing partner
+links. No guide label displays purchase-token values.
+
+After reviewing and placing a simulated order, the existing completion stage shows the handoff
+to the partner company. **Continue on the partner site / パートナー企業のサイトで設定する**
+uses the same frozen Configure URL and per-tab purchase snapshot; it does not create another order.
+Fulfillment is not invoked by the teaching guide or by placing the simulated order.
+
+Webhook delivery, partner database storage and reloading the partner operations console are
+separate steps. The emulator table and HTTP operation responses do **not** prove that the partner
+database is synchronized. The existing reset tool still requires its confirmation.
+The partner company implements the production landing page and customer-account linking;
+the customer company's ID is distinct from the partner company (SaaS publisher)'s ID.
+
 With the emulator running, you can connect to it using a browser and standard tools such as the [REST Client extension for VS Code](https://github.com/Huachao/vscode-restclient), [Postman](https://www.postman.com/) etc.
 
 The URL and port will depend on [your chosen deployment method](./docs/launching.md). eg if you're running the emulator locally using `docker run`, you would likely connect on `http://localhost:8080`.
@@ -49,16 +80,21 @@ The URL and port will depend on [your chosen deployment method](./docs/launching
    1. Use the emulator's simple, built-in landing page implementation to resolve & activate a subscription
    1. Exercise the APIs manually (eg using the VS Code REST client or Postman)
 
-### Use the Emulator's built-in landing page
+### Use the emulator's embedded API test tool
 
-1. Click on the `Post to landing page` button in the Token area
-1. You will be taken to the emulator's built-in landing page
+The following applies only when the emulator's configured landing URL points to its own
+`/landing.html` test tool. In the full SaaS sample, purchase continuation instead goes to the
+separate partner application. Do not confuse this utility with that buyer landing page.
+
+1. Use the legacy token tool's continuation action
+1. With the above configuration, it opens the emulator's embedded API test tool
 1. The purchase token is passed to the landing page as a query string parameter
 1. When it loads, the landing page automatically calls the `resolve API` to decode the token
 1. Key token properties are displayed on the page
 1. Click the `Activate subscription` button to call the `activate API`
 1. You should see a message indicating a `200 OK` status response
-1. Navigate to the `Subscriptions` page to see your new subscription has been activated
+1. Use **Demonstration role switch → Demo operator · Microsoft-side events** to inspect the
+   resulting emulator record (not the partner DB)
 
 ### A word about the Publisher ID
 

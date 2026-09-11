@@ -7,7 +7,10 @@
     ViewData["Title"] = L["Subscription detail"].Value;
     var s = Model.Subscription;
     var scenario = DemoNavigation.PurchaseScenario(Model.Request.Query["scenario"].ToString());
-    var emu = DemoNavigation.EmulatorLink(Config, "/subscriptions.html", scenario);
+    var emuRoot = DemoNavigation.EmulatorLink(Config, "/subscriptions.html", scenario);
+    var emu = emuRoot is null || s is null ? null
+        : Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(emuRoot, "subscriptionId", s.MarketplaceSubscriptionId);
+    var history = s is null ? Array.Empty<SubscriptionEvent>() : Events.For(s.MarketplaceSubscriptionId);
     static string BadgeClass(SubscriptionState state) => state switch
     {
         SubscriptionState.Subscribed => "subscribed",
@@ -25,10 +28,11 @@
 }
 <p><a class="back-link" href="@DemoNavigation.PublisherLink("/admin", scenario)">@L["← All subscriptions"]</a></p>
 <h1 class="page-title">@L["Subscription detail"]</h1>
+<p class="subtitle">@L["Source: partner contract DB"]</p>
 
 @if (Model.Message is not null)
 {
-    <div class="notice">@Model.Message</div>
+    <div class="notice" role="status">@Model.Message</div>
 }
 
 @if (s is not null)
@@ -44,10 +48,6 @@
             <dt>@L["Updated (UTC)"]</dt><dd>@s.UpdatedAt.UtcDateTime.ToString("u")</dd>
         </dl>
 
-        @(await Html.PartialAsync("_Provenance", new SaaSAgentSample.Web.ProvenanceVm(Events.For(s.MarketplaceSubscriptionId), s.State, false)))
-
-        @(await Html.PartialAsync("_CapacityBar", new SaaSAgentSample.Web.CapacityVm(s.MarketplaceSubscriptionId, s.PlanId, false)))
-
         @if (Model.CanActivate)
         {
             <form method="post" action="@DemoNavigation.PublisherLink("?handler=Activate", scenario)">
@@ -56,16 +56,37 @@
                 <button type="submit" class="btn primary">@L["Activate subscription"]</button>
             </form>
         }
-        else
-        {
-            <p class="muted">@L["No publisher actions available from the current state ({0}).", s.State]</p>
-            <p class="hint" style="margin-top:.4rem">
-                @L["Suspend, Reinstate, Change plan and Unsubscribe are Microsoft-initiated and arrive as a webhook. Trigger them in the emulator, then refresh."]
-            </p>
+    </div>
+    <section class="change-exercise" aria-labelledby="change-title">
+        <h2 id="change-title">@L["Follow one contract through a change"]</h2>
+        <p>@L["Note the saved plan and state, make one change on the Microsoft side, then reload this record."]</p>
+        <div class="exercise-actions">
             @if (emu is not null)
             {
-                <p style="margin-top:.6rem"><a href="@emu" target="_blank" rel="noopener">@L["Open the emulator's Subscriptions tab →"]</a></p>
+                <a class="btn secondary same-contract-events" href="@emu" target="_blank" rel="noopener">@L["Try a change for this contract ↗"]</a>
             }
-        }
-    </div>
+            <form class="reload-record" method="get" action="/admin/@s.Id#history">
+                @* A fresh URL forces a server read even when the browser is already at #history. *@
+                <input type="hidden" name="refresh" value="@Guid.NewGuid().ToString("N")" />
+                <input type="hidden" name="culture" value="@System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName" />
+                @if (scenario is not null)
+                {
+                    <input type="hidden" name="scenario" value="@scenario" />
+                }
+                <button class="btn secondary" type="submit">@L["Reload this saved record"]</button>
+            </form>
+        </div>
+    </section>
+    <details class="explainer learn" id="history">
+        <summary>@L["Saved changes and processing history"]</summary>
+        <div class="body">
+            @(await Html.PartialAsync("_PlanHistory", history))
+            @(await Html.PartialAsync("_Provenance", new SaaSAgentSample.Web.ProvenanceVm(history, s.State, false)))
+            <p>@L["Notifications appear after receipt and database save. Reload to read the latest stored records; this screen cannot detect notifications still in transit."]</p>
+        </div>
+    </details>
+    <details class="explainer learn">
+        <summary>@L["Illustrative capacity"]</summary>
+        <div class="body">@(await Html.PartialAsync("_CapacityBar", new SaaSAgentSample.Web.CapacityVm(s.MarketplaceSubscriptionId, s.PlanId, false)))</div>
+    </details>
 }

@@ -1,42 +1,112 @@
 /// <reference path="core.js" />
 
 let offers;
+let partnerLanding;
+let selectedScrolled = false;
+
+function reportError(message) {
+  const error = document.getElementById('subscriptions-error');
+  error.textContent = error.textContent ? error.textContent + '\n' + message : message;
+  error.hidden = false;
+}
+
+async function checkedAPI(path, method) {
+  const response = await callAPI(path, method);
+  if (response.status < 200 || response.status >= 300) {
+    throw new Error(`${t('subs.requestError')} (${response.status}): ${typeof response.result === 'string' ? response.result : JSON.stringify(response.result) || ''}`);
+  }
+  return response.result;
+}
+
+function subscriptionRows() {
+  return Array.from(document.querySelectorAll('tr[data-sid]'));
+}
+
+function updateSubscriptionSelection() {
+  const rows = subscriptionRows();
+  const selection = window.EmulatorSubscriptions.select(window.location.search, rows.map(row => row.getAttribute('data-sid')));
+  const selected = selection.kind === 'selected';
+  rows.forEach(row => {
+    const current = selected && row.getAttribute('data-sid') === selection.id;
+    row.hidden = selected && !current;
+    row.classList.toggle('selected-subscription', current);
+    if (current) row.setAttribute('aria-selected', 'true');
+    else row.removeAttribute('aria-selected');
+    if (current && !selectedScrolled) {
+      row.scrollIntoView({ block: 'nearest' });
+      selectedScrolled = true;
+    }
+  });
+  document.querySelectorAll('tr.publisher-heading').forEach(row => { row.hidden = selected; });
+  const status = document.getElementById('subscription-selection-status');
+  status.textContent = selection.kind === 'all' ? t('subs.allRecords') :
+    selection.kind === 'invalid' ? t('subs.invalidSelection') :
+    formatI18n(selected ? 'subs.selected' : 'subs.notFound', { id: selection.id });
+  const clear = document.getElementById('subscriptions-show-all');
+  clear.href = window.EmulatorSubscriptions.showAllUrl();
+  clear.hidden = selection.kind === 'all';
+  const partner = document.getElementById('partner-record');
+  partner.hidden = true;
+  partner.removeAttribute('href');
+  if (selected && partnerLanding) {
+    partner.href = window.EmulatorSubscriptions.partnerUrl(partnerLanding, selection.id);
+    partner.hidden = false;
+  }
+}
+
+async function loadPartnerLinks() {
+  try {
+    const config = await checkedAPI('/api/util/config');
+    // Validate the configured origin without retaining configured query/token values.
+    window.EmulatorSubscriptions.partnerUrl(config.landingPageUrl, '00000000-0000-0000-0000-000000000000');
+    partnerLanding = config.landingPageUrl;
+  } catch (error) {
+    const status = document.getElementById('partner-record-status');
+    status.textContent = t('subs.partnerUnavailable') + ' ' + error.message;
+    status.hidden = false;
+  }
+}
 
 $(async () => {
-  const o = await callAPI('/api/util/offers');
-  offers = o.result;
-
-  const { result } = await callAPI('/api/util/publishers');
-
-  const publisherRowTemplate = $('#publisher-row');
-
-  for (const pid in result) {
-    const publisherSubscriptions = result[pid];
-
-    publisherRowTemplate
-      .clone()
-      .appendTo(publisherRowTemplate.parent())
-      .removeClass('template')
-      .attr('id', '')
-      .children('td')
-      .text(t("common.publisherIdPrefix") + pid);
-
-    for (const sid in publisherSubscriptions) {
-      addRow(publisherSubscriptions[sid].subscription, pid);
+  try {
+    const results = await Promise.all([checkedAPI('/api/util/offers'), checkedAPI('/api/util/publishers'), loadPartnerLinks()]);
+    offers = results[0];
+    const result = results[1];
+    const publisherRowTemplate = $('#publisher-row');
+    for (const pid in result) {
+      const publisherSubscriptions = result[pid];
+      publisherRowTemplate
+        .clone()
+        .appendTo(publisherRowTemplate.parent())
+        .removeClass('template')
+        .addClass('publisher-heading')
+        .attr('id', '')
+        .children('td')
+        .text(t("common.publisherIdPrefix") + pid);
+      for (const sid in publisherSubscriptions) {
+        addRow(publisherSubscriptions[sid].subscription);
+      }
     }
-  }
-
-  if (window.location.hash) {
-    $(`tr[data-sid=${window.location.hash.substring(1)}]`).addClass('animate-fade');
+    updateSubscriptionSelection();
+    const legacyId = window.location.hash.substring(1);
+    if (window.EmulatorSubscriptions.validId(legacyId)) {
+      subscriptionRows().filter(row => row.getAttribute('data-sid') === legacyId)
+        .forEach(row => row.classList.add('animate-fade'));
+    }
+  } catch (error) {
+    reportError(t('subs.loadError') + ' ' + error.message);
   }
 });
 
 $(document).on('subscription-update', async (e, sid, pid) => {
-  const { result } = await callAPI(`/api/util/publishers/${pid}/subscriptions/${sid}`);
-
-  const row = addRow(result);
-
-  row.addClass('animate-fade');
+  try {
+    const result = await checkedAPI(`/api/util/publishers/${pid}/subscriptions/${sid}`);
+    const row = addRow(result);
+    row.addClass('animate-fade');
+    updateSubscriptionSelection();
+  } catch (error) {
+    reportError(error.message);
+  }
 });
 
 function addRow(subscription) {
@@ -57,7 +127,7 @@ function addRow(subscription) {
       });
   }
 
-  const replace = subscriptionRowTemplate.parent().children(`tr[data-sid='${subscription.id}']`);
+  const replace = subscriptionRowTemplate.parent().children('tr[data-sid]').filter((_, item) => item.getAttribute('data-sid') === subscription.id);
 
   if (replace.length !== 0) {
     row.insertAfter(replace);
@@ -81,7 +151,7 @@ function addRow(subscription) {
     $(cells[1]).text(subscription.name);
     $(cells[2]).text(subscription.offerId).data('copy', subscription.offerId);
     $(cells[3]).text(subscription.planId).data('copy', subscription.planId);
-    $(cells[4]).text(offer.plans[subscription.planId].isPricePerSeat ? subscription.quantity : '-');
+    $(cells[4]).text(offer.plans[subscription.planId]?.isPricePerSeat ? subscription.quantity : '-');
     if (status === 'PendingFulfillmentStart') {
       $(cells[5]).text(t('status.PendingFulfillmentStart'));
     } else {
@@ -103,7 +173,7 @@ function addRow(subscription) {
         }
 
         if (button.is('.change-quantity')) {
-          if (!offer.plans[subscription.planId].isPricePerSeat) {
+          if (!offer.plans[subscription.planId]?.isPricePerSeat) {
             enabled = false;
           }
         }
@@ -136,14 +206,30 @@ function addRow(subscription) {
       });
   }
 
+  if (partnerLanding && window.EmulatorSubscriptions.validId(subscription.id)) {
+    $('<a></a>').addClass('partner-record-link')
+      .attr({ href: window.EmulatorSubscriptions.partnerUrl(partnerLanding, subscription.id), target: '_blank', rel: 'noopener' })
+      .text(t('subs.partnerRecord')).appendTo(row.children('td').last());
+  }
   return row;
+}
+
+async function operationFetch(...args) {
+  try {
+    const response = await doFetch(...args);
+    if (!response.ok) reportError(`${t('subs.requestError')} (${response.status}): ${await response.text()}`);
+    return response;
+  } catch (error) {
+    reportError(`${t('subs.requestError')}: ${error.message}`);
+    return null;
+  }
 }
 
 async function activate_click(e) {
   const subscription = $(e.target).data('subscriptionId');
   const planId = { planId: $(e.target).data('planID') };
   const publisherId = $(e.target).data('publisherId');
-  await doFetch(
+  await operationFetch(
     '/activate',
     `api/saas/subscriptions/${subscription}/activate?publisherId=${publisherId}&api-version=2018-08-31`,
     JSON.stringify(planId)
@@ -164,10 +250,12 @@ async function delete_click(e) {
   const subscriptionId = $(e.target).data('subscriptionId');
   const publisherId = $(e.target).data('publisherId');
 
-  const { status } = await callAPI(`/api/util/publishers/${publisherId}/subscriptions/${subscriptionId}`, 'delete');
-
-  if (status === 204) {
-    $(`tr[data-sid='${subscriptionId}']`).remove();
+  try {
+    await checkedAPI(`/api/util/publishers/${publisherId}/subscriptions/${subscriptionId}`, 'delete');
+    subscriptionRows().filter(row => row.getAttribute('data-sid') === subscriptionId).forEach(row => row.remove());
+    updateSubscriptionSelection();
+  } catch (error) {
+    reportError(error.message);
   }
 }
 
@@ -181,32 +269,48 @@ async function resetDemo_click() {
     return;
   }
 
-  const { result: publishers } = await callAPI('/api/util/publishers');
+  let publishers;
+  try {
+    publishers = await checkedAPI('/api/util/publishers');
+  } catch (error) {
+    reportError(error.message);
+    return;
+  }
 
   let removedHere = 0;
   for (const pid in publishers) {
     for (const sid in publishers[pid]) {
-      const { status } = await callAPI(`/api/util/publishers/${pid}/subscriptions/${sid}`, 'delete');
-      if (status === 204) {
-        $(`tr[data-sid='${sid}']`).remove();
+      try {
+        await checkedAPI(`/api/util/publishers/${pid}/subscriptions/${sid}`, 'delete');
+        subscriptionRows().filter(row => row.getAttribute('data-sid') === sid).forEach(row => row.remove());
         removedHere++;
+      } catch (error) {
+        reportError(error.message);
       }
     }
   }
 
   let publisherOutcome = t('subs.resetPublisherUnavailable');
-  const { result: config } = await callAPI('/api/util/config');
+  updateSubscriptionSelection();
+  let config;
+  try {
+    config = await checkedAPI('/api/util/config');
+  } catch (error) {
+    reportError(error.message);
+  }
   if (config && config.landingPageUrl) {
     try {
       const url = config.landingPageUrl.replace(/\/$/, '') + '/api/demo/reset';
-      // The custom header is what forces a CORS preflight, so only this origin can reach it.
+      // Browser calls require a CORS preflight. This is a demo safeguard, not authentication.
       const response = await fetch(url, { method: 'POST', headers: { 'X-Demo-Reset': '1' } });
       if (response.ok) {
         const body = await response.json();
         publisherOutcome = formatI18n('subs.resetPublisherDone', { count: body.cleared });
+      } else {
+        reportError(`${t('subs.requestError')} (${response.status}): ${await response.text()}`);
       }
-    } catch {
-      // Left as unavailable: the app may be down, or not configured to allow a demo reset.
+    } catch (error) {
+      reportError(`${t('subs.requestError')}: ${error.message}`);
     }
   }
 
@@ -239,10 +343,9 @@ async function changeQuantity_click(e) {
 }
 
 async function getPlans(sub, pub) {
-  const { result } = await callAPI(
+  return checkedAPI(
     `/api/saas/subscriptions/${sub}/listAvailablePlans/?publisherId=${pub}&api-version=2018-08-31`
   );
-  return result;
 }
 
 async function changePlan_click(e) {
@@ -250,7 +353,13 @@ async function changePlan_click(e) {
   const publisherId = $(e.target).data('publisherId');
   const existingPlan = $(e.target).data('planID');
 
-  const plansData = await getPlans(subscription, publisherId);
+  let plansData;
+  try {
+    plansData = await getPlans(subscription, publisherId);
+  } catch (error) {
+    reportError(error.message);
+    return;
+  }
 
   const plansList = plansData.plans;
 
@@ -262,7 +371,7 @@ async function changePlan_click(e) {
   const $dialog = $('#change-plan-dialog');
   const $select = $dialog.find('select').empty();
 
-  $select.append(...plansList.map((x) => $(`<option value='${x.planId}'>${x.displayName}</option>`)));
+  $select.append(...plansList.map((x) => $('<option></option>').val(x.planId).text(x.displayName)));
 
   const planId = await showDialog($dialog, t('action.changePlan'), {
     [t('common.ok')]: (button, body) => {
@@ -294,7 +403,7 @@ async function renew_click(e) {
 }
 
 async function callWebhook(name, sid, endpoint, body) {
-  await doFetch(
+  await operationFetch(
     '<b>[Webhook]</b> ' + name,
     `/api/webhook/subscription/${sid}/${endpoint}`,
     body ? JSON.stringify(body) : undefined,

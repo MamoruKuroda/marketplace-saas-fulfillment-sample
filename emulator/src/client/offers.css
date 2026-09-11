@@ -108,3 +108,13 @@ tfoot td {
     padding-top: 20px;
     text-align: center;
 }
+
+section.detail > div { max-width:100%; min-width:0; }
+section.detail > div > .table-scroll { display:block; }
+@media(max-width:600px) {
+    section.detail { padding:1rem .6rem; }
+    section.detail > div > div { flex-wrap:wrap; gap:.3rem; }
+    section.detail > div > div > label { flex:1 0 100%; }
+    section.detail > div > div > input { min-width:0; max-width:100%; flex:1 1 8rem; }
+    section.detail table { min-width:30rem; }
+}

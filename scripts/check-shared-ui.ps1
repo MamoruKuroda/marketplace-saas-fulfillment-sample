@@ -1,10 +1,6 @@
-# The publisher app and the emulator are two separate front ends that must read as one product,
-# so the chrome around the demo — the map, the masthead, the nav, the language toggle — is
-# deliberately duplicated. Duplicated styling drifts: the app's type was once enlarged while the
-# emulator's copy stayed at the old sizes, so the same map appeared in two different sizes
-# depending on which side you were standing on.
-#
-# This compares the values the two copies must share and fails when they differ.
+# The teaching map shares readable typography across separate systems. Product headers,
+# navigation, palettes and shapes intentionally differ to show responsibility boundaries.
+# Do not enforce a single-product appearance across Microsoft, buyer and operator areas.
 # Run from the repo root: pwsh ./scripts/check-shared-ui.ps1
 [CmdletBinding()]
 param([string]$RepoRoot = (Split-Path -Parent $PSScriptRoot))
@@ -19,26 +15,9 @@ $emuCss = Get-Content -LiteralPath $emuCssPath -Raw -Encoding UTF8
 # Each row: a human name, the app's selector, the emulator's selector, and the properties that
 # must match. Colours are excluded on purpose — the two sides use different palettes by design.
 $rules = @(
-    @{ Name = 'step card';    App = '.stepper .step {';         Emu = '.demo-map .step {';         Props = @('min-width', 'padding', 'border-radius') }
-    @{ Name = 'stepper';      App = '.stepper {';               Emu = '.demo-map .stepper {';      Props = @('gap', 'align-items') }
-    @{ Name = 'step number';  App = '.stepper .n {';            Emu = '.demo-map .n {';            Props = @('width', 'height', 'font-size') }
+    @{ Name = 'step number';  App = '.stepper .n {';            Emu = '.demo-map .n {';            Props = @('font-size') }
     @{ Name = 'step label';   App = '.stepper .lbl {';          Emu = '.demo-map .lbl {';          Props = @('font-size', 'line-height', 'font-weight') }
-    @{ Name = 'label sub';    App = '.stepper .lbl small {';    Emu = '.demo-map .lbl small {';    Props = @('font-size', 'font-weight') }
-    @{ Name = 'description';  App = '.stepper .desc {';         Emu = '.demo-map .desc {';         Props = @('font-size', 'line-height', 'margin') }
-    @{ Name = 'step meta';    App = '.step-meta {';             Emu = '.demo-map .step-meta {';    Props = @('font-size', 'gap', 'margin', 'padding-top') }
-    @{ Name = 'return path';  App = '.return-path {';           Emu = '.demo-map .return-path {';  Props = @('font-size', 'gap', 'margin') }
-    @{ Name = 'return badge'; App = '.return-path .rp-n {';     Emu = '.demo-map .return-path .rp-n {'; Props = @('font-size', 'padding', 'border-radius') }
-    @{ Name = 'return cap';   App = '.return-path .rp-cap {';   Emu = '.demo-map .return-path .rp-cap {'; Props = @('font-size') }
-
-    # Chrome around the map. The map matched but the frame around it did not, which is what made
-    # the two surfaces look like different products even when the map itself was identical.
     @{ Name = 'body type';    App = 'body {';                   Emu = 'html {';                    Props = @('font-family') }
-    @{ Name = 'masthead name'; App = '.brand {';                Emu = 'body > header h1 {';        Props = @('font-size', 'font-weight') }
-    @{ Name = 'masthead side'; App = '.brand small {';          Emu = 'body > header .side-tag {'; Props = @('font-size') }
-    @{ Name = 'nav link';     App = 'nav.top a {';              Emu = 'nav a {';                   Props = @('font-size') }
-    @{ Name = 'lang toggle';  App = '.lang a {';                Emu = 'nav .lang a {';             Props = @('font-size', 'padding', 'border-radius') }
-    @{ Name = 'lang active';  App = '.lang a.active {';         Emu = 'nav .lang a.active-lang {'; Props = @('font-weight') }
-    @{ Name = 'page framing'; App = '.hero-line p {';           Emu = '.page-hint {';              Props = @('font-size') }
 )
 
 function Get-Declaration([string]$css, [string]$selector, [string]$prop) {
@@ -95,7 +74,7 @@ if ($failures.Count -gt 0) {
     Write-Host "shared UI check FAILED ($($failures.Count)):" -ForegroundColor Red
     $failures | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
     Write-Host ''
-    Write-Host 'The two surfaces must read as one product. Update whichever side is behind.' -ForegroundColor Red
+    Write-Host 'Keep teaching-map type readable and consistent; product surfaces must remain distinct.' -ForegroundColor Red
     exit 1
 }
 

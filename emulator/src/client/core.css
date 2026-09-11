@@ -516,9 +516,8 @@ section.offers div.action a:hover {
 
 /* ==========================================================================
    Marketplace SaaS sample — theme overlay (vendored-emulator restyle).
-   The emulator is token-driven, so re-mapping :root re-themes every page to
-   match the app (SaaSAgentSample.Web). Presentation only — no markup/behavior
-   change. See ../../NOTICE.md.
+   Shared readable typography; Microsoft simulations and technical tools have
+   deliberately different chrome from the partner site. See ../../NOTICE.md.
    ========================================================================== */
 :root {
     --bg-color: #faf9f8;
@@ -562,15 +561,13 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
-/* Masthead: full-bleed light bar; the hairline lives on the nav below so the
-   title + tabs read as one header block */
+/* Base header; responsibility-specific surfaces are defined below. */
 body > header {
     padding: .85rem 1.5rem .2rem;
     background: #ffffff;
 }
 
 body > header h1 {
-    /* Matches the app's masthead product name (.brand, inherited 1rem/600). */
     font-size: 1rem;
     font-weight: 600;
     letter-spacing: .01em;
@@ -650,7 +647,7 @@ section.offers div.custom div.icon {
     background: linear-gradient(135deg, #5c2e91, #8661c5);
 }
 /* Language toggle */
-/* Language toggle: same control as the app's .lang, so the two headers read as one product. */
+/* Language remains outside the closed demonstration-tools disclosure. */
 nav .lang {
     margin-left: auto;
     display: flex;
@@ -707,43 +704,72 @@ section.info ol.steps li {
     margin: .4rem 0;
 }
 
-/* ── The demo map ──────────────────────────────────────────────────────────────
-   MIRROR of the .stepper block in src/SaaSAgentSample.Web/wwwroot/css/site.css.
-   The two are the same map drawn by two codebases, so every shared value here is
-   copied from there — keep them in step, and run scripts/check-shared-ui.ps1, which
-   fails when they diverge. (They did: the app's type was enlarged and this copy
-   was left behind at the old sizes.)
+/* Product chrome and tools are intentionally not partner-site navigation. */
+body > header.boundary-header { display:flex; flex-wrap:wrap; align-items:center; gap:1rem; padding:1.15rem 1.5rem; color:#fff; background:#152942; }
+body > header.tool-header { background:#354454; }
+body > header.boundary-header h1 { color:inherit; font-size:1.35rem; line-height:1.35; font-weight:700; overflow-wrap:anywhere; }
+body > header.boundary-header .side-tag { color:#d6e2ef; line-height:1.5; }
+.boundary-header > div { min-width:0; flex:1 1 16rem; }
+.boundary-icon { display:grid; place-items:center; flex:none; width:2.65rem; height:2.65rem; border:1px solid #93aac4; border-radius:6px; font-size:1.4rem; }
+.boundary-icon svg { width:1.65rem; height:1.65rem; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+.boundary-header .header-language { padding:0; border:0; background:transparent; margin-left:auto; }
+.header-language ul { margin:0; padding:0; }
+.header-language .lang { padding:0; border:0; gap:.4rem; }
+.header-language .lang a { color:#d6e2ef; line-height:2rem; }
+.header-language .lang a.active-lang { color:#fff; text-decoration:underline; text-underline-offset:.3rem; }
+.header-language .lang a:hover { color:#152942; background:#eaf0fb; }
+.boundary-meta { display:flex; flex-wrap:wrap; align-items:center; gap:.7rem 1.5rem; padding:.75rem 1.5rem; background:#eaf0fb; border-bottom:1px solid #ccdaf1; font-size:.82rem; line-height:1.5; }
+.boundary-meta > span { display:flex; flex-wrap:wrap; gap:.25rem .5rem; }
+.boundary-meta strong { color:#263d58; }
+.boundary-badge { border:1px solid #6383ac; border-radius:16px; padding:.15rem .65rem; font-size:.78rem; }
+.tool-meta { background:#edf1f4; border-color:#d6dfe6; }
+.role-switch { padding:.55rem 1.5rem; border-bottom:1px solid #dce4ed; background:#fff; font-size:.85rem; line-height:1.5; }
+.role-switch summary { cursor:pointer; width:fit-content; padding:.3rem 0; color:#3c526a; font-weight:600; }
+.role-switch p { margin:.5rem 0; }
+.role-switch nav { padding:0; border:0; background:transparent; }
+.role-switch nav ul { flex-wrap:wrap; gap:.4rem 1.1rem; margin:.4rem 0; padding:0; }
+.role-switch nav li { margin:0; max-width:100%; }
+.role-switch nav a { display:inline-block; padding:.3rem 0; line-height:1.6; color:#315577; overflow-wrap:anywhere; }
+.role-switch nav a[aria-current=page] { font-weight:700; text-decoration:underline; }
+.role-switch nav a:hover { text-decoration:underline; }
+:is(a,button,input,select,summary,[tabindex]):focus-visible { outline:3px solid #245cca; outline-offset:3px; }
+.boundary-header a:focus-visible { outline-color:#fff; }
+main > section { min-width:0; max-width:100%; box-sizing:border-box; }
+.data-source { font-weight:600; color:#30445b; }
+.data-boundary { padding:.7rem 1rem; border-left:3px solid #73879d; background:#f3f6fa; font-size:.88rem; line-height:1.5; }
+.table-scroll { overflow-x:auto; max-width:100%; }
 
-   Steps 1 and 4 happen in this emulator, so they are the solid ones here; steps 2
-   and 3 are the publisher app and are dashed. Convention on both sides: solid =
-   the system you are in, dashed = the other one, opening in a new tab.
-   Presentation only. */
-.demo-map { padding: .55rem 1.5rem .7rem; background: #fff; border-bottom: 1px solid #edebe9; }
-.demo-map .stepper { display: flex; flex-wrap: wrap; gap: .55rem; align-items: flex-start; }
-.demo-map .step { flex: 1 1 0; min-width: 11rem; display: flex; flex-direction: column; position: relative; border: 1px solid #edebe9; border-radius: 10px; background: #fff; padding: .55rem .7rem; }
-.demo-map .step + .step::before { content: "\2192"; position: absolute; left: -.55rem; top: .85rem; color: #c8c6c4; font-size: .8rem; }
-.demo-map .step.external { border-style: dashed; background: #faf9f8; }
-.demo-map .step.current { border-color: var(--base-link-color); box-shadow: inset 0 0 0 1px var(--base-link-color); }
-.demo-map .step-head { display: flex; align-items: center; gap: .5rem; line-height: 1.25; color: var(--base-text-color); text-decoration: none; }
-.demo-map a.step-head:hover { text-decoration: none; color: var(--page-title-color); }
-.demo-map .n { flex: none; width: 1.55rem; height: 1.55rem; border-radius: 999px; display: grid; place-items: center; font-size: .82rem; line-height: 1; font-weight: 700; background: #f3f2f1; color: var(--base-text-color); }
-.demo-map .step.external .n { background: transparent; border: 1.5px dashed #c8c6c4; }
-.demo-map .step.current .n { background: var(--base-link-color); color: #fff; }
-.demo-map .lbl { display: flex; flex-direction: column; line-height: 1.25; font-size: .95rem; font-weight: 600; color: var(--page-title-color); }
-.demo-map .lbl small { font-weight: 400; font-size: .8rem; color: var(--base-text-color); }
-.demo-map .step.current .lbl { color: var(--base-link-color); }
-.demo-map .desc { margin: .5rem 0 0; font-size: .88rem; line-height: 1.45; color: var(--base-text-color); }
-.demo-map .step-meta { display: grid; grid-template-columns: auto 1fr; gap: .15rem .5rem; margin: .5rem 0 0; padding-top: .45rem; border-top: 1px solid #edebe9; font-size: .82rem; }
-.demo-map .step-meta dt { color: var(--base-text-color); }
-.demo-map .step-meta dd { margin: 0; font-weight: 600; color: var(--page-title-color); }
-.demo-map .is-part { color: var(--base-link-color); }
-.demo-map .return-path { display: flex; align-items: baseline; gap: .45rem; flex-wrap: wrap; margin: .5rem 0 0; font-size: .86rem; color: var(--base-text-color); }
-.demo-map .return-path .rp-n { font-weight: 700; font-size: .78rem; background: #f3f2f1; border-radius: 999px; padding: .05rem .45rem; }
-.demo-map .return-path .rp-cap { font-size: .82rem; }
-.demo-map .return-path strong { font-weight: 600; }
-/* Pointer to the publisher app's glossary. The terms are not duplicated here on purpose:
-   a second copy in this emulator's own catalogue would drift, and once did. */
-.demo-map .learn-link { margin: .4rem 0 0; font-size: .86rem; }
+/* Compact teaching guide. Only the readable type scale is shared with the partner site. */
+.demo-map { display:flex; flex-wrap:wrap; align-items:center; gap:.4rem 1rem; padding:.6rem 1.5rem; background:#f7f9fc; border-bottom:1px solid #dce4ed; }
+.demo-map .stepper { display:flex; flex:1 1 36rem; gap:.3rem .75rem; }
+.demo-map .step { flex:1 1 0; min-width:0; padding:.25rem 0; border-bottom:2px solid transparent; }
+.demo-map .step.current { border-color:#425c78; }
+.demo-map .step-head { display:flex; align-items:center; gap:.45rem; color:#425469; padding:.2rem 0; }
+.demo-map a[href]:hover { text-decoration:underline; }
+.demo-map a:not([href]) { color:#697887; cursor:default; }
+.demo-map .n { flex:none; font-size:.82rem; font-weight:700; color:#536b84; }
+.demo-map .lbl { font-size:.85rem; line-height:1.35; font-weight:600; overflow-wrap:anywhere; }
+.demo-map .step.current .n { color:#152942; }
+.demo-map .guide-caption { display:flex; flex-wrap:wrap; align-items:baseline; gap:.25rem 1rem; padding-top:.3rem; font-size:.78rem; line-height:1.5; }
+.demo-map .guide-caption strong { font-weight:500; color:#586e84; }
+.demo-map .guide-status { color:#6c5c32; }
+.demo-map .role-switch { position:relative; min-width:0; max-width:100%; padding:0; border:0; background:transparent; }
+.demo-map .role-switch > summary { padding:.3rem .5rem; border:1px solid #d6dfe8; border-radius:5px; }
+.demo-map .role-menu { box-sizing:border-box; position:absolute; right:0; top:100%; z-index:30; width:min(26rem,85vw); border:1px solid #ccd8e5; border-radius:6px; background:#fff; padding:.75rem 1rem; box-shadow:0 6px 18px #18334824; }
+.demo-map .role-menu nav ul { display:block; }
+.journey-page > .page-hint { display:none; }
+@media(max-width:1100px) {
+    .demo-map .guide-caption { flex-basis:100%; }
+    .demo-map .role-switch[open] { flex-basis:100%; }
+    .demo-map .role-menu { position:static; width:100%; margin-top:.5rem; }
+}
+@media(max-width:600px) {
+    body > header.boundary-header { padding:1rem; gap:.7rem; }
+    .boundary-meta,.role-switch,.demo-map { padding-left:1rem; padding-right:1rem; }
+    .boundary-meta { gap:.55rem 1rem; }
+    main { padding:1rem; }
+    main > section { max-width:100%; box-sizing:border-box; }
+}
 
 /* Demo reset. Sits under the table it clears, set apart so it reads as a harness control rather
    than another lifecycle action. Mirrors the tone of the Config page's Danger Zone. */
@@ -758,4 +784,18 @@ section.info ol.steps li {
     color: #605e5c;
     font-size: .88rem;
     max-width: 60ch;
+}
+
+.demo-scope { position:relative; flex:none; font-size:.8rem; line-height:1.5; }
+.demo-scope > summary { cursor:pointer; padding:.25rem .65rem; border:1px solid #a7bdd5; border-radius:1rem; font-weight:600; }
+.demo-scope > div { position:absolute; right:0; top:100%; z-index:40; box-sizing:border-box; width:min(28rem,calc(100vw - 2rem)); margin-top:.5rem; padding:.75rem 1rem; color:#263d58; background:#fff; border:1px solid #ccd8e5; border-radius:6px; box-shadow:0 6px 18px #18334824; }
+.demo-scope p { margin:.35rem 0; }
+.boundary-header summary:focus-visible { outline-color:#fff; }
+.price-details summary,.reset-demo summary { cursor:pointer; font-weight:600; padding:.25rem 0; }
+.price-details p { max-width:75ch; }
+.implementation-guide { padding:1rem 1.5rem 2rem; border-top:1px solid #dce4ed; font-size:.85rem; }
+.implementation-guide a { color:#425469; }
+@media(max-width:600px) {
+    .demo-scope { position:static; }
+    .demo-scope > div { left:1rem; right:1rem; top:auto; }
 }

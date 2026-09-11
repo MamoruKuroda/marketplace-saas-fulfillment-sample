@@ -14,18 +14,24 @@
     <script src="start.js"></script>
   </head>
   <body data-demo-step="1" class="journey-page">
-    <header><h1>Azure Marketplace API Emulator</h1><p class="side-tag" data-i18n="masthead.side">Microsoft side (stand-in) — storefront, billing, webhooks</p></header>
-    <nav aria-label="Emulator navigation" data-i18n-attr="aria-label:journey.emulatorNavigation"><ul>
+    <header class="boundary-header marketplace-header">
+      <span class="boundary-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9l2-6h14l2 6M3 9h18M4 9v12h16V9M9 21v-7h6v7M8 3L7 9M16 3l1 6"/></svg></span>
+      <div><h1 data-i18n="boundary.marketplaceTitle">Microsoft Marketplace</h1><p class="side-tag" data-i18n="boundary.purchaseSimulation">marketplace.microsoft.com</p></div>
+      <details class="demo-scope"><summary>Demo</summary><div><p data-i18n="scope.simulation">Simulated screens: no real purchase or payment. Azure hosting may incur costs.</p><p data-i18n="scope.roles">Role labels are teaching navigation, not authorization. This experimental sample is not supported for production use.</p></div></details>
+      <nav class="header-language" aria-label="Language" data-i18n-attr="aria-label:boundary.language"><ul></ul></nav>
+    </header>
+    <div class="boundary-meta"><span><span data-i18n="boundary.location">Location</span><strong data-i18n="boundary.storeLocation">Product and purchase</strong></span><span><span data-i18n="map.operatedBy">Operated by</span><strong data-i18n="map.whoBuyer">Buyer</strong></span><span><span data-i18n="boundary.productionProvider">Production provider</span><strong>Microsoft</strong></span></div>
+    <details class="role-switch"><summary data-i18n="boundary.roleSwitch">Tools</summary>
+    <nav aria-label="Demonstration tools" data-i18n-attr="aria-label:journey.emulatorNavigation"><ul>
       <li><a href="/start.html" class="active" aria-current="page" data-i18n="nav.marketplace">Marketplace</a></li>
       <li><a href="/subscriptions.html" data-i18n="nav.subscriptions">Subscriptions</a></li>
       <li><a href="/landing.html" data-i18n="nav.landingPage">Landing Page</a></li>
       <li><a href="/offers.html" data-i18n="nav.offers">Offers</a></li>
       <li><a href="/config.html" data-i18n="nav.config">Config</a></li>
-    </ul></nav>
-    <p class="page-hint" data-i18n="journey.startHint">Discover a service → demo checkout → the same publisher landing page.</p>
+      <li><a href="/" data-i18n="boundary.tokenTool">Technical purchase-token tool (legacy)</a></li>
+    </ul></nav></details>
     <main class="experience-shell">
       <div class="experience-toolbar">
-        <span class="demo-badge" data-i18n="experience.demoNotice">Purchase demo · no real charge</span>
         <details class="presenter-tools">
           <summary data-i18n="experience.presenterControls">Presenter controls</summary>
           <fieldset class="scenario-picker">
@@ -58,7 +64,7 @@
             <div class="product-hero">
               <div class="product-identity">
                 <span class="product-icon" aria-hidden="true">W</span>
-                <div><span class="product-category" data-i18n="experience.fictionalProduct">Fictional product for this demo</span>
+                <div><span class="product-category" data-i18n="experience.fictionalProduct">Productivity · SaaS</span>
                   <h2 id="product-name" data-i18n="experience.productName">Workspace Automation</h2>
                   <p id="product-publisher"></p>
                 </div>
@@ -71,7 +77,6 @@
                 <p id="product-price" class="price-display" aria-live="polite"></p>
                 <p id="product-period" class="subtle"></p>
                 <button type="submit" id="discovery-continue" class="primary" disabled data-i18n="common.getItNow">Get it now</button>
-                <p class="subtle" data-i18n="experience.priceNotice">Sample price: US$50 / ¥7,500 — fixed demo values, not a real exchange rate.</p>
               </form>
             </div>
             <section id="overview" class="product-overview">
@@ -83,11 +88,13 @@
               </div>
             </section>
             <section id="plans" class="product-plans"><h3 data-i18n="experience.plansPricing">Plans + pricing</h3><div id="plan-cards" class="plan-cards"></div></section>
-            <section id="support"><h3 data-i18n="experience.support">Support</h3><p class="subtle" data-i18n="experience.supportNote">This page illustrates buying a service, not a working automation product. Purchase permissions and publisher responsibilities are explained in “How this works” in the map above.</p></section>
+            <section id="support"><h3 data-i18n="experience.support">Support</h3><p class="subtle" data-i18n="experience.supportNote">Purchase and implementation help is in the repository guide linked below.</p></section>
           </div>
         </div>
       </article>
+      <p class="subtle" data-i18n="experience.priceNotice">Sample price: US$50 / ¥7,500 — fixed demo values, not a real exchange rate.</p>
       <noscript><p class="journey-error">JavaScript is required. / JavaScript を有効にしてください。</p></noscript>
     </main>
+    <footer class="implementation-guide"><a data-implementation-guide data-i18n="map.learnMore" href="https://github.com/MamoruKuroda/marketplace-saas-fulfillment-sample/blob/main/docs/walkthrough.md" target="_blank" rel="noopener noreferrer">Implementation guide ↗</a></footer>
   </body>
 </html>

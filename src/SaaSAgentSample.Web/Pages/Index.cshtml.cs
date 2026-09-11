@@ -5,6 +5,7 @@ using Microsoft.Extensions.Localization;
 using SaaSAgentSample.Fulfillment;
 using SaaSAgentSample.Fulfillment.Models;
 using SaaSAgentSample.Web.Services;
+using SaaSAgentSample.Core.Subscriptions;
 
 namespace SaaSAgentSample.Web.Pages;
 
@@ -13,12 +14,14 @@ public sealed class IndexModel : PageModel
     private readonly LandingService _landing;
     private readonly IStringLocalizer<SharedResource> _l;
     private readonly IConfiguration _config;
+    private readonly ISubscriptionRepository _subscriptions;
 
-    public IndexModel(LandingService landing, IStringLocalizer<SharedResource> l, IConfiguration config)
+    public IndexModel(LandingService landing, IStringLocalizer<SharedResource> l, IConfiguration config, ISubscriptionRepository subscriptions)
     {
         _landing = landing;
         _l = l;
         _config = config;
+        _subscriptions = subscriptions;
     }
 
     [BindProperty(SupportsGet = true)]
@@ -34,6 +37,8 @@ public sealed class IndexModel : PageModel
     /// language after activation): show the "active" state instead of the Activate button, so a GET is
     /// idempotent and the confirmation survives a language switch.</summary>
     public bool AlreadyActive { get; private set; }
+
+    public Subscription? SavedSubscription { get; private set; }
 
     /// <summary>True when there is no purchase token: render the "Start here" demo map instead of the activation flow.</summary>
     public bool ShowHome { get; private set; }
@@ -72,6 +77,9 @@ public sealed class IndexModel : PageModel
                 AlreadyActive = true;
                 Message = _l["This subscription is already active."];
             }
+            var id = Resolved?.Subscription?.Id ?? Resolved?.Id;
+            if (!string.IsNullOrEmpty(id))
+                SavedSubscription = await _subscriptions.GetByMarketplaceSubscriptionIdAsync(id, cancellationToken);
         }
         catch (FulfillmentApiException)
         {
@@ -97,6 +105,8 @@ public sealed class IndexModel : PageModel
             Message = IsActivated
                 ? _l["Your subscription is now active."]
                 : _l["Activation could not be completed. Please retry from the Marketplace."];
+            if (IsActivated)
+                SavedSubscription = await _subscriptions.GetByMarketplaceSubscriptionIdAsync(subscriptionId, cancellationToken);
         }
         catch (FulfillmentApiException)
         {

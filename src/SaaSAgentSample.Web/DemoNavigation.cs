@@ -29,6 +29,10 @@ public static class DemoNavigation
 {
     public const string PurchaseEntryPath = "/start.html";
 
+    public static string ImplementationGuideUrl =>
+        "https://github.com/MamoruKuroda/marketplace-saas-fulfillment-sample/blob/main/docs/" +
+        (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ja" ? "walkthrough.ja.md" : "walkthrough.md");
+
     /// <summary>Presentation context only, never a source of identity or purchase authorization.</summary>
     public static string? PurchaseScenario(string? value) => value switch
     {

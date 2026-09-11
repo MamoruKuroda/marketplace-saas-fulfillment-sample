@@ -16,13 +16,16 @@
     if (next && current) current.innerHTML = next.innerHTML;
   }
 
-  // The emulator links here with #how so a reader looking for a term lands on the
-  // explanation already open, instead of on a closed summary they have to spot.
-  function openHow() {
-    if (window.location.hash !== "#how") return;
-    var how = document.getElementById("how");
+  // Legacy #how links now point at the repository guide, without forwarding page query data.
+  function openSection() {
+    if (!["#how", "#boundary", "#behind-scenes", "#history", "#implementation-details"].includes(window.location.hash)) return;
+    var anchor = window.location.hash === "#implementation-details" ? "how" : window.location.hash.substring(1);
+    var how = document.getElementById(anchor);
     if (!how) return;
-    how.open = true;
+    if (how.tagName === "DETAILS") how.open = true;
+    for (var ancestor = how.parentElement; ancestor; ancestor = ancestor.parentElement) {
+      if (ancestor.tagName === "DETAILS") ancestor.open = true;
+    }
     // Scroll by hand rather than with scrollIntoView: the header is sticky, so aligning the
     // element with the top of the viewport would park it underneath the header.
     var header = document.querySelector(".site-header");
@@ -41,6 +44,7 @@
     if (!href) return;
 
     e.preventDefault();
+    var openPanels = Array.from(document.querySelectorAll("details[open][id]")).map(function (panel) { return panel.id; });
 
     fetch(href, { headers: { "X-Requested-With": "fetch" }, credentials: "same-origin" })
       .then(function (res) {
@@ -54,6 +58,7 @@
         swapInner(doc, "main");
         swapInner(doc, ".site-header");
         swapInner(doc, ".orient-bar");
+        swapInner(doc, ".partner-sidebar");
         swapInner(doc, ".site-footer");
 
         var lang = doc.documentElement.getAttribute("lang");
@@ -69,8 +74,11 @@
         var title = doc.querySelector("title");
         if (title) document.title = title.textContent;
 
-        // The swap rebuilds <main>, so a details opened via #how closes again.
-        openHow();
+        openPanels.forEach(function (id) {
+          var panel = document.getElementById(id);
+          if (panel && panel.tagName === "DETAILS") panel.open = true;
+        });
+        openSection();
       })
       .catch(function () {
         // Any failure falls back to a normal navigation.
@@ -79,9 +87,9 @@
   });
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", openHow);
+    document.addEventListener("DOMContentLoaded", openSection);
   } else {
-    openHow();
+    openSection();
   }
-  window.addEventListener("hashchange", openHow);
+  window.addEventListener("hashchange", openSection);
 })();
