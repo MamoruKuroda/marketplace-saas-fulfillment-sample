@@ -47,7 +47,7 @@ show the real client UI and partner app using an isolated local HTTP fixture for
 They use synthetic data — no real purchase or payment, and are not design-approval mockups.
 Click an image for full size.
 
-Targeted Node checks passed for this preview: journey (36), experience (14), checkout (18), and
+Targeted Node checks passed for this preview: journey (37), experience (14), checkout (18), and
 subscription selection (10). These are not the full Jest suite.
 The full Node emulator and Jest suite were not validated in this environment: the configured npm
 feed returned 404 for required dependencies, and the local Docker engine was unavailable.
@@ -60,20 +60,22 @@ Browser checks with the HTTP fixture are not a replacement for full-emulator int
 
 Microsoft and partner headers remain distinct; the buyer site and operations console are not
 same-privilege Home/Admin tabs. **See behind the partner site / 提供元の裏側を見る** is an
-optional explanation after the result, showing the actual stored partner state and a direct link
+optional inspection after the result, showing the actual stored partner state and a direct link
 to this contract's `/admin/{guid}`. It is not a required role switch.
 
-Optional interests — **Business/sales, buyer organization, implementation, operations** — appear
-inside explanations, not before purchase. They guide reading; they do **not** simulate roles,
-authenticate, authorize, or grant access. Server APIs, authentication, billing, state transitions,
-and database schema are unchanged; new view lookups only read saved records for links and filters.
+Implementation explanations, glossary, code references and suggested reading by interest are in
+the [walkthrough](docs/walkthrough.md), not in a second in-app lesson. Each screen has a small
+**Implementation guide ↗** footer link to the corresponding English/Japanese repository document.
+Links never forward purchase tokens, contract IDs or other query data. Server APIs, authentication,
+billing, state transitions and database schema are unchanged.
 
 The console is labelled **Example operations UI implemented by the partner company**.
 The partner company handles contract recording and synchronization; this management UI is
 optional and may reuse existing tools. Implementation ownership does not make this exact screen mandatory.
 
-**View the whole flow** starts closed in `<details id="boundary">`; the app's initially closed `#how` reference
-offers **what happened → who implements it → code** in increasing depth. The reference map
+**View the whole flow** starts closed in `<details id="boundary">`. The demo retains the whole-flow
+map and actual saved results; deeper explanations belong in the repository. Older `#how` bookmarks
+land on the implementation-guide link without automatically leaving the demo. The reference map
 connects Microsoft purchase, partner activation, partner contract storage, and notification tests;
 it is not a mandatory four-step buyer journey. A purchased landing still needs its purchase token.
 The UI ships in English and Japanese.
@@ -273,7 +275,7 @@ A few rules this sample never breaks:
   subscription information. The separate stores are not asserted to be in sync without evidence.
 - `ChangeQuantity` is recorded and acknowledged; the partner domain has no quantity dimension.
   Product entitlements and real account mapping are outside this minimal sample.
-- Optional interests and behind-the-scenes links are explanations, not simulated roles or access grants.
+- Repository references and saved-record links do not change simulated roles or grant access.
 - Buyer/admin activation requires explicit confirmation.
 - No purchase/bearer tokens, secrets, or unnecessary PII in logs.
 - Webhook validation is server-side (Get Operation, plus Entra JWT when signed-token validation

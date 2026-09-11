@@ -25,7 +25,9 @@ check("partner handoff lives only in existing completion stage and preserves the
     assert.match(configure[0], /data-i18n="experience.configure"/);
     assert.doesNotMatch(configure[0], /\bhref=|\bonclick=/, "Only the existing controller may supply the frozen URL");
     assert.doesNotMatch(complete[1], /data-stage="handoff"|token=|<input/);
-    assert.match(complete[1], /<details class="simulation-details"><summary/);
+    assert.match(complete[1], /data-i18n="scope.noPayment"/);
+    assert.match(html, /<footer class="implementation-guide">/);
+    assert.doesNotMatch(complete[1], /class="simulation-details"/);
     assert.doesNotMatch(complete[1], /<details[^>]*\bopen\b/);
     assert.match(source("checkout.css"), /#configure-account.*#087e77/);
     assert.match(source("checkout.css"), /@media\(max-width:500px\)[\s\S]*\.purchase-handoff.*grid-template-columns:1fr/);

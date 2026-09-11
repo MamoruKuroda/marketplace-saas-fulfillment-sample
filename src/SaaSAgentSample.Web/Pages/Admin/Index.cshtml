@@ -1,7 +1,6 @@
 ﻿@page "/admin"
 @using SaaSAgentSample.Core.Subscriptions
 @model SaaSAgentSample.Web.Pages.Admin.IndexModel
-@inject Microsoft.Extensions.Configuration.IConfiguration Config
 @inject SaaSAgentSample.Core.Subscriptions.ISubscriptionEventLog Events
 @{
     ViewData["Title"] = L["Publisher admin — subscriptions"].Value;
@@ -28,7 +27,6 @@
             Model.Subscriptions.Any(s => s.State != SubscriptionState.PendingFulfillmentStart) ? 3 : 1;
     }
 }
-@* The data comes first. Everything explanatory sits below it, behind one summary. *@
 <h1 class="page-title">@L["Subscriptions"]</h1>
 <p class="subtitle">@L["Saved partner contracts"]</p>
 @if (filtered)
@@ -79,36 +77,3 @@ else
 
 <p><a class="btn secondary" href="@DemoNavigation.PublisherLink(reloadPath, scenario)">@L["Reload partner company DB"]</a></p>
 <p class="muted">@L["Open a contract to try a change and inspect its saved history."]</p>
-
-<details class="explainer learn" id="how">
-    <summary>@L["Behind the saved records"]</summary>
-    <div class="body">
-        @(await Html.PartialAsync("_LearningFocus"))
-        <p>@L["Notifications appear after receipt and database save. Reload to read the latest stored records; this screen cannot detect notifications still in transit."]</p>
-        <h3 class="learn-h">@L["Who drives the lifecycle"]</h3>
-        <p class="learn-lead">@L["The partner company records and synchronizes contracts. This management UI is optional and can reuse existing tools."]</p>
-        <p class="learn-lead">@L["Microsoft drives it. This app activates a purchase, then keeps its database in sync with the events Microsoft sends. It never invents state."]</p>
-        <div class="lc-cols">
-            <div class="lc-group">
-                <span class="who pub">@L["Publisher-initiated"]</span>
-                <ul>
-                    <li>@L["Resolve → Activate — confirmed here, only from PendingFulfillmentStart. Starts billing."]</li>
-                </ul>
-            </div>
-            <div class="lc-group">
-                <span class="who ms">@L["Microsoft-initiated (webhook)"]</span>
-                <ul>
-                    <li>@L["Change plan / quantity"]</li>
-                    <li>@L["Suspend / Reinstate (e.g. payment failure / recovery)"]</li>
-                    <li>@L["Unsubscribe (terminal)"]</li>
-                </ul>
-            </div>
-        </div>
-
-        @(await Html.PartialAsync("_ImplementationLinks"))
-        <details class="reference-details"><summary>@L["Responsibility map"]</summary>@(await Html.PartialAsync("_TruthLayers"))</details>
-        <details class="reference-details"><summary>@L["Change plan"]</summary>@(await Html.PartialAsync("_PlanChangeFigure"))</details>
-        <details class="reference-details"><summary>@L["Purchase routes and permissions"]</summary>@(await Html.PartialAsync("_PurchasePermissions"))</details>
-        <details class="reference-details"><summary>@L["Key terms"]</summary>@(await Html.PartialAsync("_KeyTerms"))</details>
-    </div>
-</details>

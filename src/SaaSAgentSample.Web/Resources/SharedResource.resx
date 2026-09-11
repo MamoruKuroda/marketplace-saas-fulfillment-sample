@@ -470,4 +470,5 @@
   <data name="Previously recorded plan" xml:space="preserve"><value>Previously recorded plan</value></data>
   <data name="Newly recorded plan" xml:space="preserve"><value>Newly recorded plan</value></data>
   <data name="Not recorded" xml:space="preserve"><value>Not recorded</value></data>
+  <data name="Implementation guide ↗" xml:space="preserve"><value>Implementation guide ↗</value></data>
 </root>

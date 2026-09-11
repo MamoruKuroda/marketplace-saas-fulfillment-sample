@@ -11,10 +11,11 @@ Microsoft 商用マーケットプレースで SaaS Offer が販売・運用さ�
 役割や関心を先に選ぶ必要はありません。[購入者の体験](#購入者への引き渡しと運用確認--ローカルのブラウザ体験)
 を有効化の結果まで進めれば、営業・事業担当や購入者向けのデモは完結します。実装・運用の深掘りは任意です。
 
-参考情報では **何が起きたか → 誰が実装するか → コード** の順に説明します。初期状態では閉じたアプリの `#how` から、
-画面とサーバー呼び出し・保存先を区別する**責任の地図**などを参照できます。
-**全体図を見る（View the whole flow）** は `<details id="boundary">` 内で初期状態では閉じており、
-到着時に全体図が自動で展開されるわけではありません。
+デモは操作と観測できた結果のため、この文書は **何が起きたか → 誰が実装するか → コード**
+を学ぶためのものです。画面下部の **実装ガイド ↗** が、表示言語に対応するリポジトリ文書を開きます。
+購入トークンやクエリ情報は渡しません。**全体図を見る** と実際の保存記録・変更履歴はデモに残します。
+全体図は `<details id="boundary">` 内で初期状態では閉じています。
+画面内の「しくみを学ぶ」や関心項目の選択はなくし、以前の `#how` はガイドのリンクに移動するだけにします。
 
 各ページ1つの共通の小さな **デモ（Demo）** 表示に、模擬購入で実決済はないことと、**Azure のホスティング費用は発生し得る**
 ことをまとめています。注文確認には「実際の注文・決済は行われない」という正確な注意書きを残しています。
@@ -67,9 +68,16 @@ Microsoft とパートナー企業で異なるヘッダーを使って提供主�
 **提供元の裏側を見る / See behind the partner site** を開くと、実際の保存状態と、
 この契約の運用管理詳細への直接リンクを確認できます。
 
-説明内の任意の関心項目 — **営業・事業、購入者側の組織、実装、運用** — は、読む内容を選ぶためのものです。
-認証や模擬ロールではなく、権限を付与しません。サーバーAPI・認証・課金・状態遷移・DBスキーマは変更せず、
-リンクや絞り込み用の表示処理が保存済みレコードを読み取るだけです。
+職種ごとの見どころは以下を参考にしてください。アプリ内の選択ゲートではありません。
+参加者の職種とデモ内で演じる役は別で、リンクから認証や権限が付与されることもありません。
+サーバーAPI・認証・課金・状態遷移・DBスキーマは変更しません。
+
+| 関心 | 見どころ |
+| --- | --- |
+| 営業・事業 | 何を購入し、どこからパートナー企業に渡り、有効化で何が完了するか |
+| 購入企業 | 購入権限、アカウント設定、完了結果 |
+| 実装 | サーバー呼び出し、通知の検証、顧客IDの対応付け、下記の関連コード |
+| 運用 | 保存された契約を開き、一度変更してプラン・状態・履歴を確認 |
 
 ```mermaid
 flowchart LR
@@ -170,7 +178,7 @@ Microsoft の商用状態（ローカルではエミュレーターの別テー�
 ### 動作中のローカルサンプルの画面
 
 実際のUIとパートナー企業側のアプリを、エミュレーターAPI用の隔離したHTTPフィクスチャで動かして撮影しました。
-今回のプレビューでは、対象を絞ったNodeチェック（journey 36件、experience 14件、checkout 18件、
+今回のプレビューでは、対象を絞ったNodeチェック（journey 37件、experience 14件、checkout 18件、
 購読選択10件）が通過しています。これはJestスイート全体の実行ではありません。
 設定済みnpmフィードが必要な依存関係に404を返し、ローカルDockerエンジンも利用できないため、
 完全なNodeエミュレーターとJestスイートは未検証です。フィクスチャを使ったブラウザ確認は、
@@ -296,6 +304,74 @@ flowchart LR
 
 ---
 
+## 実装リファレンス
+
+以下は以前の画面内の解説を移したものです。サンプルの仕組みを説明する資料であり、
+実際の購入権限や本番設定を検証した結果ではありません。
+
+### コードで使う用語
+
+| 用語 | 意味 |
+| --- | --- |
+| ランディングページ | 購入後、購入識別トークンを伴って開かれるパートナー企業のページ |
+| Resolve | 不透明な購入トークンを契約・オファー・プラン・購入者の情報に交換するサーバー呼び出し |
+| Activate | 手動有効化フローで開通完了を伝える操作。成功すると課金が始まる |
+| Webhook | 変更を非同期に伝える通知。パートナー企業が検証してから保存状態を更新する |
+| 状態ストア | Microsoftの商取引上の状態とは別に、パートナー企業が保持する契約記録 |
+| 利用権 | 顧客IDと契約を製品の利用制御に結び付けるルール。本サンプルでは未実装 |
+| プラン変更 | 同じサブスクリプションのプランを変える。商取引上の価格処理はMicrosoft側 |
+| ディメンション | 従量課金の計量単位。この定額サンプルでは未実装 |
+| プリペイド容量 | 表示用の利用枠の例。実計量や新しい課金モデルではない |
+| フルフィルメント層 | ランディング・API呼び出し・Webhook・契約保存を担う連携部分。SaaS製品そのものではない |
+
+既存のWindows／デスクトップアプリをWebアプリへ作り直す必要はありません。
+購入・設定の部分をブラウザーで扱い、既存クライアントとバックエンドを維持する構成にできます。
+**パートナー企業が管理する既存ユーザー／顧客企業ID**への紐付けはパートナー企業が設計します。
+メールのドメインが同じという理由だけで全社員に利用を許可するものではなく、この実際の対応付けはサンプル外です。
+
+ランディングには初回購入だけでなく、有効化済みの契約から戻る場合もあります。サンプルは返された状態を確認し、
+GETで戻っただけでは再度有効化しません。同じブラウザータブの設定リンクは同じ模擬購入を再利用します。
+エミュレーターの契約作成は注文確認画面ではなくResolve時です。
+自動有効化は別のフローであり、この手動有効化サンプルでは実装していません。
+
+### 購入経路と権限
+
+以前から説明している区別を参照用にまとめます。**デモがこれらを検証するわけではありません**。
+実際のオファーやテナントで使う前に、公式資料の最新条件を確認してください。
+
+| 経路・操作 | 区別する点 | 顧客側の管理箇所 |
+| --- | --- | --- |
+| Webでカード購入 | 組織アカウントとカード。参照元のWeb購入要件は、一律に事前のEntra管理者ロールを要求しているわけではない | 第三者SaaSのセルフサービス購入ポリシー、サインイン制限 |
+| 既存のMCA会社請求プロファイル | そのプロファイルで購入する権限（Contributor／Ownerなど）。初めてのカード購入すべてに一律の前提とはしない | Microsoft 365管理センターの請求プロファイルのロール |
+| Web／ポータルからAzureで購入 | 対象Azureサブスクリプションと購入権限。閲覧権限だけでは足りない | Azure RBAC、Marketplace購入制御、Private Marketplace |
+| 購入後のパートナー企業のランディング | Entraサインイン・同意と、対象の顧客アカウントへの対応付け | 顧客のサインインポリシー、パートナー企業の利用権設計 |
+
+`AllowSelfServicePurchase / OfferType SaaS`はオファー種別の制御で、パートナー企業ごとの許可リストではなく、
+Azureポータルからの購入を停止する設定でもありません。MCA請求プロファイルの権限と
+MOSAの課金管理者ロールは別で、パートナー企業から顧客の購入制限を上書きすることはできません。
+
+画面から移した参照リンク（今回の文書移動では再取得しておらず、最新内容は未検証）：
+
+- [Web購入要件](https://learn.microsoft.com/en-us/marketplace/purchase-software-appsource)
+- [第三者SaaSのセルフサービス購入ポリシー](https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/allowselfservicepurchase-powershell?view=o365-worldwide#use-allowselfservicepurchase-with-third-party-offer-types)
+- [MCA請求プロファイルのロール](https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/manage-billing-profiles?view=o365-worldwide#assign-billing-profile-roles)
+- [Azureでの購入要件](https://learn.microsoft.com/en-us/marketplace/purchase-saas-offer-in-azure-portal#requirements)
+- [Private Marketplace](https://learn.microsoft.com/en-us/marketplace/create-manage-private-azure-marketplace-new)
+- [ランディングのサインイン・再訪](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/azure-ad-transactable-saas-landing-page)
+- [Partner Centerのプレビュー](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/review-publish-offer#publisher-sign-off-phase)
+
+### 関連コードとツールの動作
+
+- [LandingService.cs](../src/SaaSAgentSample.Web/Services/LandingService.cs)：Resolve、明示Activate、契約保存。
+- [WebhookService.cs](../src/SaaSAgentSample.Web/Services/WebhookService.cs)：操作の検証、状態更新、応答。
+- [EfSubscriptionRepository.cs](../src/SaaSAgentSample.Data/Persistence/EfSubscriptionRepository.cs)：パートナー企業の保存記録。
+- [エミュレーターのガイド](../emulator/README.md)：カタログ編集、従来のトークンフォーム、内蔵APIテストページ、イベント操作。
+
+イベントツールのDetail／Stateボタンの色は変更の種類を示し、実装主体や配信保証を示すものではありません。
+RenewにHTTP応答があっても状態が変わらない場合があります。何を受信・保存したかはパートナー企業側の
+保存履歴で確認し、以前のプラン記録がなければ前後比較でも「記録なし」とします。
+カタログを編集したことやエミュレーターのHTTP応答だけでは、パートナー企業側の保存変更は確認できません。
+
 ## 各パーツと本サンプルの対応（v0 スコープ）
 
 | 概念 | 本サンプル |
@@ -304,7 +380,7 @@ flowchart LR
 | 接続 Webhook（サーバー側2段） | `POST /api/webhook`, `WebhookService` + `IWebhookTokenValidator` |
 | パートナー企業が保存した契約状態（4状態） | `SaaSAgentSample.Core` 集約 + `SaaSAgentSample.Data` ストア |
 | 任意の同じ契約の運用確認（閲覧＋明示 Activate） | `/admin?marketplaceSubscriptionId=<actual-id>`, `/admin/{guid}`, `#history`。保存済みレコードの確認であり購入者ナビゲーションとは別 |
-| 任意の参考情報 | 既存の共通 `_KeyTerms` と `_TruthLayers` を参考情報の詳細内で再利用し、何が起きたか・実装主体・コードを段階的に説明 |
+| 参考説明 | このwalkthroughを言語別の実装ガイドから開く。全体図は引き続きデモ内でも参照可能 |
 | 製品固有の利用権限制御・実アカウント紐付け | この最小サンプルでは未実装 |
 | 実購入なしのテスト | エミュレーター経由の [L2 ウォークスルー](l2-demo.ja.md) — **L2** = HTTP 上の統合レベル実証 |
 

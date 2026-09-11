@@ -175,7 +175,8 @@ public class PurchaseJourneyTests
         var html = await client.GetStringAsync("/?scenario=web-card&culture=en");
         Assert.Contains("https://emulator.example.test/start.html?culture=en&amp;scenario=web-card", html);
         Assert.DoesNotContain("class=\"purchase-arrival\"", html);
-        Assert.Contains("Purchase routes and permissions", html);
+        Assert.DoesNotContain("class=\"purchase-permissions\"", html);
+        AssertImplementationGuide(html, "en");
     }
 
     [Fact]
@@ -245,24 +246,26 @@ public class PurchaseJourneyTests
         Assert.Contains(culture == "ja" ? "運用担当者向け" : "for operators", adminHeader);
         Assert.Contains(culture == "ja" ? "パートナー企業が実装する運用管理画面の例" : "Example operations UI implemented by the partner company", adminHeader);
         var implementationNote = culture == "ja" ? "この管理UIは任意で、既存の管理機能でも構いません" : "This management UI is optional and can reuse existing tools";
-        Assert.DoesNotContain(implementationNote, admin[..admin.IndexOf("<details class=\"explainer learn\"", StringComparison.Ordinal)]);
-        Assert.Contains(implementationNote, admin);
+        Assert.DoesNotContain(implementationNote, admin);
         Assert.Contains("<caption class=\"data-source\">", admin);
         var detailLink = Regex.Match(admin, "href=\"(/admin/[0-9a-f-]+[^\\\"]*)\"").Groups[1].Value;
         Assert.NotEmpty(detailLink);
         var detail = WebUtility.HtmlDecode(await client.GetStringAsync(detailLink));
-        Assert.Contains(implementationNote, detail);
+        Assert.DoesNotContain(implementationNote, detail);
         Assert.Contains(culture == "ja" ? "表示元：パートナー企業の契約DB" : "Source: partner contract DB", detail);
         Assert.DoesNotContain("href=\"/admin", buyerHeader);
         Assert.DoesNotContain("class=\"top\"", buyer);
         Assert.Contains("class=\"demo-role-switch\"", buyer);
         Assert.Contains(culture == "ja" ? "説明用の役割切替" : "Demonstration role switch", buyer);
         Assert.Contains(culture == "ja" ? "アクセス権の付与や認証の変更は行いません" : "does not grant access or change authentication", buyer);
-        Assert.Contains(culture == "ja" ? "未到着の通知は判定できません" : "cannot detect notifications still in transit", admin);
+        Assert.Contains(culture == "ja" ? "未到着の通知は判定できません" : "cannot detect notifications still in transit", detail);
         var guide = Regex.Match(buyer, "<div class=\"orient-bar.*?</nav>", RegexOptions.Singleline).Value;
         Assert.DoesNotContain("private-demo-token", guide);
         Assert.DoesNotContain("自社", buyer);
         Assert.DoesNotContain("自社", admin);
+        AssertImplementationGuide(buyer, culture);
+        AssertImplementationGuide(admin, culture);
+        AssertImplementationGuide(detail, culture);
         Assert.Equal(0, fake.ActivateCallCount);
     }
 
@@ -288,6 +291,7 @@ public class PurchaseJourneyTests
         Assert.Contains(culture == "ja" ? "製品の利用制御は本サンプルの範囲外" : "Product access enforcement is outside this sample", home);
         Assert.Contains(culture == "ja" ? "2つの状態ストアは別物" : "The two stores are separate", home);
         Assert.Contains(culture == "ja" ? "パートナー企業が実装" : "Partner company implements", home);
+        AssertImplementationGuide(home, culture);
     }
 
     [Theory]
@@ -323,7 +327,7 @@ public class PurchaseJourneyTests
         foreach (var invalid in new[] { "journey", "JOURNEY-SUB", "<script>bad</script>" })
         {
             var missing = WebUtility.HtmlDecode(await client.GetStringAsync($"/admin?marketplaceSubscriptionId={Uri.EscapeDataString(invalid)}&culture={culture}"));
-            Assert.DoesNotContain("<tbody>", missing[..missing.IndexOf("<details class=\"explainer learn\"", StringComparison.Ordinal)]);
+            Assert.DoesNotContain("<tbody>", missing);
             Assert.Contains(culture == "ja" ? "保存記録は見つかりませんでした" : "No saved partner record was found", missing);
         }
         Assert.Equal(0, fake.ActivateCallCount);
@@ -398,10 +402,8 @@ public class PurchaseJourneyTests
         html = WebUtility.HtmlDecode(html);
         var main = html.IndexOf("<main ", StringComparison.Ordinal);
         var boundary = html.IndexOf("<details class=\"explainer learn\" id=\"boundary\">", StringComparison.Ordinal);
-        var how = html.IndexOf("<details class=\"explainer learn\" id=\"how\">", StringComparison.Ordinal);
-        Assert.True(main >= 0 && boundary > main && how > boundary);
+        Assert.True(main >= 0 && boundary > main);
         var primary = html[main..boundary];
-        var explanation = html[how..];
         var progress = Regex.Match(primary, "<ol class=\"substeps\".*?</ol>", RegexOptions.Singleline).Value;
         Assert.NotEmpty(progress);
         Assert.Equal(3, Regex.Matches(progress, "<li\\b").Count);
@@ -415,19 +417,29 @@ public class PurchaseJourneyTests
         Assert.DoesNotContain("purchase-route-details", primary);
         var routeNotice = culture == "ja" ? "経路の表示は、決済や権限" : "The route label does not verify";
         Assert.DoesNotContain(routeNotice, primary);
-        if (primary.Contains("class=\"purchase-arrival\"", StringComparison.Ordinal))
-        {
-            Assert.Contains("class=\"purchase-route-details\"", explanation);
-            Assert.Contains(routeNotice, explanation);
-        }
         foreach (var text in culture == "ja"
             ? new[] { "ブラウザーで開く必要", "Entra シングル サインオン", "購入トークンを契約情報に交換", "オファーを自動有効化" }
             : new[] { "Only this one screen", "Entra single sign-on", "The purchase token is exchanged",
                 "Offers can also auto-activate" })
         {
             Assert.DoesNotContain(text, primary);
-            Assert.Contains(text, explanation);
         }
+        AssertImplementationGuide(html, culture);
+    }
+
+    private static void AssertImplementationGuide(string html, string culture)
+    {
+        var links = Regex.Matches(html, "<a class=\"implementation-guide\"[^>]*>");
+        Assert.Single(links);
+        var href = WebUtility.HtmlDecode(Regex.Match(links[0].Value, "href=\"([^\"]+)\"").Groups[1].Value);
+        Assert.Equal("https://github.com/MamoruKuroda/marketplace-saas-fulfillment-sample/blob/main/docs/" +
+            (culture == "ja" ? "walkthrough.ja.md" : "walkthrough.md"), href);
+        Assert.Contains("target=\"_blank\"", links[0].Value);
+        Assert.Contains("rel=\"noopener noreferrer\"", links[0].Value);
+        Assert.DoesNotContain("data-learning-focus", html);
+        Assert.DoesNotContain("class=\"implementation-details\"", html);
+        Assert.DoesNotContain("class=\"glossary\"", html);
+        Assert.DoesNotContain("<details class=\"explainer learn\" id=\"how\">", html);
     }
 
     private static WebApplicationFactory<Program> CreateApp(L2AppFactory source, FakeFulfillmentClient fake)

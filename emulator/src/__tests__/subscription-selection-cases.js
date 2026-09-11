@@ -190,6 +190,12 @@ check("every page has one closed common Demo disclosure and no repeated visible 
         assert.match(scope[1], /scope.roles/);
         assert.doesNotMatch(html, /class="(?:demo-badge|page-hint|simulation-note|boundary-badge)"/, file);
         assert.doesNotMatch(html, /data-i18n="(?:experience.demoNotice|boundary.roleNotice)"/, file);
+        const footer = html.match(/<footer class="implementation-guide">([\s\S]*?)<\/footer>/);
+        assert.ok(footer, file);
+        assert.match(footer[1], /data-implementation-guide/);
+        assert.match(footer[1], /target="_blank" rel="noopener noreferrer"/);
+        assert.match(footer[1], /github\.com\/MamoruKuroda\/marketplace-saas-fulfillment-sample\/blob\/main\/docs\/walkthrough\.md/);
+        assert.doesNotMatch(html, /class="behind-scenes"|data-i18n="scope.references"/);
         for (const [, key] of html.matchAll(/data-i18n(?:-html)?="([^"]+)"/g)) assert.ok(en[key] && ja[key], `${file}: ${key}`);
     }
     assert.match(en["scope.simulation"], /no real purchase or payment.*hosting may incur costs/);
@@ -201,7 +207,9 @@ check("every page has one closed common Demo disclosure and no repeated visible 
     const checkout = source("checkout.html");
     assert.equal((checkout.match(/data-i18n="scope.noPayment"/g) || []).length, 2, "One note per mutually exclusive confirmation stage");
     assert.match(checkout, /experience.noCardEntry/);
-    assert.match(checkout, /<details class="simulation-details"><summary data-i18n="scope.behind">/);
+    assert.doesNotMatch(checkout, /data-i18n="scope.behind"/);
+    assert.equal(en["map.learnMore"], "Implementation guide ↗");
+    assert.equal(ja["map.learnMore"], "実装ガイド ↗");
     assert.doesNotMatch(checkout, /<details[^>]*\bopen\b/);
     assert.match(source("subscriptions.html"), /Source: emulator saved state/);
     assert.match(source("subscriptions.html"), /id="subscriptions-error"[^>]*role="alert"/);

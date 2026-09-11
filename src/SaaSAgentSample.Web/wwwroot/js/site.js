@@ -16,11 +16,11 @@
     if (next && current) current.innerHTML = next.innerHTML;
   }
 
-  // The emulator links here with #how so a reader looking for a term lands on the
-  // explanation already open, instead of on a closed summary they have to spot.
-  function openHow() {
+  // Legacy #how links now point at the repository guide, without forwarding page query data.
+  function openSection() {
     if (!["#how", "#boundary", "#behind-scenes", "#history", "#implementation-details"].includes(window.location.hash)) return;
-    var how = document.getElementById(window.location.hash.substring(1));
+    var anchor = window.location.hash === "#implementation-details" ? "how" : window.location.hash.substring(1);
+    var how = document.getElementById(anchor);
     if (!how) return;
     if (how.tagName === "DETAILS") how.open = true;
     for (var ancestor = how.parentElement; ancestor; ancestor = ancestor.parentElement) {
@@ -34,17 +34,6 @@
     window.scrollTo(0, top > 0 ? top : 0);
   }
 
-  function applyLearningFocus() {
-    var select = document.querySelector("[data-learning-focus]");
-    if (!select) return;
-    document.querySelectorAll("[data-focus-note]").forEach(function (note) {
-      note.hidden = note.getAttribute("data-focus-note") !== select.value;
-    });
-  }
-  document.addEventListener("change", function (e) {
-    if (e.target.matches("[data-learning-focus]")) applyLearningFocus();
-  });
-
   document.addEventListener("click", function (e) {
     var link = e.target.closest(".site-header .lang a");
     if (!link) return;
@@ -56,8 +45,6 @@
 
     e.preventDefault();
     var openPanels = Array.from(document.querySelectorAll("details[open][id]")).map(function (panel) { return panel.id; });
-    var focus = document.querySelector("[data-learning-focus]");
-    var interest = focus ? focus.value : null;
 
     fetch(href, { headers: { "X-Requested-With": "fetch" }, credentials: "same-origin" })
       .then(function (res) {
@@ -91,11 +78,7 @@
           var panel = document.getElementById(id);
           if (panel && panel.tagName === "DETAILS") panel.open = true;
         });
-        var nextFocus = document.querySelector("[data-learning-focus]");
-        if (nextFocus && interest) nextFocus.value = interest;
-        applyLearningFocus();
-        // The swap rebuilds <main>, so a details opened via #how closes again.
-        openHow();
+        openSection();
       })
       .catch(function () {
         // Any failure falls back to a normal navigation.
@@ -104,10 +87,9 @@
   });
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () { applyLearningFocus(); openHow(); });
+    document.addEventListener("DOMContentLoaded", openSection);
   } else {
-    applyLearningFocus();
-    openHow();
+    openSection();
   }
-  window.addEventListener("hashchange", openHow);
+  window.addEventListener("hashchange", openSection);
 })();

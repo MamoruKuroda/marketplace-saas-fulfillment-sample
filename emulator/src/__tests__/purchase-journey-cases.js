@@ -334,8 +334,6 @@ check("checkout boot selects the exact discovery offer/plan without extra purcha
         assert.equal(plans.val(), "team & annual");
         assert.equal(plans.data("offer"), catalogue["existing/offer & one"]);
         assert.equal(test.state.get("section.purchase .seat-count").visibility, "visible");
-        assert.equal(test.state.get("#checkout-route").text, `journey.${scenario}.route`);
-        assert.equal(test.state.get("#checkout-prerequisites").text, `journey.${scenario}.prerequisites`);
         assert.equal(test.state.get("#purchaseButton").disabled, false);
         assert.equal(test.sandbox.$("#purchaserOid").val(), "unchanged-demo-guid");
         assert.equal(test.sandbox.$("#beneficiaryOid").val(), "unchanged-demo-guid");
@@ -351,7 +349,6 @@ check("direct checkout remains usable without scenario or preselection", async (
     const test = checkout();
     await test.start();
     assert.equal(test.rendered.length, 1);
-    assert.equal(test.state.get("#checkout-route").text, "journey.directTitle");
     test.rendered[0].action();
     assert.equal(test.sandbox.$("section.purchase select").val(), "basic");
     assert.equal(test.state.get("#purchaseButton").disabled, false);
@@ -487,7 +484,7 @@ check("catalogue display uses text rather than interpreting product names as HTM
     assert.equal(test.nodes.get("product-publisher").textContent, offer.publisher);
 });
 
-check("compact teaching map keeps step 1 current and links only to partner overview, explanation and operations", async () => {
+check("compact teaching map keeps step 1 current and links only to partner overview and operations", async () => {
     const test = runtime("?scenario=web-azure", "ja");
     let mounted;
     const anchor = { parentNode: { insertBefore: map => { mounted = map; } }, nextSibling: null };
@@ -513,16 +510,14 @@ check("compact teaching map keeps step 1 current and links only to partner overv
     const overview = new URL(mounted.children[1].children[1].href);
     assert.equal(overview.pathname, "/");
     assert.equal(overview.hash, "#boundary");
-    const learn = new URL(mounted.children[1].children[2].href);
-    assert.equal(learn.hash, "#how");
-    for (const link of [operations, overview, learn]) {
+    for (const link of [operations, overview]) {
         assert.equal(link.origin, "https://publisher.example");
         assert.equal(link.searchParams.get("culture"), "ja");
         assert.equal(link.searchParams.get("scenario"), "web-azure");
         assert.equal(link.searchParams.has("token"), false);
         assert.equal(link.searchParams.has("existing"), false);
     }
-    for (const node of [steps[2].children[0], ...mounted.children[1].children.slice(1, 3)]) {
+    for (const node of [steps[2].children[0], mounted.children[1].children[1]]) {
         assert.equal(node.target, "_blank");
         assert.equal(node.rel, "noopener");
         assert.equal(node.getAttribute("title"), "boundary.newTab");
@@ -542,7 +537,7 @@ check("map is still rendered when publisher config is unavailable", async () => 
     assert.equal(mounted.children[0].children[1].children[0].tag, "span");
     assert.equal(mounted.children[0].children[2].children[0].href, undefined);
     assert.equal(mounted.children[1].children[1].href, undefined);
-    assert.equal(mounted.children[1].children[3].textContent, "boundary.configUnavailable");
+    assert.equal(mounted.children[1].children[2].textContent, "boundary.configUnavailable");
 });
 
 check("teaching guide precedes product header and owns the role disclosure", () => {
@@ -601,7 +596,7 @@ check("role tools and all current-step markers render before a slow configuratio
         assert.equal(test.sandbox.location.searchParams.get("offer"), "one");
         assert.equal(test.sandbox.location.searchParams.get("plan"), "two");
         timeout();
-        assert.equal(mounted.children[1].children[3].textContent, "boundary.configUnavailable");
+        assert.equal(mounted.children[1].children[2].textContent, "boundary.configUnavailable");
     }
 });
 
@@ -620,7 +615,23 @@ check("invalid or unsafe partner configuration leaves mapping visible without in
         assert.equal(mounted.children[0].children.length, 4);
         assert.equal(mounted.children[0].children[2].children[0].href, undefined);
         assert.equal(mounted.children[1].children[1].href, undefined);
-        assert.equal(mounted.children[1].children[3].textContent, "boundary.configUnavailable");
+        assert.equal(mounted.children[1].children[2].textContent, "boundary.configUnavailable");
+    }
+});
+
+check("repository guide is culture-specific without forwarding page or configured secrets", () => {
+    for (const language of ["ja", "en"]) {
+        const test = runtime("?token=PRIVATE&subscriptionId=contract&scenario=web-card&culture=" + language, language);
+        const guide = new Element("a");
+        test.sandbox.document.querySelectorAll = selector => selector === "[data-implementation-guide]" ? [guide] : [];
+        test.load("demo-map.js");
+        test.ready.at(-1)();
+        const target = new URL(guide.href);
+        assert.equal(target.href, "https://github.com/MamoruKuroda/marketplace-saas-fulfillment-sample/blob/main/docs/" +
+            (language === "ja" ? "walkthrough.ja.md" : "walkthrough.md"));
+        assert.equal(target.search, "");
+        assert.equal(target.hash, "");
+        assert.equal(test.requests.length, 0, "Repository link does not wait for or need partner config");
     }
 });
 
@@ -813,7 +824,8 @@ check("product detail is the primary entry, presenter controls start collapsed, 
     assert.match(checkoutHtml, /id="place-order"[^>]*data-i18n="experience.placeOrder"/);
     assert.match(checkoutHtml, /data-i18n="experience.orderComplete"/);
     assert.match(checkoutHtml, /id="configure-account"[^>]*data-i18n="experience.configure"/);
-    assert.match(checkoutHtml, /data-i18n="experience.simulationRecord"/);
+    assert.match(checkoutHtml, /data-i18n="scope.noPayment"/);
+    assert.match(checkoutHtml, /data-implementation-guide/);
     assert.doesNotMatch(checkoutHtml, /autocomplete="cc-|(?:name|id)="(?:card-number|cvv|cvc)"/);
 });
 

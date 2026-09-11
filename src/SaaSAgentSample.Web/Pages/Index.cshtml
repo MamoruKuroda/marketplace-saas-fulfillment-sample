@@ -37,33 +37,6 @@
         <summary>@L["View the whole flow"]</summary>
         <div class="body">@(await Html.PartialAsync("_ResponsibilityMap"))</div>
     </details>
-    <details class="explainer learn" id="how">
-        <summary>@L["How this works"]</summary>
-        <div class="body">
-            @(await Html.PartialAsync("_LearningFocus"))
-            <h3 class="learn-h">@L["Who's who"]</h3>
-            <div class="actors">
-                <div class="actor">
-                    <span class="who ms">@L["Marketplace"]</span>
-                    <h3>@L["Microsoft"]</h3>
-                    <p>@L["Runs the marketplace and the billing. The emulator stands in for it here."]</p>
-                </div>
-                <div class="actor">
-                    <span class="who pub">@L["This app"]</span>
-                    <h3>@L["Partner company (SaaS publisher)"]</h3>
-                    <p>@L["Sells the offer. Builds steps 2 and 3, plus the webhook that carries step 4 back to step 3."]</p>
-                </div>
-                <div class="actor">
-                    <span class="who buyer">@L["Different tenant"]</span>
-                    <h3>@L["Buyer"]</h3>
-                    <p>@L["Purchases from the Marketplace, then signs in on the landing page to activate."]</p>
-                </div>
-            </div>
-            @(await Html.PartialAsync("_ImplementationLinks"))
-            <details class="reference-details"><summary>@L["Purchase routes and permissions"]</summary>@(await Html.PartialAsync("_PurchasePermissions"))</details>
-            <details class="reference-details"><summary>@L["Key terms"]</summary>@(await Html.PartialAsync("_KeyTerms"))</details>
-        </div>
-    </details>
 }
 else
 {
@@ -117,7 +90,6 @@ else
                     <p>@L["No saved partner record was found for this purchase."]</p>
                     <a href="@adminUrl">@L["View all saved contracts"]</a>
                 }
-                @(await Html.PartialAsync("_ImplementationLinks"))
             </div>
         </details>
     }
@@ -172,36 +144,5 @@ else
     <details class="explainer learn" id="boundary">
         <summary>@L["Responsibility map"]</summary>
         <div class="body">@(await Html.PartialAsync("_ResponsibilityMap"))</div>
-    </details>
-    <details class="explainer learn" id="how">
-        <summary>@L["How this works"]</summary>
-        <div class="body">
-            @(await Html.PartialAsync("_LearningFocus"))
-            <p class="design-note">@L["This is a partner-designed screen, not a mandatory Microsoft UI design."]</p>
-            @if (Model.DemoScenario is not null)
-            {
-                @(await Html.PartialAsync("_PurchaseArrival", Model.DemoScenario))
-            }
-            <h3 class="learn-h">@L["What happens on this page"]</h3>
-            <p class="learn-lead">@L["Only this one screen has to be a web page — your desktop or client app stays as it is."]</p>
-            <dl class="landing-explanation">
-                <dt>@L["Sign in"]</dt>
-                <dd>@L["Entra single sign-on, required by Microsoft on this page."]</dd>
-                <dt>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Resolve(L)))</dt>
-                <dd>@L["The purchase token is exchanged for subscription details, which appear in the confirmation."]</dd>
-                <dt>@(await Html.PartialAsync("_Term", SaaSAgentSample.Web.TermVm.Activate(L)))</dt>
-                <dd>
-                    <p>@L["Tells Microsoft fulfillment is done, which starts billing."]</p>
-                    <p>@L["The partner company manages the mapping between this subscription and its customer accounts; Microsoft does not provide that product-specific mapping."]</p>
-                </dd>
-            </dl>
-            <p class="learn-foot">@L["Offers can also auto-activate, skipping this page."]</p>
-            @if (!Model.IsActivated && !Model.AlreadyActive)
-            {
-                @(await Html.PartialAsync("_ImplementationLinks"))
-            }
-            <details class="reference-details"><summary>@L["Purchase routes and permissions"]</summary>@(await Html.PartialAsync("_PurchasePermissions"))</details>
-            <details class="reference-details"><summary>@L["Key terms"]</summary>@(await Html.PartialAsync("_KeyTerms"))</details>
-        </div>
     </details>
 }

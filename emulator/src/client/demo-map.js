@@ -63,6 +63,11 @@
   }
 
   function start() {
+    var guideFile = window.i18nLang() === "ja" ? "walkthrough.ja.md" : "walkthrough.md";
+    document.querySelectorAll("[data-implementation-guide]").forEach(function (link) {
+      // Never carry a purchase token, contract ID or simulation context to GitHub.
+      link.href = "https://github.com/MamoruKuroda/marketplace-saas-fulfillment-sample/blob/main/docs/" + guideFile;
+    });
     roleLinks();
     if (document.querySelector(".demo-map")) return;
     var anchor = document.querySelector("body > header");
@@ -93,9 +98,6 @@
     var overview = el("a", "boundary-overview", "boundary.overview");
     partnerLinks.push({ node: overview, path: "/", hash: "#boundary" });
     guide.appendChild(overview);
-    var learn = el("a", "learn-link", "map.learnMore");
-    partnerLinks.push({ node: learn, path: "/", hash: "#how" });
-    guide.appendChild(learn);
     var status = el("span", "guide-status", "boundary.configLoading");
     status.setAttribute("role", "status");
     guide.appendChild(status);

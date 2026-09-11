@@ -465,4 +465,5 @@
   <data name="Previously recorded plan" xml:space="preserve"><value>それまでの記録プラン</value></data>
   <data name="Newly recorded plan" xml:space="preserve"><value>新しく記録されたプラン</value></data>
   <data name="Not recorded" xml:space="preserve"><value>記録なし</value></data>
+  <data name="Implementation guide ↗" xml:space="preserve"><value>実装ガイド ↗</value></data>
 </root>

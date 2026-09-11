@@ -33,8 +33,8 @@ Changes we made on top of the upstream snapshot:
 - **Demo map** — `src/client/demo-map.js` renders a compact four-step teaching guide, with
   current-step markers and no expanded cards. It also renders the shared demonstration-tool
   links without waiting for configuration. The guide reads `/api/util/config` only to locate
-  the partner operations console and the root `#boundary` responsibility overview / `#how`
-  explanation. Partner links are explicitly teaching navigation, not product tabs. Step 2
+  the partner operations console and the root `#boundary` responsibility overview.
+  Partner links are explicitly teaching navigation, not product tabs. Step 2
   does not link to a tokenless landing page or imply a valid purchase. Configured token/query
   values are never copied into guide links or labels. Missing or invalid configuration is
   reported; the guide remains visible with unavailable partner links.
@@ -73,10 +73,9 @@ Changes we made on top of the upstream snapshot:
   the URL API preserves the configured landing URL's query and hash.
   Scenario metadata is not trusted purchase proof and does not change fulfillment payloads,
   purchaser IDs, quantity, prices, plans, authentication, authorization, or subscription state.
-  There is no additional order-creation request. The UI states that the emulator creates its
-  subscription record at Resolve, not at an actual storefront checkout. Short EN/JA route hints
-  link through the map to the publisher's `#how` glossary, keeping the detailed policy explanation
-  in one place. Client regression tests use the existing Jest/TypeScript runner and Node VM.
+  There is no additional order-creation request. The implementation guide explains that the
+  emulator creates its subscription record at Resolve, not at an actual storefront checkout.
+  Client regression tests use the existing Jest/TypeScript runner and Node VM.
 - **Event-tool data boundary** — the subscriptions table displays emulator state, not the
   partner database. Webhook delivery, partner storage and operations-console reload are separate.
   Neither the emulator table nor an HTTP operation response acknowledges partner DB persistence.
@@ -85,8 +84,12 @@ Changes we made on top of the upstream snapshot:
   disclosure for simulation limits, possible Azure hosting costs and teaching-only role labels.
   Optional tools remain available without a role gate. The default product → checkout →
   confirmation flow keeps a short no-purchase/no-payment note at confirmation and the fake-card
-  warning; implementation explanations live in collapsed sections with the shared `#how` references.
+  warning; implementation explanations live in the repository walkthrough rather than in-app lessons.
   The navy Microsoft header and partner handoff remain distinct.
+- **Repository guide** — each page has a small footer link to `docs/walkthrough.md` or
+  `docs/walkthrough.ja.md` on GitHub, chosen by UI language. It is independent of partner
+  configuration and forwards no query values, tokens or contract IDs. The overview and real
+  subscription operations remain in the demo.
 - **Saved-record navigation** — `/subscriptions.html?subscriptionId=<Marketplace ID>` selects
   an exact UUID match from the existing emulator response, filters and highlights that row, and
   preserves selection on reload/language changes. Unknown, empty, invalid or repeated IDs do

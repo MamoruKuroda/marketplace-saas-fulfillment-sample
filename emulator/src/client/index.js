@@ -4,10 +4,6 @@ let config;
 
 $(async () => {
     const journey = window.PurchaseJourney;
-    const scenario = journey.context().scenario;
-    $("#checkout-route").text(t(scenario ? "journey." + scenario + ".route" : "journey.directTitle"));
-    $("#checkout-prerequisites").text(t(scenario ? "journey." + scenario + ".prerequisites" : "journey.directHint"));
-
     // Configure purchase form
 
     try {

@@ -85,17 +85,8 @@
             <p>@L["Notifications appear after receipt and database save. Reload to read the latest stored records; this screen cannot detect notifications still in transit."]</p>
         </div>
     </details>
-    <details class="explainer learn" id="how">
-        <summary>@L["Behind the saved records"]</summary>
-        <div class="body">
-            @(await Html.PartialAsync("_LearningFocus"))
-            <h2 class="learn-h">@L["Who implements this"]</h2>
-            <p>@L["The partner company records and synchronizes contracts. This management UI is optional and can reuse existing tools."]</p>
-            @(await Html.PartialAsync("_ImplementationLinks"))
-            <details class="reference-details">
-                <summary>@L["Illustrative capacity"]</summary>
-                @(await Html.PartialAsync("_CapacityBar", new SaaSAgentSample.Web.CapacityVm(s.MarketplaceSubscriptionId, s.PlanId, false)))
-            </details>
-        </div>
+    <details class="explainer learn">
+        <summary>@L["Illustrative capacity"]</summary>
+        <div class="body">@(await Html.PartialAsync("_CapacityBar", new SaaSAgentSample.Web.CapacityVm(s.MarketplaceSubscriptionId, s.PlanId, false)))</div>
     </details>
 }

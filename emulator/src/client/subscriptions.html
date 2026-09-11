@@ -58,7 +58,7 @@
             <button class="state" data-requiredStatus="Subscribed" onclick="renew_click(event)" aria-label="Renew" data-i18n="action.renew" data-i18n-attr="aria-label:action.renew">Renew</button>
           </td></tr>
         </tbody></table></div>
-        <details class="behind-scenes"><summary data-i18n="scope.behind">Behind the scenes</summary><h3 data-i18n="scope.what">What happened</h3><p data-i18n="boundary.deliverySeparate">Webhook delivery, partner database storage and reload are separate steps. Emulator responses do not confirm the partner record.</p><h3 data-i18n="scope.who">Who implements this</h3><p data-i18n="subs.ownership">The emulator initiates Microsoft-side events; the partner company implements the webhook and saves its own subscription record.</p><details><summary data-i18n="scope.details">Implementation details / code</summary><article data-i18n-html="subs.infoHtml"></article><div class="key"><p data-i18n-html="subs.buttonColourKeyHtml">Button colours indicate Detail or State changes.</p><p data-i18n="subs.renewNote">Renew: an HTTP response can appear without a table change.</p></div><p data-i18n="scope.references">Use “How this works” in the guide for implementation, code and glossary references.</p></details></details>
+        <p class="data-boundary" data-i18n="boundary.deliverySeparate">Webhook delivery, partner database storage and reload are separate steps. Emulator responses do not confirm the partner record.</p>
         <details class="reset-demo"><summary data-i18n="subs.resetDemo">Reset the demo</summary>
           <button class="danger" onclick="resetDemo_click()" data-i18n="subs.resetDemo">Reset the demo</button>
           <p data-i18n="subs.resetNote">Clears every subscription here and in the publisher app, so a demo can start over. Offers and plans are kept. Test-harness convenience only — the real Marketplace has no way to delete a publisher's records.</p>
@@ -67,5 +67,6 @@
       <div class="template" id="change-quantity-dialog"><p data-i18n="subs.howManyLicenses">How many licenses?</p><input type="number" /></div>
       <div class="template" id="change-plan-dialog"><p data-i18n="subs.changePlanTo">Change plan to?</p><select></select></div>
     </main>
+    <footer class="implementation-guide"><a data-implementation-guide data-i18n="map.learnMore" href="https://github.com/MamoruKuroda/marketplace-saas-fulfillment-sample/blob/main/docs/walkthrough.md" target="_blank" rel="noopener noreferrer">Implementation guide ↗</a></footer>
   </body>
 </html>

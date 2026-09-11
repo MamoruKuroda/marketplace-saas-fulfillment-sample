@@ -12,10 +12,12 @@ interest selection. Follow the [buyer journey](#buyer-handoff-and-operator-inspe
 to the activation result. That is sufficient for a business/sales or buyer demonstration;
 implementation and operations depth is optional.
 
-The optional references explain **what happened → who implements it → code**. The app's initially closed `#how`
-offers this deeper reading, including a **responsibility map** to distinguish screens from server
-calls and storage. **View the whole flow** is initially closed in `<details id="boundary">`,
-not automatically expanded on arrival.
+The demo is for operations and observed results; this document is for **what happened → who
+implements it → code**. The small **Implementation guide ↗** footer link opens this repository
+document in the current UI language, without forwarding purchase tokens or query values.
+**View the whole flow** remains initially closed in `<details id="boundary">`. Saved records and
+change history remain in the demo. The in-app lesson and interest selector have been removed;
+older `#how` links now point at the guide link, not an automatic external redirect.
 
 One common small **Demo** disclosure per page explains that these are simulated purchases with no real
 payment; **Azure hosting may still incur costs**. Order confirmation retains the precise note
@@ -65,10 +67,16 @@ There is no required role-switch step or same-privilege Home/Admin navigation. A
 **See behind the partner site / 提供元の裏側を見る** optionally reveals the actual stored partner
 state and a direct link to this contract's operations detail.
 
-Optional interests inside explanations — **Business/sales, buyer organization, implementation,
-operations** — choose what to learn, not who you are. They are neither authentication nor
-simulated roles, and grant no permissions. Server APIs, authentication, billing, lifecycle state,
-and DB schema are unchanged; the added view lookups read saved records only for links and filters.
+Suggested reading by interest is below, not a selector or gate in the app. A person's job and the
+role they play in the demo are different. Links do not authenticate or grant permissions.
+Server APIs, authentication, billing, lifecycle state and DB schema are unchanged.
+
+| Interest | What to follow |
+| --- | --- |
+| Business and sales | What is bought, the handoff to the partner, and the activation result |
+| Buying organization | Purchase permissions, account setup and confirmation |
+| Implementation | Server calls, webhook validation, account mapping and the code references below |
+| Operations | Open the saved contract, make one change and inspect persisted plan/state/history |
 
 **Example operations UI implemented by the partner company** names the implementation owner,
 not a mandatory screen design. Contract recording and synchronization belong to the partner;
@@ -177,7 +185,7 @@ inspection links changes role permissions or implements product access.
 
 These show the real UI and partner app with local synthetic data and an isolated HTTP fixture
 for emulator APIs, not real purchases or design-approval mockups. Targeted Node checks passed for
-this preview: journey (36), experience (14), checkout (18), and subscription selection (10).
+this preview: journey (37), experience (14), checkout (18), and subscription selection (10).
 These checks are not the full Jest suite. The full Node emulator and Jest
 suite were not validated: the configured npm feed returned 404 for required dependencies and the
 local Docker engine was unavailable. Browser checks with the fixture do not replace full-emulator
@@ -314,6 +322,76 @@ The "passes" that travel through the flow (the metaphor that makes it stick):
 
 ---
 
+## Implementation reference
+
+These notes replace the former in-app lessons. They explain the sample, rather than report
+live purchase authorization or a successful production setup.
+
+### Terms used in the code
+
+| Term | Meaning |
+| --- | --- |
+| Landing page | Partner page opened after purchase with a purchase identification token |
+| Resolve | Server call exchanging that opaque token for subscription, offer, plan and buyer details |
+| Activate | Manual-activation flow's signal that provisioning is complete; successful activation starts billing |
+| Webhook | Asynchronous notification of changes; the partner validates it before updating saved state |
+| State store | The partner's persisted contract records, separate from Microsoft's commercial state |
+| Entitlement | Product access rules the partner associates with customer identities and contracts; not implemented here |
+| Change plan | Change on the same subscription; Microsoft manages the commercial pricing side |
+| Dimension | Metered billing unit; this flat-rate sample has no implemented metering dimension |
+| Prepaid capacity | An illustrative allowance display only, not actual metering or a new billing model |
+| Fulfillment layer | The landing, API calls, webhook and saved contracts, not the SaaS product itself |
+
+The existing Windows/desktop client need not be rewritten as a website. The partner can use
+a browser for purchase/setup and keep the existing client and service backend. The partner
+owns the mapping to its **existing user/customer-company IDs**; a shared email domain alone
+must not grant every employee access. The demo does not perform this real mapping.
+
+The landing can receive a new purchase or a returning active purchase. The sample checks the
+returned status; it does not activate an already active purchase again on a GET. The same
+browser-tab Configure link reuses its synthetic purchase. The emulator creates a subscription
+on Resolve, not at the simulated order-confirmation screen. Automatic activation is a different
+flow and is not implemented by this manual-activation sample.
+
+### Purchase routes and permissions
+
+These are the previously documented reference distinctions, **not checks performed by the demo**.
+Verify the current official requirements before using them with a real offer or tenant.
+
+| Route / action | Relevant distinction | Customer-side control |
+| --- | --- | --- |
+| Web card purchase | Work/school account and card; a universal preassigned Entra admin role is not stated in the referenced Web purchase prerequisites | Third-party SaaS self-service purchasing policy and sign-in restrictions |
+| Existing MCA company billing profile | Permission to purchase against that profile, such as profile Contributor/Owner; not a blanket prerequisite for every first card purchase | Microsoft 365 admin center billing-profile roles |
+| Azure checkout, whether entered from Web or portal | An eligible Azure subscription and sufficient purchase permissions; read access alone is not enough | Azure RBAC, Marketplace purchase controls, Private Marketplace |
+| Partner landing after purchase | Entra sign-in/consent and intended customer-account mapping | Customer sign-in policies and partner product access rules |
+
+`AllowSelfServicePurchase / OfferType SaaS` is an offer-type policy, not a per-partner allowlist,
+and does not block Azure portal purchases. MCA billing-profile permissions are not MOSA billing
+administrator roles. Partners cannot override customer purchasing restrictions.
+
+Reference links moved from the UI (not freshly reverified in this documentation move):
+
+- [Web acquisition requirements](https://learn.microsoft.com/en-us/marketplace/purchase-software-appsource)
+- [Third-party SaaS self-service policy](https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/allowselfservicepurchase-powershell?view=o365-worldwide#use-allowselfservicepurchase-with-third-party-offer-types)
+- [MCA billing-profile roles](https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/manage-billing-profiles?view=o365-worldwide#assign-billing-profile-roles)
+- [Azure checkout requirements](https://learn.microsoft.com/en-us/marketplace/purchase-saas-offer-in-azure-portal#requirements)
+- [Private Marketplace](https://learn.microsoft.com/en-us/marketplace/create-manage-private-azure-marketplace-new)
+- [Landing sign-in and return visits](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/azure-ad-transactable-saas-landing-page)
+- [Partner Center preview](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/review-publish-offer#publisher-sign-off-phase)
+
+### Relevant code and tool behavior
+
+- [LandingService.cs](../src/SaaSAgentSample.Web/Services/LandingService.cs): Resolve, explicit Activate, saved contract.
+- [WebhookService.cs](../src/SaaSAgentSample.Web/Services/WebhookService.cs): operation validation, state updates and acknowledgement.
+- [EfSubscriptionRepository.cs](../src/SaaSAgentSample.Data/Persistence/EfSubscriptionRepository.cs): persisted partner records.
+- [Emulator guide](../emulator/README.md): catalogue editing, legacy token form, embedded API-test landing and event tools.
+
+In the event tool, Detail/State button colors describe the type of change, not the implementation
+owner or a delivery guarantee. A Renew response may leave the state unchanged. The partner's
+saved event trail is the place to inspect what was received and stored. Missing prior plan records
+remain unknown in before/after comparisons. Neither a catalogue edit nor an emulator HTTP response
+proves that partner-side storage has changed.
+
 ## How the pieces map to this sample (v0 scope)
 
 | Concept | This sample |
@@ -322,7 +400,7 @@ The "passes" that travel through the flow (the metaphor that makes it stick):
 | Connection webhook (2-stage server-side) | `POST /api/webhook`, `WebhookService` + `IWebhookTokenValidator` |
 | Saved partner contract state (4 states) | `SaaSAgentSample.Core` aggregate + `SaaSAgentSample.Data` store |
 | Optional same-contract operations (inspect + explicit Activate) | `/admin?marketplaceSubscriptionId=<actual-id>`, `/admin/{guid}`, and `#history`; saved partner records, not buyer navigation |
-| Optional reference explanations | Shared `_KeyTerms` and `_TruthLayers` remain behind reference details; explanations progressively connect what happened, implementation ownership, and code |
+| Reference explanations | This walkthrough; the demo's implementation-guide link opens the matching language, while its whole-flow figure remains available |
 | Product entitlement enforcement / real account mapping | Not implemented by this minimal sample |
 | Test without a real purchase | [L2 walkthrough](l2-demo.md) via the emulator — **L2** = integration-level end-to-end proof over HTTP |
 
