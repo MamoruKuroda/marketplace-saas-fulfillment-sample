@@ -59,6 +59,46 @@ public sealed class RegionGuidanceTests
         """;
 
     [Fact]
+    public void InteractiveHookFlagPermitsForwardedInputWithoutApprovingChoices()
+    {
+        var options = DeploymentPreflight.Program.ParseArguments(["--interactive"]);
+        Assert.False(options.CheckOnly);
+        Assert.True(options.Interactive);
+        var ui = new ConsoleUi(Env(), new StringReader("1\n"), new StringWriter(), options.Interactive);
+        Assert.False(ui.Accepted);
+        Assert.Equal(0, ui.Choose("Pick", "選択", ["A", "B"]));
+        Assert.False(new ConsoleUi(Env(), new StringReader("1\n"), new StringWriter(), true)
+            .Confirm("Continue?", "続行しますか？"));
+    }
+
+    [Theory]
+    [InlineData("CI")]
+    [InlineData("AZD_NON_INTERACTIVE")]
+    public void InteractiveHookFlagStillHonorsUnattendedMode(string key)
+    {
+        var env = Env();
+        env[key] = "true";
+        var ui = new ConsoleUi(env, new StringReader("2\n"), new StringWriter(), true);
+        Assert.Throws<InvalidOperationException>(() => ui.Confirm("Continue?", "続行しますか？"));
+    }
+
+    [Fact]
+    public void CheckOnlyAndInteractiveAreMutuallyExclusive()
+    {
+        Assert.Equal((true, false), DeploymentPreflight.Program.ParseArguments(["--check-only"]));
+        Assert.Equal((false, false), DeploymentPreflight.Program.ParseArguments([]));
+        Assert.Throws<ArgumentException>(() =>
+            DeploymentPreflight.Program.ParseArguments(["--check-only", "--interactive"]));
+    }
+
+    [Fact]
+    public void ForwardedInputEofCancelsInsteadOfAssumingConsent()
+    {
+        var ui = new ConsoleUi(Env(), new StringReader(""), new StringWriter(), true);
+        Assert.Throws<OperationCanceledException>(() => ui.Confirm("Continue?", "続行しますか？"));
+    }
+
+    [Fact]
     public void GeographyIsAnExplicitFilterNotTheDisplayLanguage()
     {
         Assert.Equal(new[] { Japan }, RegionRules.Candidates([US, Japan], "Japan", "eastus"));

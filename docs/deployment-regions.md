@@ -111,6 +111,11 @@ in advance, and run with `AZD_NON_INTERACTIVE=true`. Do not rely on `--no-prompt
 alone to configure a script hook's input behavior. Without explicit target
 settings the helper stops instead of guessing.
 
+The registered hooks pass `--interactive` to accept azd's forwarded stdin, even
+when it is a pipe rather than a console handle. This enables questions, not
+automatic consent: CI/noninteractive settings still apply, cancellation and EOF
+stop the helper, and it cannot be combined with `--check-only`.
+
 Use environment settings, not `azd up --location` / `--subscription`, for this
 workflow. In azd 1.33.0 those flags are applied **after** `preup`; conflicting
 flags can cause azd to reject the target selected by the hook.
@@ -161,9 +166,28 @@ different template/input set.
   not checked in that batch.
 - **Boundaries of that run**: no target was saved and no resources were created.
   It exercised the standalone check-only path, not an entire `azd up` run.
-  Interactive hook execution, policy-denial cases, package/publish, SQL setup
-  and application endpoint behavior still require separate live verification.
   The machine's installed azd 1.28.1 was not upgraded or reauthenticated.
+- **Actual hook connection check, 2026-09-12**: ran the official azd 1.33.0
+  `up` command in a session-only copy with the real helper, hook scripts and
+  Bicep inputs. For safety, the fixture had no services or SQL hook, and its
+  custom `up` workflow ran only `env get-value AZURE_LOCATION`. A local `postup`
+  assertion compared the inherited location with the saved fixture `.env`.
+  Responses were supplied over forwarded stdin, exercising the real prompts,
+  ARM validation and azd environment reload rather than mocking those operations.
+  Selecting and confirming `australiaeast` reached Bicep initialization and the
+  read-only handoff assertion. Cancelling at the final confirmation returned
+  a nonzero `azd up` exit without saving a location or reaching the downstream
+  workflow. Both fixture resource groups remained absent (HTTP 404).
+- That check found and fixed an input-detection issue: the hook receives
+  redirected stdin, so checking `Console.IsInputRedirected` alone rejected
+  otherwise valid forwarded interaction. Offline regressions now cover the
+  explicit interactive mode, CI/noninteractive gates, cancellation and EOF.
+- **Still unverified**: the default provision/package/publish/deploy workflow,
+  actual resource creation, live policy-denial cases, SQL setup, application
+  startup, and interactive behavior across all supported OS/terminal versions.
+  The safe fixture's azd success message is not evidence of a cloud deployment.
+  Only the fixture's local environment was written; the existing Azure login,
+  resources, repository `.azure` state, and installed azd were unchanged.
 
 ## Sources
 

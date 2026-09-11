@@ -16,9 +16,9 @@ internal static class Program
         Console.CancelKeyPress += (_, e) => { e.Cancel = true; cancellation.Cancel(); };
         try
         {
-            if (args.Length > 1 || args.Any(arg => arg != "--check-only"))
-                throw new ArgumentException("Supported argument: --check-only");
-            await RunAsync(environment, ui, cancellation.Token, checkOnly: args.Contains("--check-only"));
+            var options = ParseArguments(args);
+            ui = new ConsoleUi(environment, interactive: options.Interactive ? true : null);
+            await RunAsync(environment, ui, cancellation.Token, checkOnly: options.CheckOnly);
             return 0;
         }
         catch (OperationCanceledException)
@@ -38,6 +38,15 @@ internal static class Program
             return 1;
         }
     }
+
+    internal static (bool CheckOnly, bool Interactive) ParseArguments(string[] args) => args switch
+    {
+        [] => (false, false),
+        ["--check-only"] => (true, false),
+        // azd can forward interactive hook stdin through a pipe.
+        ["--interactive"] => (false, true),
+        _ => throw new ArgumentException("Use either --check-only or --interactive, not both.")
+    };
 
     internal static async Task RunAsync(
         Dictionary<string, string> environment, ConsoleUi ui, CancellationToken cancellation,
