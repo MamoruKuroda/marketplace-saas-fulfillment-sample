@@ -1,7 +1,6 @@
 ﻿@page "/admin"
 @using SaaSAgentSample.Core.Subscriptions
 @model SaaSAgentSample.Web.Pages.Admin.IndexModel
-@inject Microsoft.Extensions.Configuration.IConfiguration Config
 @inject SaaSAgentSample.Core.Subscriptions.ISubscriptionEventLog Events
 @{
     ViewData["Title"] = L["Publisher admin — subscriptions"].Value;
@@ -13,7 +12,11 @@
         _ => "pending",
     };
     var scenario = DemoNavigation.PurchaseScenario(Model.Request.Query["scenario"].ToString());
-    var emu = DemoNavigation.EmulatorLink(Config, "/subscriptions.html", scenario);
+    var selectedId = Model.MarketplaceSubscriptionId;
+    var filtered = !string.IsNullOrEmpty(selectedId);
+    var reloadPath = !string.IsNullOrEmpty(selectedId)
+        ? Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString("/admin", "marketplaceSubscriptionId", selectedId)
+        : "/admin";
 
     // What the map may tick off. A stored subscription proves step 1 happened; one that has left
     // PendingFulfillmentStart proves step 2 did, and this page is step 3 — so the tour's next stop
@@ -24,19 +27,22 @@
             Model.Subscriptions.Any(s => s.State != SubscriptionState.PendingFulfillmentStart) ? 3 : 1;
     }
 }
-@* The data comes first. Everything explanatory sits below it, behind one summary. *@
 <h1 class="page-title">@L["Subscriptions"]</h1>
-<p class="subtitle">@L["The partner company records and synchronizes contracts. This management UI is optional and can reuse existing tools."]</p>
+<p class="subtitle">@L["Saved partner contracts"]</p>
+@if (filtered)
+{
+    <p class="contract-context">@L["Selected contract"]: <code>@Model.MarketplaceSubscriptionId</code> · <a href="@DemoNavigation.PublisherLink("/admin", scenario)">@L["View all saved contracts"]</a></p>
+}
 
 @if (Model.Subscriptions.Count == 0)
 {
-    <div class="card"><p class="muted">@L["No subscriptions yet. Activate one from a buyer landing link to see it here."]</p></div>
+    <div class="card"><p class="muted">@(filtered ? L["No saved partner record was found for this purchase."] : L["No subscriptions yet. Activate one from a buyer landing link to see it here."])</p></div>
 }
 else
 {
     <div class="table-wrap" tabindex="0" role="region" aria-label="@L["Saved partner contracts"]">
         <table>
-            <caption class="data-source">@L["Sample operations screen reading the partner company's contract DB. Not the emulator's state."]</caption>
+            <caption class="data-source">@L["Source: partner contract DB"]</caption>
             <thead>
                 <tr>
                     <th>@L["Marketplace subscription"]</th>
@@ -69,43 +75,5 @@ else
     </div>
 }
 
-<p class="sync-notice">@L["Notifications appear after receipt and database save. Reload to read the latest stored records; this screen cannot detect notifications still in transit."]</p>
-<p><a class="btn secondary" href="@DemoNavigation.PublisherLink("/admin", scenario)">@L["Reload partner company DB"]</a></p>
-@if (emu is not null)
-{
-    <p class="next-line">
-        <span class="ico" aria-hidden="true">&#8644;</span>
-        @L["Step 4 — change, suspend or cancel in the emulator. It arrives here as a webhook; reload to see it."]
-        <a href="@emu" target="_blank" rel="noopener">@L["Demo role switch: Microsoft-side event operator ↗"]</a>
-    </p>
-}
-
-<details class="explainer learn" id="how">
-    <summary>@L["How this works"]</summary>
-    <div class="body">
-        <h3 class="learn-h">@L["Who drives the lifecycle"]</h3>
-        <p class="learn-lead">@L["Contract recording and synchronization belong to the partner implementation. This operations screen and its design are examples, not a required Marketplace management UI."]</p>
-        <p class="learn-lead">@L["Microsoft drives it. This app activates a purchase, then keeps its database in sync with the events Microsoft sends. It never invents state."]</p>
-        <div class="lc-cols">
-            <div class="lc-group">
-                <span class="who pub">@L["Publisher-initiated"]</span>
-                <ul>
-                    <li>@L["Resolve → Activate — confirmed here, only from PendingFulfillmentStart. Starts billing."]</li>
-                </ul>
-            </div>
-            <div class="lc-group">
-                <span class="who ms">@L["Microsoft-initiated (webhook)"]</span>
-                <ul>
-                    <li>@L["Change plan / quantity"]</li>
-                    <li>@L["Suspend / Reinstate (e.g. payment failure / recovery)"]</li>
-                    <li>@L["Unsubscribe (terminal)"]</li>
-                </ul>
-            </div>
-        </div>
-
-        @(await Html.PartialAsync("_TruthLayers"))
-        @(await Html.PartialAsync("_PlanChangeFigure"))
-        @(await Html.PartialAsync("_PurchasePermissions"))
-        @(await Html.PartialAsync("_KeyTerms"))
-    </div>
-</details>
+<p><a class="btn secondary" href="@DemoNavigation.PublisherLink(reloadPath, scenario)">@L["Reload partner company DB"]</a></p>
+<p class="muted">@L["Open a contract to try a change and inspect its saved history."]</p>

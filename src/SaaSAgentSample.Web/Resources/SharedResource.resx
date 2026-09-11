@@ -426,4 +426,49 @@
   <data name="Reload partner company DB" xml:space="preserve"><value>Reload partner company DB</value></data>
   <data name="Demo role switch: Microsoft-side event operator ↗" xml:space="preserve"><value>Demo role switch: Microsoft-side event operator ↗</value></data>
   <data name="Contract recording and synchronization belong to the partner implementation. This operations screen and its design are examples, not a required Marketplace management UI." xml:space="preserve"><value>Contract recording and synchronization belong to the partner implementation. This operations screen and its design are examples, not a required Marketplace management UI.</value></data>
+  <!-- Experience-first guidance: optional depth, unchanged transaction behavior -->
+  <data name="Demo" xml:space="preserve"><value>Demo</value></data>
+  <data name="Purchase actions here do not place real orders or take payments. Azure hosting can still incur charges." xml:space="preserve"><value>Purchase actions here do not place real orders or take payments. Azure hosting can still incur charges.</value></data>
+  <data name="Purchase to activation" xml:space="preserve"><value>Purchase to activation</value></data>
+  <data name="Choose a service, complete a purchase, and follow it to activation on the partner site." xml:space="preserve"><value>Choose a service, complete a purchase, and follow it to activation on the partner site.</value></data>
+  <data name="Start the purchase experience →" xml:space="preserve"><value>Start the purchase experience →</value></data>
+  <data name="View the whole flow" xml:space="preserve"><value>View the whole flow</value></data>
+  <data name="Activation complete" xml:space="preserve"><value>Activation complete</value></data>
+  <data name="This completes the buyer walkthrough. Product access is not implemented by this sample." xml:space="preserve"><value>This completes the buyer walkthrough. Product access is not implemented by this sample.</value></data>
+  <data name="See behind the partner site" xml:space="preserve"><value>See behind the partner site</value></data>
+  <data name="What happened" xml:space="preserve"><value>What happened</value></data>
+  <data name="Microsoft accepted activation. The partner result is recorded separately below." xml:space="preserve"><value>Microsoft accepted activation. The partner result is recorded separately below.</value></data>
+  <data name="Microsoft returned an already active purchase. The partner record is shown separately." xml:space="preserve"><value>Microsoft returned an already active purchase. The partner record is shown separately.</value></data>
+  <data name="Partner saved state" xml:space="preserve"><value>Partner saved state</value></data>
+  <data name="View this saved contract →" xml:space="preserve"><value>View this saved contract →</value></data>
+  <data name="View all saved contracts" xml:space="preserve"><value>View all saved contracts</value></data>
+  <data name="No saved partner record was found for this purchase." xml:space="preserve"><value>No saved partner record was found for this purchase.</value></data>
+  <data name="Choose what to explore (optional)" xml:space="preserve"><value>Choose what to explore (optional)</value></data>
+  <data name="Your interests — not your role in the demo" xml:space="preserve"><value>Your interests — not your role in the demo</value></data>
+  <data name="Business and sales" xml:space="preserve"><value>Business and sales</value></data>
+  <data name="Buying organization" xml:space="preserve"><value>Buying organization</value></data>
+  <data name="Implementation" xml:space="preserve"><value>Implementation</value></data>
+  <data name="Operations" xml:space="preserve"><value>Operations</value></data>
+  <data name="Follow what the customer buys, where setup starts, and what activation completes. No API knowledge is needed." xml:space="preserve"><value>Follow what the customer buys, where setup starts, and what activation completes. No API knowledge is needed.</value></data>
+  <data name="Follow purchase, account setup and the confirmation. Purchase permission and service access are separate." xml:space="preserve"><value>Follow purchase, account setup and the confirmation. Purchase permission and service access are separate.</value></data>
+  <data name="Expand implementation details to connect the observed result to partner code, API calls and storage." xml:space="preserve"><value>Expand implementation details to connect the observed result to partner code, API calls and storage.</value></data>
+  <data name="Inspect the saved record, trigger one change, then compare stored plan, state and event history." xml:space="preserve"><value>Inspect the saved record, trigger one change, then compare stored plan, state and event history.</value></data>
+  <data name="Implementation details and code" xml:space="preserve"><value>Implementation details and code</value></data>
+  <data name="The partner company implements the landing, server-side API calls, validated webhook receiver and contract storage." xml:space="preserve"><value>The partner company implements the landing, server-side API calls, validated webhook receiver and contract storage.</value></data>
+  <data name="Source: partner contract DB" xml:space="preserve"><value>Source: partner contract DB</value></data>
+  <data name="Selected contract" xml:space="preserve"><value>Selected contract</value></data>
+  <data name="Open a contract to try a change and inspect its saved history." xml:space="preserve"><value>Open a contract to try a change and inspect its saved history.</value></data>
+  <data name="Behind the saved records" xml:space="preserve"><value>Behind the saved records</value></data>
+  <data name="Follow one contract through a change" xml:space="preserve"><value>Follow one contract through a change</value></data>
+  <data name="Note the saved plan and state, make one change on the Microsoft side, then reload this record." xml:space="preserve"><value>Note the saved plan and state, make one change on the Microsoft side, then reload this record.</value></data>
+  <data name="Try a change for this contract ↗" xml:space="preserve"><value>Try a change for this contract ↗</value></data>
+  <data name="Reload this saved record" xml:space="preserve"><value>Reload this saved record</value></data>
+  <data name="Saved changes and processing history" xml:space="preserve"><value>Saved changes and processing history</value></data>
+  <data name="Who implements this" xml:space="preserve"><value>Who implements this</value></data>
+  <data name="Illustrative capacity" xml:space="preserve"><value>Illustrative capacity</value></data>
+  <data name="Recorded plan changes" xml:space="preserve"><value>Recorded plan changes</value></data>
+  <data name="Previously recorded plan" xml:space="preserve"><value>Previously recorded plan</value></data>
+  <data name="Newly recorded plan" xml:space="preserve"><value>Newly recorded plan</value></data>
+  <data name="Not recorded" xml:space="preserve"><value>Not recorded</value></data>
+  <data name="Implementation guide ↗" xml:space="preserve"><value>Implementation guide ↗</value></data>
 </root>

@@ -1,0 +1,34 @@
+@using SaaSAgentSample.Core.Subscriptions
+@model IReadOnlyList<SubscriptionEvent>
+@{
+    var rows = new List<(string? Before, string After, DateTimeOffset At)>();
+    string? previous = null;
+    // Only recorded plan-bearing events supply a previous value; never infer it from current state.
+    var planEvents = Model.Where(e => e.Action.ToLowerInvariant() is "resolve" or "activate" or "changeplan")
+        .Where(e => !string.IsNullOrEmpty(e.Detail));
+    foreach (var group in planEvents.GroupBy(e => e.At).OrderBy(g => g.Key))
+    {
+        var ambiguousOrder = group.Count() > 1;
+        foreach (var e in group)
+        {
+            if (e.Action.Equals("changeplan", StringComparison.OrdinalIgnoreCase) && e.Detail is not null)
+                rows.Add((ambiguousOrder ? null : previous, e.Detail, e.At));
+        }
+        previous = ambiguousOrder ? null : group.Single().Detail;
+    }
+}
+@if (rows.Count > 0)
+{
+    <div class="recorded-plan-changes table-wrap" tabindex="0" role="region" aria-label="@L["Recorded plan changes"]">
+        <table>
+            <caption>@L["Recorded plan changes"]</caption>
+            <thead><tr><th>@L["Previously recorded plan"]</th><th>@L["Newly recorded plan"]</th><th>@L["Updated (UTC)"]</th></tr></thead>
+            <tbody>
+            @foreach (var row in rows)
+            {
+                <tr><td>@(row.Before ?? L["Not recorded"].Value)</td><td>@row.After</td><td>@row.At.UtcDateTime.ToString("u")</td></tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

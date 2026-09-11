@@ -37,12 +37,12 @@
     <div class="orient-bar teaching-guide">
         <div class="guide-inner">
             <a class="guide-title" href="@homeUrl">@L["Teaching guide"]</a>
+            @(await Html.PartialAsync("_DemoNotice"))
             @(await Html.PartialAsync("_DemoMap", new SaaSAgentSample.Web.DemoMapVm(demoStep, mapDetail, completedThrough)))
             <a class="boundary-link" href="@boundaryUrl">@L["Responsibility map"]</a>
             <details class="demo-role-switch">
                 <summary>@L["Demonstration role switch"]</summary>
                 <div class="role-menu">
-                    <p>@L["Teaching navigation only. It does not grant access or change authentication."]</p>
                     @if (emulatorPurchase is not null)
                     {
                         <a href="@emulatorPurchase" target="_blank" rel="noopener">@L["Buyer — simulated Microsoft purchase ↗"]</a>
@@ -71,7 +71,7 @@
                     }
                 </span>
                 <span>@(onAdmin ? L["Example operations UI implemented by the partner company"] : isHome ? L["Marketplace SaaS teaching sample"] : L["Partner company service"])
-                    <small>@(onAdmin ? L["Partner company administration / for operators"] : isHome ? L["A guide across separate systems — not a product menu"] : L["Partner company site / for buyers"])</small>
+                    <small>@(onAdmin ? L["Partner company administration / for operators"] : isHome ? L["Purchase to activation"] : L["Partner company site / for buyers"])</small>
                 </span>
             </div>
                 <nav class="lang" aria-label="@L["Language"]">
@@ -79,14 +79,15 @@
                     <a href="/set-culture?culture=ja&amp;redirect=@Uri.EscapeDataString(DemoNavigation.WithCulture(returnUrl, "ja"))" class="@(cur == "ja" ? "active" : "")" aria-current="@(cur == "ja" ? "true" : null)">日本語</a>
                 </nav>
         </div>
+        @if (!isHome)
+        {
         <div class="area-context" aria-label="@L["Location and responsibility"]">
             <dl>
-                <div><dt>@L["Current area"]</dt><dd>@(onAdmin ? L["Partner company contract DB"] : isHome ? L["Responsibility overview"] : L["Service activation"])</dd></div>
                 <div><dt>@L["Operated by"]</dt><dd>@(onAdmin ? L["Partner company operator"] : isHome ? L["Demo participant"] : L["Buyer"])</dd></div>
                 <div><dt>@L["Implemented in production by"]</dt><dd>@(isHome ? L["Teaching aid only"] : L["Partner company (SaaS publisher)"])</dd></div>
             </dl>
-            <span class="area-badge">@(onAdmin ? L["Not a buyer-facing screen"] : isHome ? L["No real purchase"] : L["Partner implementation starts here"])</span>
         </div>
+        }
     </header>
     <div class="partner-shell">
         @if (onAdmin)
@@ -96,14 +97,15 @@
                     <a href="@adminUrl" aria-current="@(path == "/admin" ? "page" : null)">@L["Subscriptions"]</a>
                     <a href="@boundaryUrl">@L["Responsibility map"]</a>
                 </nav>
-                <p>@L["For purchase and notification tests, use the teaching role switch above."]</p>
             </aside>
         }
     <main id="main-content" tabindex="-1">
         @RenderBody()
     </main>
     </div>
-    <footer class="site-footer">@L["Experimental teaching sample — not for production use."]</footer>
+    <footer class="site-footer">
+        <a class="implementation-guide" id="how" href="@DemoNavigation.ImplementationGuideUrl" target="_blank" rel="noopener noreferrer">@L["Implementation guide ↗"]</a>
+    </footer>
     <script src="/js/site.js" defer></script>
 </body>
 </html>

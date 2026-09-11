@@ -128,3 +128,11 @@ div.key p {
     margin: 0;
     padding: 0;
 }
+
+tr.selected-subscription { background:#edf4ff; outline:2px solid #315e9c; outline-offset:-2px; }
+.subscription-selection { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem 1rem; margin:.75rem 0; }
+.subscription-selection p { margin:0; overflow-wrap:anywhere; }
+.subscription-selection a,.partner-record-link { text-decoration:underline; text-underline-offset:.15rem; }
+.partner-record-link { display:block; padding:.4rem; font-size:.8rem; }
+#subscriptions-error { white-space:pre-wrap; overflow-wrap:anywhere; }
+[hidden] { display:none !important; }

@@ -785,3 +785,17 @@ main > section { min-width:0; max-width:100%; box-sizing:border-box; }
     font-size: .88rem;
     max-width: 60ch;
 }
+
+.demo-scope { position:relative; flex:none; font-size:.8rem; line-height:1.5; }
+.demo-scope > summary { cursor:pointer; padding:.25rem .65rem; border:1px solid #a7bdd5; border-radius:1rem; font-weight:600; }
+.demo-scope > div { position:absolute; right:0; top:100%; z-index:40; box-sizing:border-box; width:min(28rem,calc(100vw - 2rem)); margin-top:.5rem; padding:.75rem 1rem; color:#263d58; background:#fff; border:1px solid #ccd8e5; border-radius:6px; box-shadow:0 6px 18px #18334824; }
+.demo-scope p { margin:.35rem 0; }
+.boundary-header summary:focus-visible { outline-color:#fff; }
+.price-details summary,.reset-demo summary { cursor:pointer; font-weight:600; padding:.25rem 0; }
+.price-details p { max-width:75ch; }
+.implementation-guide { padding:1rem 1.5rem 2rem; border-top:1px solid #dce4ed; font-size:.85rem; }
+.implementation-guide a { color:#425469; }
+@media(max-width:600px) {
+    .demo-scope { position:static; }
+    .demo-scope > div { left:1rem; right:1rem; top:auto; }
+}

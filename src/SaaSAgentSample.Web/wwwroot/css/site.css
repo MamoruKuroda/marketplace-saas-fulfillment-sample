@@ -27,6 +27,24 @@ a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex="0"]:foc
 .role-menu p { margin:0 0 .5rem; font-size:.85rem; color:#53677b; }
 .role-menu a { display:block; padding:.5rem; border-radius:4px; }
 .role-menu a:hover { background:#edf3f8; }
+.demo-notice { position:relative; font-size:.8rem; }
+.demo-notice > summary { cursor:pointer; padding:.15rem .5rem; border:1px solid #b6c5d5; border-radius:20px; }
+.demo-notice-body { position:absolute; top:100%; left:0; z-index:40; width:min(23rem,80vw); background:#fff; border:1px solid var(--border); border-radius:6px; padding:.6rem 1rem; color:var(--text); box-shadow:var(--shadow); }
+.demo-notice-body p { margin:.4rem 0; }
+.buyer-result { margin-top:1rem; }
+.buyer-result p { margin:.6rem 0 0; }
+.behind-scenes .saved-result { margin:1rem 0; grid-template-columns:minmax(0,10rem) minmax(0,1fr); }
+.change-exercise { max-width:700px; margin:1.5rem 0; }
+.change-exercise h2 { font-size:1.1rem; }
+.change-exercise p { color:var(--text-2); }
+.exercise-actions { display:flex; flex-wrap:wrap; gap:.75rem; }
+.recorded-plan-changes { margin:1rem 0; }
+.recorded-plan-changes caption { text-align:left; padding:.6rem; font-weight:600; }
+.recorded-plan-changes td { overflow-wrap:anywhere; }
+.contract-context { overflow-wrap:anywhere; }
+@media(max-width:720px){
+  .demo-notice-body { position:fixed; top:4rem; left:5vw; width:90vw; }
+}
 .partner-page .site-header { background:#fff; border-bottom:3px solid var(--brand); backdrop-filter:none; }
 .partner-page .site-header .bar { max-width:1400px; padding:1rem 1.5rem; }
 .partner-page .brand { font-size:1.35rem; color:var(--brand); min-width:0; }
@@ -194,7 +212,7 @@ footer.site-footer a { color:var(--text-2); }
 .term-tip { position:absolute; left:0; top:calc(100% + .35rem); z-index:20; width:min(20rem,70vw); padding:.55rem .7rem; border-radius:var(--radius-sm); background:#201f1e; color:#fff; font-size:.8rem; font-weight:400; line-height:1.4; box-shadow:0 4px 12px rgba(0,0,0,.18); opacity:0; visibility:hidden; transition:opacity .12s ease; }
 .term:hover .term-tip, .term:focus .term-tip, .term:focus-within .term-tip { opacity:1; visibility:visible; }
 
-/* ── One "How this works" section, closed by default ───────────────────────── */
+/* ── Optional whole-flow and recorded-result panels ───────────────────────── */
 .explainer.learn { margin-top:1.5rem; }
 .learn .body > * + .learn-h { margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border); }
 .learn-h { margin:.2rem 0 .6rem; font-size:1.05rem; font-weight:600; }
@@ -223,7 +241,7 @@ footer.site-footer a { color:var(--text-2); }
   nav.top { margin-left:0; flex-wrap:wrap; }
 }
 
-/* ── Compact landing progress; explanations live in How this works ────────── */
+/* ── Compact landing progress; implementation explanations live in the repo ─ */
 .substeps { list-style:none; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1.25rem; margin:0 0 1rem; padding:0; max-width:560px; font-size:.95rem; }
 .substeps li { position:relative; display:flex; align-items:center; gap:.4rem; min-width:0; color:var(--text-2); }
 .substeps li.now { color:var(--brand); font-weight:600; }
