@@ -2,8 +2,7 @@
 #
 # Azure Developer CLI (azd) config for the one-command CLOUD DEMO.
 #   azd up    provisions infra/ (App Service + Azure SQL, passwordless via managed identity)
-#             and deploys the app, then runs the postprovision hook to grant the app's
-#             managed identity a database user.
+#             grants the app's managed identity a database user, then deploys the app.
 #   azd down  tears everything down.
 #
 # This is the automated equivalent of the manual walkthrough in docs/deploy.md.
@@ -11,6 +10,9 @@
 name: marketplace-saas-fulfillment-sample
 metadata:
   template: marketplace-saas-fulfillment-sample@0.1.0
+
+requiredVersions:
+  azd: ">= 1.33.0"
 
 services:
   web:
@@ -31,6 +33,19 @@ services:
       remoteBuild: true
 
 hooks:
+  # Select a region before up resolves Bicep parameters; preprovision would be too late.
+  # See docs/deployment-regions.md for permissions, costs, limitations, and unattended use.
+  preup:
+    windows:
+      shell: pwsh
+      run: ./scripts/preup.ps1
+      interactive: true
+      continueOnError: false
+    posix:
+      shell: sh
+      run: ./scripts/preup.sh
+      interactive: true
+      continueOnError: false
   # Azure SQL cannot create a contained user for a managed identity via ARM/Bicep alone,
   # so azd runs this once after provisioning. It connects as the Entra admin (you, the
   # deployer) and creates a least-privilege DB user for the web app's managed identity.
