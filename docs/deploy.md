@@ -6,6 +6,11 @@
 
 > 🌐 日本語版: **[deploy.ja.md](deploy.ja.md)**
 
+> **Region guidance for `azd up`:** Before creating resources, the CLI now offers
+> region candidates using your azd identity and Azure provider validation.
+> See [Choosing a deployment region](deployment-regions.md) for the flow,
+> permissions, unchanged costs, limitations, and version requirements.
+
 > **Prefer one command?** `azd up` automates this entire walkthrough — provision, deploy, and
 > the managed-identity database grant — and additionally deploys the **Fulfillment API Emulator**,
 > so the result is an interactive, click-through demo with buyer sign-in **off**. See

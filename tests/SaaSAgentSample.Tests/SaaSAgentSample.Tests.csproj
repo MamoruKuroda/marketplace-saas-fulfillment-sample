@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\tools\DeploymentPreflight\DeploymentPreflight.csproj" />
     <ProjectReference Include="..\..\src\SaaSAgentSample.Core\SaaSAgentSample.Core.csproj" />
     <ProjectReference Include="..\..\src\SaaSAgentSample.Data\SaaSAgentSample.Data.csproj" />
     <ProjectReference Include="..\..\src\SaaSAgentSample.Fulfillment\SaaSAgentSample.Fulfillment.csproj" />

@@ -9,8 +9,8 @@ targetScope = 'subscription'
 param environmentName string
 
 @minLength(1)
-@description('Azure region for all resources. Defaults to West US 3 (used for prior integration testing in this sample).')
-param location string = 'westus3'
+@description('Explicit Azure region for all resources. The azd preup hook suggests candidates and saves the selected AZURE_LOCATION.')
+param location string
 
 @description('Object ID of the deployer (azd sets AZURE_PRINCIPAL_ID). Becomes the Azure SQL Entra admin so the postprovision hook can create the app\'s DB user.')
 param principalId string
