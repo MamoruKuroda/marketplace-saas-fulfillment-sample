@@ -1,410 +1,211 @@
-# 体験ウォークスルー：購入者とパートナー企業
+<a id="体験ウォークスルー購入者とパートナー企業"></a>
 
-Microsoft 商用マーケットプレースで SaaS Offer が販売・運用されるとき、**誰が何をするのか**を平易に
-地図化し、それが**本サンプル**のコードにどう対応するかを示します。まず購入を体験し、
-各パーツが*なぜ*存在するのかを知りたいときに説明を読めます。教材であり、公式ドキュメント（末尾にリンク）の代わりでは
-ありません。
+# デモの実装ガイド
 
-> 🌐 English: **[walkthrough.md](walkthrough.md)**
+**購入体験の裏側で何が起き、パートナー企業は何を実装するのでしょうか。**
+この文書はデモとコードをつなぎます。前半はAPIの知識なしで読め、実装の詳細は後半にあります。
+購入を完了する前に読む必要はありません。
 
-アプリの `/` は短い説明文1つと **購入体験を始める →** から始まります。
-役割や関心を先に選ぶ必要はありません。[購入者の体験](#購入者への引き渡しと運用確認--ローカルのブラウザ体験)
-を有効化の結果まで進めれば、営業・事業担当や購入者向けのデモは完結します。実装・運用の深掘りは任意です。
+> English: **[walkthrough.md](walkthrough.md)**
+>
+> 説明ではなく環境が必要な方は[デモの準備](run-demo.ja.md)へ。
+> 動作中のデモから来た方は、元のタブで体験を続けてください。このガイドは購入トークンを受け取らず、
+> 購入済みランディングを再作成するものではありません。
 
-デモは操作と観測できた結果のため、この文書は **何が起きたか → 誰が実装するか → コード**
-を学ぶためのものです。画面下部の **実装ガイド ↗** が、表示言語に対応するリポジトリ文書を開きます。
-購入トークンやクエリ情報は渡しません。**全体図を見る** と実際の保存記録・変更履歴はデモに残します。
-全体図は `<details id="boundary">` 内で初期状態では閉じています。
-画面内の「しくみを学ぶ」や関心項目の選択はなくし、以前の `#how` はガイドのリンクに移動するだけにします。
+## このデモで分かること
 
-各ページ1つの共通の小さな **デモ（Demo）** 表示に、模擬購入で実決済はないことと、**Azure のホスティング費用は発生し得る**
-ことをまとめています。注文確認には「実際の注文・決済は行われない」という正確な注意書きを残しています。
+購入者はサービスを選んで模擬購入し、パートナー企業のサイトで明示的に有効化します。
+**有効化の結果で購入者の体験は完結**します。保存記録や通知テストは任意の確認で、
+購入者が必ず続ける操作ではありません。
 
-<details>
-<summary>参考：用語</summary>
+これは学習用サンプルで、SaaS製品の完成品ではありません。標準の**ローカルデモもAzureデモも
+エミュレーターを使います**。実行場所と、連携相手がエミュレーターか実Marketplaceかは別の軸です。
+実購入・実決済はありませんが、Azureホスティング費用は発生し得ます。
+3つの模擬経路（`web-card`、`web-azure`、`azure-portal`）は実際の購入権限を検証せず、
+すべての実オファーで各経路が使えることも保証しません。
 
-> **クイック用語集** — 本ドキュメントで使う用語：
-> - **v0**：本サンプルの初期バージョン（全コンポーネントをローカルで動作）。
-> - **Tier-1 定額（flat-rate）**：購読ごとに月額固定価格を1つ（従量課金・ユーザー数課金なし）。
-> - **L2 ウォークスルー**：統合レベルのエンドツーエンド実証 — 模擬 Fulfillment API を使い、実 HTTP 上で購読ライフサイクルを駆動。
-> - **合成 L2（Synthetic L2）**：自動化された in-repo バリアント。Docker エミュレーターを HTTP スタブで置換（Docker 不要）。
-> - **L3**：実マーケットプレース購入・実購入者アカウントでのライブなエンドツーエンドテスト（本サンプルの対象外）。
+パートナー企業の実アカウントへの紐付けと製品の利用制御は未実装です。
+Activateの成功は、顧客が実製品を利用できることの証明ではありません。
 
-</details>
+<a id="購入者への引き渡しと運用確認--ローカルのブラウザ体験"></a>
+## 操作の裏側で何が起きたか
 
----
-
-## 3人の登場人物
-
-| 登場人物 | たとえ | 役割 |
+| 購入者の操作 | サンプル内の動作 | 本番側を実装する主体 |
 | --- | --- | --- |
-| **Microsoft** | **お店** | 本番の購入画面と Fulfillment API を提供し、商用購読の状態・顧客への課金を管理して購読通知を送る。ローカルのエミュレーターはその代役。 |
-| **パートナー企業（SaaS パブリッシャー）** | **メーカー** | SaaS Offer を掲載し、購入者ランディング・サーバーからの Fulfillment 呼び出し・Webhook 受信口・契約 DB を実装する。利用権限制御とアカウント紐付けも担当するが、この最小サンプルでは未実装。**Microsoft の決済画面は実装しない。** |
-| **購入者** | **お客さん** | Microsoft の購入画面を操作し、購入後はパートナー企業の購入者サイトで設定する。通常はパートナー企業とは**別テナント**に所属。パートナー企業の運用担当者とは別の役割。 |
+| アプリ `/` の **購入体験を始める →** | エミュレーターの `/start.html` を開き、プラン選択から `/checkout.html` へ進む | 実際の購入画面はMicrosoft。エミュレーターは代役 |
+| 注文内容を確認し、模擬注文する | タブごとの購入情報を保持。実注文・実決済は送信しない | Microsoftの購入体験 |
+| **パートナー企業のサイトで設定する** | パートナーの `GET /?token=<purchase-token>` を開き、サーバーがResolveを呼ぶ | パートナー企業 |
+| プランを確認して **サブスクリプションを有効化** | フォームのPOSTでActivateを呼び、その後パートナー側の結果を保存する | パートナー企業 |
+| 有効化の結果を確認 | 購入者の体験が完了。保存状態の確認は任意 | パートナー企業 |
 
-> 購入者は**別テナント**なので、ランディングページのサインインは**マルチテナント**でなければなりません
-> （各購入者テナントが同意）。本サンプルではそれが `AzureAd`（authority `common`）のランディングアプリで、
-> フルフィルメント API を呼ぶ**サービスアプリとは別物**です。ローカルのデモでは購入者サインインを
-> 無効にしています。新しい画面ラベルによってこの認証動作が変わるわけではありません。
+上記トークン表記はプレースホルダで、動作するショートカットではありません。
+模擬購入で生成された設定リンクを使ってください。経路のラベルは購入証明ではありません。
+エミュレーターの購読レコードは注文確認時ではなく、**Resolve時**に作られます。
+同じタブの設定リンクを再利用すると、同じ模擬購入が使われます。
 
----
+有効化済みの購入として戻った場合は **有効化済み。** と表示され、
+GETで再有効化はしません。別に表示するパートナー側の記録は異なる場合があり、
+画面は外部応答に合わせて保存状態を捏造しません。
 
-## 責任境界 — 画面・サーバー・保存先
+<a id="3人の登場人物"></a>
+<a id="責任境界--画面サーバー保存先"></a>
+## 誰が何を作るのか
 
-管理画面は **パートナー企業が実装する運用管理画面の例** です。
-契約の記録・同期はパートナー企業が担当します。この管理UIは任意で、既存の管理機能でも構いません。
-実装主体の明示は、この画面の新規作成が必須という意味ではありません。
+**実装を提供する主体**と、**画面を操作する人**を区別します。
 
-Microsoft とパートナー企業で異なるヘッダーを使って提供主体と操作する人を示し、
-共通の製品ナビゲーションにはしません。全体図や説明の参照は任意です。
-
-| 領域 | 操作する人 | 外観・実装範囲 |
+| 領域 | 操作する人 | 責任 |
 | --- | --- | --- |
-| Microsoft の模擬ストア | 購入者 | 紺色の購入ヘッダー。本番の決済画面は Microsoft が提供し、パートナー企業は実装しない。 |
-| **パートナー企業のサイト / 購入者向け** | 購入者 | 青緑と白のヘッダー。購入後のランディングで **ここからパートナー企業が実装** と明示。 |
-| **パートナー企業の管理領域 / 運用担当者向け** | パートナー企業の運用担当者 | チャコールのヘッダーとサイドバー。購入者ナビゲーションとは別で、保存済み契約を確認する。 |
-
-必須の役割切替手順や、同じ権限のホーム／管理ナビゲーションはありません。結果の後で任意の
-**提供元の裏側を見る / See behind the partner site** を開くと、実際の保存状態と、
-この契約の運用管理詳細への直接リンクを確認できます。
-
-職種ごとの見どころは以下を参考にしてください。アプリ内の選択ゲートではありません。
-参加者の職種とデモ内で演じる役は別で、リンクから認証や権限が付与されることもありません。
-サーバーAPI・認証・課金・状態遷移・DBスキーマは変更しません。
-
-| 関心 | 見どころ |
-| --- | --- |
-| 営業・事業 | 何を購入し、どこからパートナー企業に渡り、有効化で何が完了するか |
-| 購入企業 | 購入権限、アカウント設定、完了結果 |
-| 実装 | サーバー呼び出し、通知の検証、顧客IDの対応付け、下記の関連コード |
-| 運用 | 保存された契約を開き、一度変更してプラン・状態・履歴を確認 |
+| Microsoftの購入領域（紺色の模擬画面） | 購入者 | Microsoftが本番の購入画面と商用購読サービスを提供。パートナー企業はMicrosoftの決済画面を実装しない |
+| パートナー企業のサイト（青緑・白） | 購入者 | パートナー企業が購入後のランディングとサーバー連携を実装 |
+| パートナー企業の管理領域（チャコール） | パートナー企業の運用担当者 | パートナー企業の契約記録を確認。この管理画面そのものは必須ではない |
 
 ```mermaid
 flowchart LR
-    subgraph MS["Microsoft の責任領域 — ローカルではエミュレーター"]
-        PURCHASE["人が開く画面<br/>Microsoft の購入・購入完了"]
-        API["バックエンド：Fulfillment API<br/>商用購読の状態"]
+    subgraph MS["Microsoft側 — 標準デモではAzureでもローカルでも模擬"]
+        BUY["購入画面<br/>操作するのは購入者"]
+        API["Fulfillment API<br/>商用購読の状態"]
     end
-    subgraph PARTNER["パートナー企業の責任領域"]
-        LAND["人が開く画面：購入者ランディング<br/>GET /?token=PURCHASE_TOKEN_PLACEHOLDER"]
-        ADMIN["人が開く画面：運用管理<br/>/admin と /admin/{guid}"]
-        SERVER["バックエンド：パートナー企業のサーバー<br/>Fulfillment クライアント"]
-        WEBHOOK["バックエンド：Webhook 受信口<br/>POST /api/webhook"]
-        DB[("パートナー企業の契約 DB")]
-        PRODUCT["製品固有の利用権限制御<br/>この最小サンプルの対象外"]
+    subgraph PARTNER["パートナー企業"]
+        LAND["購入者ランディング"]
+        SERVER["サーバー連携"]
+        HOOK["Webhook受信口"]
+        DB[("パートナー企業の契約記録")]
+        ADMIN["運用管理画面の例"]
+        PRODUCT["顧客アカウントと製品利用権<br/>未実装"]
     end
-    PURCHASE -->|"ブラウザ：購入識別トークン<br/>表記はプレースホルダのみ"| LAND
-    LAND -->|"ブラウザ：読み込み後に有効化を明示確認"| SERVER
-    SERVER -->|"サーバー API：Resolve / Activate / Get / PATCH"| API
-    API -->|"サーバー通知：接続 Webhook"| WEBHOOK
-    WEBHOOK -->|"通知を検証・処理"| SERVER
-    SERVER -->|"保存処理：契約レコードの保存・更新"| DB
-    ADMIN -->|"ブラウザ：サーバー経由で保存済みレコードを参照"| SERVER
-    DB -.->|"製品固有の契約と利用権限の対応"| PRODUCT
+    BUY -->|"ブラウザー：購入トークン"| LAND
+    LAND --> SERVER
+    SERVER -->|"API要求"| API
+    API -->|"通知"| HOOK
+    HOOK --> SERVER
+    SERVER --> DB
+    ADMIN -->|"サーバー経由で参照"| DB
+    DB -.-> PRODUCT
 ```
 
-購入識別トークンは購入者のサインイントークンでも、パートナー企業側で使う顧客アカウント ID でも
-ありません。本来の連携では、解決した購入情報を **パートナー企業が管理する既存ユーザー／顧客企業ID**
-に紐付けます。パートナー企業自身の ID が顧客の ID という意味ではありません。
-このサンプルでは実アカウントへの紐付けや製品アクセス制御は未実装です。
-Activate の成功だけでは製品の利用権限制御が実装済みとはいえません。
+Microsoftの商用状態、パートナー企業の記録、製品へのアクセスは別のものです。
+デモではエミュレーターのテーブルがMicrosoftの代役になりますが、
+パートナー企業の画面はそれではなくパートナー企業のDBを読みます。
+エミュレーターのHTTP応答や画面の見た目だけで、パートナー側への保存完了とは判断できません。
 
-パートナー企業の UI はパートナー企業の DB レコードだけを読み取ります。
-Microsoft の商用状態（ローカルではエミュレーターの別テーブル）、パートナー企業の契約 DB、
-製品へのアクセスは別々の責任であり、「1つの DB がすべての課金の正本」という意味ではありません。
+契約を**パートナー企業が管理する既存ユーザー／顧客企業ID**にどう結び付けるかは、
+パートナー企業が設計します。パートナー企業自身のIDを顧客IDとする意味ではなく、
+メールドメインが同じことだけを利用許可のルールにするものでもありません。
 
----
+任意の全体図や説明用の役割リンクは、認証や権限付与ではありません。
+運用には、この管理画面の代わりに既存の管理機能を使うこともできます。
 
-## 購入者への引き渡しと運用確認 — ローカルのブラウザ体験
+<a id="任意提供元の裏側で同じ契約をたどる"></a>
+## 任意：同じ契約の保存記録を確認する
 
-**アプリ `/`** の **購入体験を始める →** からエミュレーターの **`/start.html`** へ進みます。
-先に全体図を開いたり関心項目を選んだりする必要はありません。旧トップページのトークンフォームは購入体験の入口ではありません。
+1. 結果の後に **提供元の裏側を見る**、**この契約の保存記録を見る →** を開きます。
+   `/admin/{guid}` のGUIDはパートナー側の保存レコードを識別し、Marketplace IDとは別です。
+2. **この契約の変更を試す ↗** を選びます。エミュレーターの
+   `/subscriptions.html?subscriptionId=<marketplace-id>` で同じ購読が選ばれます。
+3. 対応する変更を試したら、同じ記録の `#history` に戻って再読み込みし、
+   実際に保存された内容を確認します。配信と保存は非同期です。
 
-1. **Microsoft の模擬画面を購入者が操作：** `/start.html` でオファー／プランを選び、
-   `/checkout.html` に進みます。`web-card`・`web-azure`・`azure-portal` は経路の説明用であり、
-   すべての本番オファーで利用可能と保証するものではありません。実決済、実カード情報の収集、
-   Azure での実購入やリソース作成は行いません。
-   今回の表示変更で、3つの購入経路と購入トークンの引き渡しは変えていません。
-2. **責任境界の引き渡し：** 模擬購入完了で、次の行き先がパートナー企業のサイトであることを示します。
-   **パートナー企業のサイトで設定する** はブラウザで `GET /?token=<purchase-token>` を開きます。
-   この表記はプレースホルダです。設定値だけ、シナリオ情報だけ、トークンなしのリンクだけでは
-   有効な購入済みランディングを作れません。
-3. **パートナー企業の購入者サイト：** サーバーが **Resolve** でトークンを購読情報に引き換えます。
-   本番の Marketplace トークンをローカルで「復号」する処理ではありません。
-   購入者が内容を確認し、**Activate** を明示実行します。エミュレーターの模擬購読レコードが
-   作成されるのは Resolve 時であり、購入画面で実際に課金するわけではありません。
-4. **結果：** 有効化によって購入者の体験は完了します。ここで終えて構いません。管理画面を開くことは
-   必須の次の操作ではありません。確認できるのはサンプルの有効化フローであり、製品の利用権限制御や
-   実顧客アカウントとの紐付けが実装済みという意味ではありません。
+パートナー側の一覧 `/admin?marketplaceSubscriptionId=<marketplace-id>` は完全一致で絞り込みます。
+未知のIDならレコードなしとなり、別の契約で代用しません。エミュレーターの **すべての契約を表示** は選択を
+明示的に解除します。エミュレーター側でも未知の選択はエラーを示し、別の契約を勝手に選びません。
 
-参考の地図にはパートナー企業の契約保存と通知テストも含まれますが、購入者の必須手順ではありません。
-有効な購入済みランディングには、引き続き模擬購入完了からトークン付きで引き渡す必要があります。
-参考情報は購入を省略するショートカットではありません。
+履歴は記録されたプランを比較します。以前のプランの証拠がなければ **記録なし** であり、
+現在の値から推測しません。期待する状態、通知操作、HTTP応答と保存結果の違いは
+[連携の検証](l2-demo.ja.md#manual-checks)を参照してください。
 
-### 任意：提供元の裏側で同じ契約をたどる
+<a id="技術ツールは製品体験とは別"></a>
+エミュレーターの `/` は従来の購入トークンツール、`/landing.html` は内蔵APIテストページです。
+どちらもパートナー企業の本番ランディングではありません。
+オファー・設定・通知は運用担当者用のツールで、Partner Centerや購入者向け製品タブではありません。
+[エミュレーターのガイド](../emulator/README.md)を参照してください。
 
-実装・運用を確認したい場合だけ、結果から先へ進みます：
+<a id="動作中のローカルサンプルの画面"></a>
+画面の参照：[購入](images/screenshots/boundary-ja-purchase.png)、
+[引き渡し](images/screenshots/boundary-ja-handoff.png)、
+[パートナー側ランディング](images/screenshots/boundary-ja-landing.png)、
+[結果](images/screenshots/experience-ja-result.png)、
+[保存記録](images/screenshots/boundary-ja-admin.png)。
+[撮影条件](develop.ja.md#screenshots-and-evidence)は別に記録しています。
 
-1. **提供元の裏側を見る** を開き、今回の購入についてパートナー企業側に実際に保存された状態を確認します。
-   **`/admin/{guid}`** の直接リンクで同じ契約へ進みます。このGUIDは保存済みのパートナー企業側レコードのもので、
-   Marketplace の購読IDとは別です。レコードがなければ架空の詳細リンクは表示しません。
-2. **`/admin?marketplaceSubscriptionId=<actual-id>`** の一覧を開いた場合は、保存済みの Marketplace 購読IDに
-   完全一致で絞り込みます。未知のIDなら一致するレコードがないことを明示し、全件・部分一致・別契約を表示しません。
-   これらの画面はパートナー企業のDBを読み取り、エミュレーターの購読テーブルを表示するものではありません。
-   エミュレーターからの保存記録リンクは、設定済みのパートナー企業側オリジン上のこのパスに、
-   選択した購読の実際のIDを付けて開きます。
-3. 詳細画面の **この契約の変更を試す（Try a change for this contract）** から、
-   エミュレーターの **`/subscriptions.html?subscriptionId=<actual-marketplace-id>`** へ進みます。
-   同じ購読が選択されるので、**Change plan**・**Suspend**・**Reinstate**・**Unsubscribe** を試せます。
-   この通知ツールは購入者向けストアのタブではありません。**Show all** はデモの文脈を保ったまま
-   エミュレーターの選択を明示的に解除します。一致しないIDから別の契約を勝手に選択しません。
-4. 同じ契約の **`/admin/{guid}#history`** に戻って再読み込みし、実際の保存イベントと記録に基づくプラン比較を確認します。
-   以前のプランには、過去の保存イベントのうちプランを含む直近の記録を使います。プランを含まないイベントからは取得しません。
-   過去の記録がなければ **記録なし（Not recorded）** と表示し、現在のプランから以前の値を推測しません。
+<a id="実装リファレンス"></a>
+<a id="関連コードとツールの動作"></a>
+## コードで確かめる
 
-上記URLの値はプレースホルダです。実際の保存済みIDを含むUIのリンクを使ってください。
-配信と保存は非同期です。再読み込み後の記録を確認し、証拠なしに「同期済み」「見えない更新は反映待ち」とは
-判断しません。これらの参照リンクによって、ロールの権限が変わったり製品アクセスが実装されたりすることはありません。
-
-### 技術ツールは製品体験とは別
-
-- エミュレーターの **`/`** は従来のトークン生成フォームです。
-- エミュレーターの **`/landing.html`** は API テストページであり、Microsoft が提供する
-  ランディングでもパートナー企業の製品 UI でもありません。
-- エミュレーターの **`/subscriptions.html`** はデモ運用担当者のイベントツールです。
-  顧客向けストアのタブではありません。
-- 任意の参考情報や裏側を見るリンクはデモをつなぐもので、本番のアクセス権をつなぐものではありません。
-
-### 動作中のローカルサンプルの画面
-
-実際のUIとパートナー企業側のアプリを、エミュレーターAPI用の隔離したHTTPフィクスチャで動かして撮影しました。
-今回のプレビューでは、対象を絞ったNodeチェック（journey 37件、experience 14件、checkout 18件、
-購読選択10件）が通過しています。これはJestスイート全体の実行ではありません。
-設定済みnpmフィードが必要な依存関係に404を返し、ローカルDockerエンジンも利用できないため、
-完全なNodeエミュレーターとJestスイートは未検証です。フィクスチャを使ったブラウザ確認は、
-完全なエミュレーターとの統合検証の代わりではありません。全体図は初期状態では閉じた任意の参考情報であり、
-これらの画像はすべての説明が展開されていることを前提にしません。
-
-ローカルの合成サンプルデータを使っています。実購入でも、デザイン承認用モック画像でもありません。
-
-| 責任領域 | スクリーンショット |
+| 動作 | コード |
 | --- | --- |
-| 説明文1つと購入アクションから開始 | [開始画面](images/screenshots/experience-ja-home.png) |
-| Microsoft の模擬購入 | [購入画面](images/screenshots/boundary-ja-purchase.png) |
-| 購入完了。全体図の参照は任意 | [パートナー企業のサイトへの引き渡し](images/screenshots/boundary-ja-handoff.png) |
-| パートナー企業の購入者サイト | [購入済みランディング](images/screenshots/boundary-ja-landing.png) |
-| 購入者の体験完了。深掘りは任意 | [有効化の結果](images/screenshots/experience-ja-result.png) |
-| 任意のパートナー企業の運用確認 | [保存済み契約レコード](images/screenshots/boundary-ja-admin.png) |
+| トークン受け取り、有効化済みの再訪、明示POST | [Indexページモデル](../src/SaaSAgentSample.Web/Pages/Index.cshtml.cs)と[Razorページ](../src/SaaSAgentSample.Web/Pages/Index.cshtml) |
+| Resolve、Activate、パートナー側の結果保存 | [LandingService](../src/SaaSAgentSample.Web/Services/LandingService.cs) |
+| 外向きのAPI要求 | [FulfillmentClient](../src/SaaSAgentSample.Fulfillment/FulfillmentClient.cs) |
+| 通知受信・検証、状態変更、応答 | [WebhookEndpoint](../src/SaaSAgentSample.Web/Endpoints/WebhookEndpoint.cs)、[WebhookService](../src/SaaSAgentSample.Web/Services/WebhookService.cs) |
+| 状態遷移の保護 | [Subscription](../src/SaaSAgentSample.Core/Subscriptions/Subscription.cs) |
+| 契約とイベント履歴の保存 | [Repository](../src/SaaSAgentSample.Data/Persistence/EfSubscriptionRepository.cs)、[イベントログ](../src/SaaSAgentSample.Data/Persistence/EfSubscriptionEventLog.cs) |
 
-### 自動テストと手動ブラウザ操作の準備の違い
+<a id="コードで使う用語"></a>
+<a id="呼び出しの向きとやり取りされる引換券名札"></a>
+### 用語と呼び出しの向き
 
-```bash
-dotnet test --filter FullyQualifiedName~SyntheticL2LifecycleTests
-```
+| 用語 | この文書での意味 |
+| --- | --- |
+| 購入トークン | Resolveで交換する不透明な購入識別情報。サインイントークンや顧客アカウントIDではない |
+| Resolve / Activate | 購入情報の取得／明示的な有効化を報告するパートナーサーバーからの呼び出し |
+| APIアクセストークン | サービス間の認可情報。実トークンを取得するproviderは未実装 |
+| Webhook | パートナーサーバーに届く通知。検証してから適用する |
+| 契約ストア | パートナー側の記録。課金やアクセス全体を支配する唯一の正本ではない |
+| 利用権 | 顧客IDと契約に結び付く製品の利用制御。ここでは未実装 |
 
-この既存テストはアプリと **Docker 不要の HTTP フィクスチャ** を動かします。.NET 10 SDK があればよく、
-完全なエミュレーターを別途起動する必要はありません。一方、テスト終了後にブラウザで操作できる
-ストアが残るわけではありません。手動操作には、アプリと同梱の Node エミュレーターを別途起動します。
-エミュレーターには Node/npm の依存関係のインストール・ビルド、または Docker が必要です。
-利用ポートに合わせて Fulfillment ベース URL・ランディング URL・Webhook URL を設定します。
-[ローカルのクイックスタート](../README.ja.md#ローカルで動かす) と [L2 の設定手順](l2-demo.ja.md) を
-参照してください。後者のトークンフォームを使う技術検証と、上記の `/start.html` 購入体験は別です。
+API要求は **パートナーサーバー → Microsoft（デモではエミュレーター）**、
+通知はその逆向きです。ブラウザーのトークン引き渡しは別の通信です。
+購入者のサインイン、APIの認可、Webhookの検証は目的が異なります。
+サンプルにはEntraサインインを有効にする設定がありますが、
+顧客と契約の対応に基づく認可まで完成している証拠ではありません。
 
-エミュレーターはコミット `bb7bc6317128605b2f777ebe1c9969198733ae85` の同梱スナップショットに教材用の
-変更を加えたもので、実行時に upstream から取得しません。
-出自は [emulator/NOTICE.md](../emulator/NOTICE.md) に記載されています。
+<a id="購読ライフサイクル--状態の物語"></a>
+### 保存状態と通知
 
----
+ドメインには `PendingFulfillmentStart`、`Subscribed`、`Suspended`、`Unsubscribed` の状態があります。
+明示的な有効化と受理したライフサイクル通知によって記録を更新します。
+プラン変更は有効状態を保ち、数量変更は記録・応答しますが、パートナー側ドメインに数量項目はありません。
+Renewはこの実装では情報通知です。[期待する結果とテスト範囲](l2-demo.ja.md)を参照してください。
 
-## パートナー企業の旅 — 公開までの6フェーズ
+<a id="implementation-boundary"></a>
+<a id="各パーツと本サンプルの対応v0-スコープ"></a>
+## サービスに組み込むときに追加すること
 
-<!-- GitHub の Mermaid は日本語ラベルを見切れさせるため、PNG を事前生成して埋め込み。ソース: images/ja-publisher-journey.mmd -->
-![パートナー企業の旅：公開までの6フェーズ](images/ja-publisher-journey.png)
-
-フェーズ3が本サンプルの守備範囲です。フェーズ1〜2 と 5〜6 は Partner Center ポータルでの操作、
-フェーズ4はパートナー企業が連携をテストする段階です。本サンプルは
-[Fulfillment API Emulator](l2-demo.ja.md) で**実購入なしに**フローを試しますが、
-本番オファーのプレビューや検証プロセスを代替するものではありません。
-
-> オファー ID／エイリアスは**作成時に確定し変更不可**。Live のオファーは削除できず、配布停止しかできません。
-> （*Create a SaaS offer* 参照）
-
----
-
-## Technical configuration — 4つの接点
-
-オファーの **Technical configuration** では、4つの項目がマーケットプレースとパートナー企業の実装を
-つなぎます。それぞれ本サンプルへの対応は次のとおり：
-
-| Partner Center の項目 | 内容 | 本サンプルでは |
+| 領域 | 実装済み | 追加する作業 |
 | --- | --- | --- |
-| **Landing page URL** | 購入後に購入者が開くパートナー企業のページ（Resolve → Activate）。24×7 稼働が必須。 | `GET /?token=<purchase-token>`。トークンなしの `/` は購入の開始画面 |
-| **Connection webhook** | Microsoft が購読変更を POST するエンドポイント。24×7 稼働が必須。 | `POST /api/webhook` |
-| **Microsoft Entra tenant ID** | Fulfillment API v2 を呼ぶ**サービスアプリ**のテナント。 | `AzureAd`／トークン設定（プレースホルダ） |
-| **Microsoft Entra application ID** | Fulfillment API v2 を呼ぶ資格情報を持つ**サービスアプリ**。 | Fulfillment クライアント認証（プレースホルダ） |
+| 実APIの認証 | 差し替え可能な `IMarketplaceTokenProvider`。既定の[DevNull provider](../src/SaaSAgentSample.Fulfillment/DevNullMarketplaceTokenProvider.cs)はトークンを返さない | 実際のサービス間トークン取得と登録。BaseUrl変更だけでは不足 |
+| 顧客アカウントと製品アクセス | オファー・プラン・契約状態の保存 | 既存顧客IDとの対応、製品の準備、認可、利用制御を設計・実装 |
+| 購入者・運用担当者のサインイン | 任意のEntra設定。標準デモは無効 | IDとサービス固有の権限の設定・検証。ナビゲーションは認可ではない |
+| Webhook検証 | JWT検証とGet Operationによる照合 | 標準デモは署名検証を緩和。実連携は公式の検証条件に合わせた設定・テストが必要 |
+| 障害復旧 | API呼び出し、DB保存、イベント記録 | 外部呼び出し・保存・応答の間の失敗を検討し、監視と復旧を設計 |
+| 製品・価格モデル | 定額フルフィルメントの例と説明用の容量表示 | 実計量、ユーザー数に基づく利用制御、自動有効化は未実装 |
 
-> **サービスアプリ**（フルフィルメント API を呼ぶ）は、**ランディングアプリ**（マルチテナント、購入者
-> サインイン用）とは別物です。この画面にはサービスアプリのテナント/アプリ ID のみを設定します。
+`LandingService`はActivate呼び出し後に保存し、`WebhookService`は保存後にプラン・数量操作へ応答します。
+こうしたシステム間の境界は導入時の確認事項です。この表は実装検討の入口であり、
+本番化の網羅的なチェックリストではありません。
 
----
+ブラウザーでの購入連携を学ぶために既存のデスクトップクライアントを置き換える必要はありません。
+アカウントや利用制御との連携は、引き続き製品固有の設計になります。
 
-## 購読ライフサイクル — 状態の物語
+<a id="自動テストと手動ブラウザ操作の準備の違い"></a>
+環境準備は[run-demo](run-demo.ja.md)、開発は[develop](develop.ja.md)、
+自動テストと手動確認は[連携の検証](l2-demo.ja.md)へ進んでください。
 
-Microsoft は商用購読のライフサイクルを管理し、パートナー企業は各遷移に反応します。
-本サンプルのパートナー企業の契約ストアは、**公式の4状態**をモデル化しています：
+<a id="パートナー企業の旅--公開までの6フェーズ"></a>
+<a id="technical-configuration--4つの接点"></a>
+<a id="購入経路と権限"></a>
+実オファーの設定と従来集めた購入ポリシーの参考リンクは、
+[実Marketplace接続の参考](deploy.ja.md#marketplace-reference)にまとめています。
+デモ完了の前提条件でも、3つの模擬購入経路が実際に検証する内容でもありません。
 
-<!-- GitHub の Mermaid は日本語ラベルを見切れさせるため、PNG を事前生成して埋め込み。ソース: images/ja-lifecycle.mmd -->
-![購読ライフサイクル（4状態の遷移）](images/ja-lifecycle.png)
+<a id="出典既存の-microsoft-learn-参考リンク"></a>
+<a id="sources"></a>
+## 公式参考資料
 
-- **前半**（開通）は**ランディングページ**が駆動：Resolve → 明示確認 Activate。
-- **後半**（変更／停止／再開／解約）は**接続 Webhook** が駆動。
-- **自動開通**の購入は最初の状態を飛ばし、`Subscribed` から始まります。
-- `ChangePlan` / `ChangeQuantity` は `Subscribed` のままです。プラン変更は追跡し、
-  `ChangeQuantity` は記録・応答しますが、パートナー企業のドメインに**数量項目はありません**。
-  本サンプルは **Tier-1 定額**であり、数量課金の実装ではありません。
+2026-09-12に取得確認。連携の契約を説明する資料であり、サンプルが全フローを実装している、
+または実オファー検証に合格したという意味ではありません。
 
-集約が**遷移を保護**し、不正な遷移を拒否します。パートナー企業の管理画面が示すのは保存済みレコードで、
-システム間の同期状況をリアルタイムに判定した結果ではありません。画面を比較するときは、非同期の
-Webhook 配信・保存と、エミュレーターのテーブルが別であることを考慮します。
-状態に応じた製品固有の利用権限変更は、このサンプルの対象外です。
-
----
-
-## 呼び出しの向きと、やり取りされる「引換券・名札」
-
-**バックエンド連携**では、Fulfillment 呼び出しは **パートナー企業のサーバー → Microsoft**、
-Webhook 通知は **Microsoft → パートナー企業のサーバー** です。購入者のブラウザによる引き渡しは
-別種の通信であり、上の責任境界図で分けて示しています。
-
-```mermaid
-flowchart LR
-    subgraph N["API 要求：パートナー企業から Microsoft"]
-        PUB1["パートナー企業のサーバー<br/>Fulfillment クライアント"] -->|"Fulfillment API v2<br/>Resolve / Activate / Get / PATCH"| MS1["Microsoft"]
-    end
-    subgraph E["通知：Microsoft からパートナー企業"]
-        MS2["Microsoft"] -->|"接続 Webhook<br/>本番では署名付き JWT"| PUB2["パートナー企業のサーバー<br/>/api/webhook"]
-    end
-```
-
-フローを流れる「券・名札」（記憶に残すためのたとえ）：
-
-| 券・名札 | たとえ | 目的 | 本サンプルでは |
-| --- | --- | --- | --- |
-| **購入トークン** | 半券 | **Resolve** で購読詳細に引き換える | Resolve の `x-ms-marketplace-token` |
-| **`id_token`** | 名札 | 購入者サインイン＝**認証** | ランディングのマルチテナントサインイン |
-| **アクセストークン** | 業者証 | サービスアプリが Fulfillment API v2 を呼ぶ**認可** | API 呼び出しのベアラートークン |
-| **署名付き JWT** | Microsoft の名札 | **Webhook** 呼び出しに付与。呼び出し元を証明 | サーバー側で検証 |
-
-> **Webhook 検証はサーバー側で行います**：本サンプルは Entra JWT
-> （署名/issuer/audience ＋ `appid`/`azp`。`20e940b3-4c07-4bc1-a733-45f7c7a3d0e3` は**公開**の
-> Marketplace アプリ ID＝文書化された定数でありシークレットではない）を検証し、状態変更の前に
-> **Get Operation** API で Microsoft 側の操作と照合します。
-> ローカルのデモ設定ではエミュレーター用に署名検証を緩和しています。
-> これは本番用の Webhook 認証ではありません。
-
----
-
-## 実装リファレンス
-
-以下は以前の画面内の解説を移したものです。サンプルの仕組みを説明する資料であり、
-実際の購入権限や本番設定を検証した結果ではありません。
-
-### コードで使う用語
-
-| 用語 | 意味 |
-| --- | --- |
-| ランディングページ | 購入後、購入識別トークンを伴って開かれるパートナー企業のページ |
-| Resolve | 不透明な購入トークンを契約・オファー・プラン・購入者の情報に交換するサーバー呼び出し |
-| Activate | 手動有効化フローで開通完了を伝える操作。成功すると課金が始まる |
-| Webhook | 変更を非同期に伝える通知。パートナー企業が検証してから保存状態を更新する |
-| 状態ストア | Microsoftの商取引上の状態とは別に、パートナー企業が保持する契約記録 |
-| 利用権 | 顧客IDと契約を製品の利用制御に結び付けるルール。本サンプルでは未実装 |
-| プラン変更 | 同じサブスクリプションのプランを変える。商取引上の価格処理はMicrosoft側 |
-| ディメンション | 従量課金の計量単位。この定額サンプルでは未実装 |
-| プリペイド容量 | 表示用の利用枠の例。実計量や新しい課金モデルではない |
-| フルフィルメント層 | ランディング・API呼び出し・Webhook・契約保存を担う連携部分。SaaS製品そのものではない |
-
-既存のWindows／デスクトップアプリをWebアプリへ作り直す必要はありません。
-購入・設定の部分をブラウザーで扱い、既存クライアントとバックエンドを維持する構成にできます。
-**パートナー企業が管理する既存ユーザー／顧客企業ID**への紐付けはパートナー企業が設計します。
-メールのドメインが同じという理由だけで全社員に利用を許可するものではなく、この実際の対応付けはサンプル外です。
-
-ランディングには初回購入だけでなく、有効化済みの契約から戻る場合もあります。サンプルは返された状態を確認し、
-GETで戻っただけでは再度有効化しません。同じブラウザータブの設定リンクは同じ模擬購入を再利用します。
-エミュレーターの契約作成は注文確認画面ではなくResolve時です。
-自動有効化は別のフローであり、この手動有効化サンプルでは実装していません。
-
-### 購入経路と権限
-
-以前から説明している区別を参照用にまとめます。**デモがこれらを検証するわけではありません**。
-実際のオファーやテナントで使う前に、公式資料の最新条件を確認してください。
-
-| 経路・操作 | 区別する点 | 顧客側の管理箇所 |
-| --- | --- | --- |
-| Webでカード購入 | 組織アカウントとカード。参照元のWeb購入要件は、一律に事前のEntra管理者ロールを要求しているわけではない | 第三者SaaSのセルフサービス購入ポリシー、サインイン制限 |
-| 既存のMCA会社請求プロファイル | そのプロファイルで購入する権限（Contributor／Ownerなど）。初めてのカード購入すべてに一律の前提とはしない | Microsoft 365管理センターの請求プロファイルのロール |
-| Web／ポータルからAzureで購入 | 対象Azureサブスクリプションと購入権限。閲覧権限だけでは足りない | Azure RBAC、Marketplace購入制御、Private Marketplace |
-| 購入後のパートナー企業のランディング | Entraサインイン・同意と、対象の顧客アカウントへの対応付け | 顧客のサインインポリシー、パートナー企業の利用権設計 |
-
-`AllowSelfServicePurchase / OfferType SaaS`はオファー種別の制御で、パートナー企業ごとの許可リストではなく、
-Azureポータルからの購入を停止する設定でもありません。MCA請求プロファイルの権限と
-MOSAの課金管理者ロールは別で、パートナー企業から顧客の購入制限を上書きすることはできません。
-
-画面から移した参照リンク（今回の文書移動では再取得しておらず、最新内容は未検証）：
-
-- [Web購入要件](https://learn.microsoft.com/en-us/marketplace/purchase-software-appsource)
-- [第三者SaaSのセルフサービス購入ポリシー](https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/allowselfservicepurchase-powershell?view=o365-worldwide#use-allowselfservicepurchase-with-third-party-offer-types)
-- [MCA請求プロファイルのロール](https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/manage-billing-profiles?view=o365-worldwide#assign-billing-profile-roles)
-- [Azureでの購入要件](https://learn.microsoft.com/en-us/marketplace/purchase-saas-offer-in-azure-portal#requirements)
-- [Private Marketplace](https://learn.microsoft.com/en-us/marketplace/create-manage-private-azure-marketplace-new)
-- [ランディングのサインイン・再訪](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/azure-ad-transactable-saas-landing-page)
-- [Partner Centerのプレビュー](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/review-publish-offer#publisher-sign-off-phase)
-
-### 関連コードとツールの動作
-
-- [LandingService.cs](../src/SaaSAgentSample.Web/Services/LandingService.cs)：Resolve、明示Activate、契約保存。
-- [WebhookService.cs](../src/SaaSAgentSample.Web/Services/WebhookService.cs)：操作の検証、状態更新、応答。
-- [EfSubscriptionRepository.cs](../src/SaaSAgentSample.Data/Persistence/EfSubscriptionRepository.cs)：パートナー企業の保存記録。
-- [エミュレーターのガイド](../emulator/README.md)：カタログ編集、従来のトークンフォーム、内蔵APIテストページ、イベント操作。
-
-イベントツールのDetail／Stateボタンの色は変更の種類を示し、実装主体や配信保証を示すものではありません。
-RenewにHTTP応答があっても状態が変わらない場合があります。何を受信・保存したかはパートナー企業側の
-保存履歴で確認し、以前のプラン記録がなければ前後比較でも「記録なし」とします。
-カタログを編集したことやエミュレーターのHTTP応答だけでは、パートナー企業側の保存変更は確認できません。
-
-## 各パーツと本サンプルの対応（v0 スコープ）
-
-| 概念 | 本サンプル |
-| --- | --- |
-| パートナー企業の購入者ランディング（Resolve → 明示 Activate） | `src/SaaSAgentSample.Web` — `GET /?token=<purchase-token>`, `LandingService` |
-| 接続 Webhook（サーバー側2段） | `POST /api/webhook`, `WebhookService` + `IWebhookTokenValidator` |
-| パートナー企業が保存した契約状態（4状態） | `SaaSAgentSample.Core` 集約 + `SaaSAgentSample.Data` ストア |
-| 任意の同じ契約の運用確認（閲覧＋明示 Activate） | `/admin?marketplaceSubscriptionId=<actual-id>`, `/admin/{guid}`, `#history`。保存済みレコードの確認であり購入者ナビゲーションとは別 |
-| 参考説明 | このwalkthroughを言語別の実装ガイドから開く。全体図は引き続きデモ内でも参照可能 |
-| 製品固有の利用権限制御・実アカウント紐付け | この最小サンプルでは未実装 |
-| 実購入なしのテスト | エミュレーター経由の [L2 ウォークスルー](l2-demo.ja.md) — **L2** = HTTP 上の統合レベル実証 |
-
-**v0 スコープ（初期のローカル専用版）：** Tier-1 **定額**のみ（固定価格1つ）。
-**v0 の対象外：** 従量課金／ユーザー数課金／製品固有の利用権限制御／実アカウント紐付け／実マーケットプレース購入（L3＝実購入者アカウントでの
-ライブ E2E）。実行・設定は [README.ja](../README.ja.md)、
-人間承認前提の Azure デプロイは [docs/deploy.ja.md](deploy.ja.md) を参照。
-
----
-
-## 出典（既存の Microsoft Learn 参考リンク）
-
-リンクと過去の確認日は既存ドキュメントから引き継いでいます。
-**今回の改訂では再検証していません（未検証）**。新たな取得確認を主張するものではありません。
-
-従来記録されていた確認日：2026-07-21：
-
-- Create a SaaS offer: <https://learn.microsoft.com/en-us/partner-center/marketplace-offers/create-new-saas-offer>
-- Add technical details for a SaaS offer: <https://learn.microsoft.com/en-us/partner-center/marketplace-offers/create-new-saas-offer-technical>
-- Review and publish an offer: <https://learn.microsoft.com/en-us/partner-center/marketplace-offers/review-publish-offer>
-
-従来記録されていた確認日：2026-07-18：
-
-- SaaS fulfillment APIs: <https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-apis>
-- SaaS subscription life cycle: <https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle>
-- Implementing a webhook: <https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-webhook>
-- Register a SaaS application: <https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-registration>
+- [SaaS fulfillment APIs](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-apis)
+- [Technical configuration](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/create-new-saas-offer-technical)
+- [サービス登録とAPIアクセストークン](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-registration)
+- [Webhook処理と検証](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-webhook)

@@ -16,7 +16,7 @@ services:
 
   emulator:
     # Microsoft Commercial Marketplace SaaS Fulfillment API Emulator - a token-free stand-in for
-    # the marketplace, used to drive the L2 walkthrough (see docs/l2-demo.md). Vendored under
+    # the marketplace, used for the browser demo (setup: docs/run-demo.md). Vendored under
     # ./emulator (derived from microsoft/Commercial-Marketplace-SaaS-API-Emulator, MIT — see
     # emulator/NOTICE.md). It is a Node app, so it runs natively on arm64 (unlike the SQL Server
     # image above).

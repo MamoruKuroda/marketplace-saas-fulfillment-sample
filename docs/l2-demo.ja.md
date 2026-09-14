@@ -1,135 +1,100 @@
-# L2 ウォークスルー：合成フルフィルメント・ライフサイクル
+<a id="l2-ウォークスルー合成フルフィルメントライフサイクル"></a>
 
-本サンプルは、フルフィルメントの配管を実購入なしでエンドツーエンドに実証します。Microsoft 商用
-マーケットプレースの SaaS Fulfillment API を契約として用い、トークン不要のエミュレーターを Microsoft の
-代役に使います。
+# フルフィルメント連携を検証する
 
-タイトルの2つの用語：
+パートナー側の保存結果を確認し、エミュレーターやAPIの応答と区別します。
+**購入デモは有効化で完結し、以下の確認は任意です。**
 
-- **L2** — 統合レベルの実証。アプリが実 HTTP 上でフルフィルメント API（ユニットモックではない）と通信し、
-  接続 Webhook に反応して、購読ライフサイクル全体（Resolve → Activate → Webhook → 状態）を駆動します。
-- **合成（Synthetic）** — エミュレーター（または in-repo の HTTP スタブ）が実購入の代わりを務めます。
-  実購入者アカウントや実マーケットプレース購読は不要です。
+> English: **[l2-demo.md](l2-demo.md)**
+>
+> ファイル名と `SyntheticL2LifecycleTests` クラスは従来の名前を保持しています。
+> 「L2」はこのリポジトリの統合テスト分類で、Marketplaceの階層やデモ参加の前提用語ではありません。
+> ブラウザー環境の準備は[run-demo](run-demo.ja.md)、意味の説明は[実装ガイド](walkthrough.ja.md)を参照してください。
 
-> 🌐 English: **[l2-demo.md](l2-demo.md)**
+<a id="a-自動の合成-l2推奨"></a>
+<a id="automated-checks"></a>
+## 自動テストと確認範囲
 
-実行方法は2通りあります：
+リポジトリのルートで実行します。
 
-- **A. 自動（CI 上で実行・Docker 不要）：** エミュレーターの in-repo HTTP スタブが実 HTTP 上でライフ
-  サイクル全体を駆動します。これが恒久的な実証で、.NET SDK 以外に何もインストール不要です。
-- **B. 手動・実エミュレーター相手：** 実物の
-  [Commercial Marketplace SaaS API Emulator](https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator)
-  を Docker で起動し、その UI から駆動します。
-
-> **ローカルに何もインストールしたくない場合は？** [クラウドデモ](../README.ja.md#クラウドにデモをデプロイazd)
-> （`azd up`）が、このエミュレーターをアプリと一緒に Azure へデプロイするので、ブラウザでライフサイクル全体を
-> クリック体験できます。以下は**ローカル Docker** の手順です。
-
----
-
-## A. 自動の合成 L2（推奨）
-
-このテストは実アプリをホストし、その Fulfillment クライアントを、エミュレーターの
-`/api/saas/subscriptions/...` ルートを実ソケット上で実装した in-repo スタブに向け、HTTP 上でライフ
-サイクルを駆動します：
-
-```bash
-dotnet test --filter FullyQualifiedName~SyntheticL2LifecycleTests
+```powershell
+dotnet test SaaSAgentSample.slnx --filter "FullyQualifiedName~SyntheticL2LifecycleTests|FullyQualifiedName~PurchaseJourneyTests"
 ```
 
-各ステップで検証する内容（各ステップ後に権威ある状態を確認）：
-
-1. **Resolve** — 購入者が購入トークンでランディングページを開くと、アプリはエミュレーターの resolve API
-   を呼び、購読を `PendingFulfillmentStart` として記録。
-2. **Activate** — 明示確認のうえ、アプリはエミュレーターの activate API を呼ぶ。状態 → `Subscribed`。
-3. **ChangePlan Webhook** — アプリは **Get Operation** で通知を認可し、プランを変更、**Patch Operation**
-   で ack（すべて HTTP 上）。プラン → `gold`、状態は `Subscribed` のまま。
-4. **Suspend** Webhook → `Suspended`。
-5. **Reinstate** Webhook → `Subscribed`。
-6. **Unsubscribe** Webhook → `Unsubscribed`。
-
-2つ目のテストは、エミュレーターが知らない operation を含む Webhook を POST し、アプリが**それを拒否
-（403）し状態を変えない**ことを検証します — サーバー側の Get Operation チェックが fail-closed である証拠です。
-
-これは両 CI レーンの `dotnet test` の一部として実行されます。
-
----
-
-## B. 実エミュレーター相手の手動ウォークスルー
-
-エミュレーターは Node アプリで、arm64（Apple Silicon・Windows-on-ARM）でネイティブに動作します。Docker が必要です。
-
-### 1. エミュレーターを起動
-
-```bash
-docker compose up -d --build emulator
-```
-
-これはエミュレーターをソースから（pin したコミットで）ビルドし、`http://localhost:8080` で公開します
-（コンテナはポート 80 を待ち受け）。このアプリの Webhook（`http://host.docker.internal:5134/api/webhook`）
-を呼ぶよう事前設定済みです（`docker-compose.yml` 参照。ポートはアプリの URL に合わせて調整）。
-
-### 2. エミュレーターに向けてアプリを起動
-
-既定の dev 設定は Fulfillment クライアントを `http://localhost:3978/api` に向けています。これを
-エミュレーターの `/api` ベースに上書きし、dev の認証/署名緩和は有効のままにします：
-
-```bash
-# from the repo root
-$env:Fulfillment__BaseUrl        = "http://localhost:8080/api"   # PowerShell
-$env:Landing__RequireAuthentication = "false"
-dotnet run --project src/SaaSAgentSample.Web
-```
-
-```bash
-# bash equivalent
-export Fulfillment__BaseUrl="http://localhost:8080/api"
-export Landing__RequireAuthentication="false"
-dotnet run --project src/SaaSAgentSample.Web
-```
-
-アプリは既定で `http://localhost:5134` を待ち受けます。`appsettings.Development.json` は
-`Fulfillment:Webhook:RequireSignedToken=false` を設定済みなので、エミュレーターの未署名通知を受理します。
-
-### 3. Resolve と Activate
-
-1. エミュレーター UI（`http://localhost:8080`）を開き **Generate Token**。
-2. 生成された購入トークンをコピーし、このアプリのランディングページを開く：
-   `http://localhost:5134/?token=<purchase-token>`。ページは **Resolve** を呼びプランを表示します。
-3. **Activate** をクリック。アプリはエミュレーターの **Activate** API を呼び、レコードを `Subscribed` に。
-4. `http://localhost:5134/admin` で購読を確認。
-
-### 4. Webhook を駆動
-
-エミュレーター UI で、プラン/数量を変更、または **Suspend**・**Reinstate**・**Unsubscribe** します。
-エミュレーターは `/api/webhook` へ接続 Webhook を POST します。アプリはそれをサーバー側で検証し
-（Entra JWT、次に **Get Operation** 認可）、権威ある状態を更新します。`/admin` を再読み込みして新しい状態を確認。
-
-> エミュレーターは現実的な遅延（`OPERATION_TIMEOUT`・`WEBHOOK_CALL_DELAY`・`SUBSCRIPTION_UPDATE_DELAY`）を
-> 加えるため、Webhook の到着に数秒かかることがあります。
-
-### 5. 破棄（teardown）
-
-```bash
-docker compose down
-```
-
----
-
-## 設定リファレンス
-
-| 設定 | 場所 | L2 での値 |
+| 確認 | 対象 | 証明しないこと |
 | --- | --- | --- |
-| `Fulfillment:BaseUrl` | app | `http://localhost:8080/api`（エミュレーター）。`/api` を含む |
-| `Fulfillment:Webhook:RequireSignedToken` | app | `false`（エミュレーターは未署名トークンを送る） |
-| `Landing:RequireAuthentication` | app | `false`（ローカルでは Entra サインインをスキップ） |
-| `WEBHOOK_URL` | emulator | `http://host.docker.internal:5134/api/webhook` |
-| `PUBLISHER_ID` | emulator | 任意の値（既定 `FourthCoffee`） |
-| `REQUIRE_AUTH` | emulator | 未設定/false（トークン不要） |
+| `SyntheticL2LifecycleTests` | 実Fulfillmentクライアント→HTTPエミュレータースタブ、WebApplicationFactoryのアプリ、InMemory記録。Resolve→Activate→ChangePlan→Suspend→Reinstate→Unsubscribe | 完全なNodeエミュレーター、ブラウザー購入、実SQL永続化、実Marketplace |
+| 同テスト内の有効化 | `LandingService`を直接呼び、外部APIを呼び出す | 購入者ページのクリックやフォームPOST |
+| `PurchaseJourneyTests` | 別のページ／フォームPOST、文脈、保存記録リンク、日英表示、固定ガイドURL | Nodeエミュレーターを実行するブラウザー全体 |
+| エミュレーターのJest | API動作とクライアントロジック。購入画面のテストはNode VM／模擬DOMを使用 | アプリを跨ぐブラウザーE2E全体 |
+| SQL Server統合テスト | 明示的に有効にした場合のプロバイダ固有の保存・マイグレーション | SyntheticL2のDB変更。同フィクスチャは引き続きInMemoryを選ぶ |
 
-## 出典（HTTP 200 で取得確認）
+合成ライフサイクルテストは遷移後のパートナー状態とプラン変更への応答を確認します。
+別のテストでは未知のoperationを403で拒否し、状態を変えないことを確認します。
+これらは記載範囲内の証拠であり、本番認定ではありません。
 
-- Emulator repo & docs: <https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator>
-  （README, `docs/config.md`, `rest_calls/subscription-apis.http`, `docker/Dockerfile`）
-- Implementing a webhook: <https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-webhook>
-- SaaS subscription life cycle: <https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle>
+前提条件と広い範囲のテストコマンドは[develop](develop.ja.md#ビルドとテスト)へ。
+自動テスト終了後にブラウザー用デモが動作したまま残るわけではありません。
+
+<a id="b-実エミュレーター相手の手動ウォークスルー"></a>
+<a id="1-エミュレーターを起動"></a>
+<a id="2-エミュレーターに向けてアプリを起動"></a>
+<a id="3-resolve-と-activate"></a>
+## 手動確認の準備
+
+[run-demo](run-demo.ja.md)で両コンポーネントを起動し、3方向の接続を揃えます。
+自分の隔離環境で架空データを使い、**アプリ `/` → 購入体験を始める → ストア → 注文 →
+パートナー企業のサイトで設定する → サブスクリプションを有効化**と進みます。
+結果から同じ保存済み契約を開きます。APIだけの確認をしたい場合以外は、
+旧トークンツールを入口にしないでください。
+
+<a id="4-webhook-を駆動"></a>
+<a id="manual-checks"></a>
+## 任意の通知・保存状態の確認
+
+保存済み契約の **この契約の変更を試す ↗** で同じエミュレーター購読を選びます。
+現在の状態で有効な画面操作を使ってください。以下は通知action名であり、
+購入者が必ず実行する別の操作順ではありません。
+
+| action・前提 | 期待するパートナー側の記録 |
+| --- | --- |
+| 新しい購入をResolve | `PendingFulfillmentStart` |
+| 明示的なActivate | `Subscribed` |
+| 有効状態でChangePlan | 新しい `PlanId`、状態は `Subscribed`。保存イベントと記録された以前のプランを確認 |
+| 有効状態でSuspend | `Suspended` |
+| 停止状態でReinstate | `Subscribed` |
+| 有効・停止中のテスト購読でUnsubscribe | `Unsubscribed`。この記録では終端 |
+| ChangeQuantity | イベント・応答。パートナー側ドメインに数量項目は追加されない |
+| Renew | 情報通知イベント。この実装では状態は変更しない |
+
+エミュレーターの購読IDとパートナーレコードのGUIDは別です。架空のIDを手で作らず、
+生成されたリンクを使ってください。パートナー一覧のMarketplace IDフィルターは完全一致です。
+同じ `/admin/{guid}#history` に戻って再読み込みし、保存された証拠を確認します。
+以前のプランが記録されていなければ、比較は推測ではなく **記録なし** が期待値です。
+
+Webhook配信、処理、応答、保存は別の段階です。更新が見えない場合は単に「反映待ち」と決めつけず、
+エラーや記録の有無を確認してください。カタログ編集、操作ボタンの色、
+エミュレーターのHTTP成功応答はパートナー側への保存を証明しません。
+
+標準デモは未署名のエミュレーター通知のためJWT署名検証を緩和し、Get Operation照合は残しています。
+本番用Webhook認証の検証ではありません。実Marketplaceでの検証は別の作業です。
+[実装範囲](walkthrough.ja.md#implementation-boundary)を参照してください。
+
+<a id="5-破棄teardown"></a>
+## 終了する
+
+[run-demo](run-demo.ja.md)に従い、自分のプロセスだけを停止します。
+この確認のために共有購読を全件リセットしないでください。
+デモのリセットはデータを削除する別のテストツールで、Marketplaceの購入・解約操作ではありません。
+
+<a id="設定リファレンス"></a>
+接続値は[run-demo](run-demo.ja.md#3方向の接続を確認する)、
+アプリ設定とDBの動作は[develop](develop.ja.md#ローカル設定)にまとめています。
+エミュレーター単体の設定参考は[こちら](../emulator/docs/config.md)です。
+
+<a id="出典http-200-で取得確認"></a>
+## 参考資料と証跡
+
+[公式の連携資料](walkthrough.ja.md#sources)と
+[今回の文書検証記録](develop.ja.md#verification-record)では、
+仕様、自動テスト、手動観測、過去の画像証跡を区別しています。

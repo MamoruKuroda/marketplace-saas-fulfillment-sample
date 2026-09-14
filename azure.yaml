@@ -6,7 +6,8 @@
 #             managed identity a database user.
 #   azd down  tears everything down.
 #
-# This is the automated equivalent of the manual walkthrough in docs/deploy.md.
+# Setup: docs/run-demo.md. The real-Marketplace reference in docs/deploy.md is a
+# different configuration and requires additional implementation.
 # Nothing here runs automatically — a person runs `azd up` (provisioning is human-authorized).
 name: marketplace-saas-fulfillment-sample
 metadata:
@@ -18,8 +19,8 @@ services:
     language: dotnet
     host: appservice
   # The Fulfillment API Emulator (Microsoft's token-free marketplace stand-in), so the cloud
-  # demo is interactive end to end: generate a token in its UI, activate on the app's landing
-  # page, then drive webhooks — all in the browser. Its Dockerfile is built remotely in ACR
+  # demo is interactive: start at the app, complete a simulated purchase, then activate.
+  # Saved-record inspection and webhook tests are optional. Its Dockerfile is built remotely in ACR
   # (remoteBuild) so no local Docker/npm is needed. Source is vendored in ./emulator (derived
   # from microsoft/Commercial-Marketplace-SaaS-API-Emulator, MIT — see emulator/NOTICE.md).
   emulator:
@@ -48,7 +49,7 @@ hooks:
       interactive: true
       continueOnError: false
   # After `azd up` completes, print a short "start here" guide (which URL to open
-  # first, and the three-role flow) so it's obvious in the terminal without reading
+  # first, and where the buyer experience ends) so it's obvious in the terminal without reading
   # the README. Purely informational — never fail the run.
   postup:
     windows:

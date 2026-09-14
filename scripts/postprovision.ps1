@@ -1,8 +1,8 @@
 #!/usr/bin/env pwsh
 # azd postprovision hook (Windows / pwsh).
 # Azure SQL cannot create a contained user for a managed identity via ARM/Bicep, so we do it
-# here once, as the Entra admin (you, the deployer). This is the automated form of docs/deploy.md
-# section 2. Requires the Azure CLI (az) and sqlcmd; if either is missing, run that manual step.
+# here once, as the Entra admin (you, the deployer). See docs/run-demo.md#sql-access
+# and the linked manual SQL step in docs/deploy.md section 2. Requires az and sqlcmd.
 $ErrorActionPreference = 'Stop'
 
 # azd surfaces provisioning outputs as environment variables.
@@ -44,7 +44,7 @@ try {
 }
 catch {
   Write-Warning "Automatic DB-user creation failed: $_"
-  Write-Warning "Run the manual step in docs/deploy.md (section 2) once, then 'azd deploy'."
+  Write-Warning "See docs/run-demo.md#sql-access and its manual SQL step, then retry 'azd deploy'."
   throw
 }
 finally {

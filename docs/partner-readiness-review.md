@@ -1,5 +1,11 @@
 # Partner readiness review
 
+> **Historical assessment, not current setup guidance or a current readiness verdict.**
+> This report reflects the assessed version and its dated updates. Claims about the old
+> four-step UI, missing screenshots, or test coverage must not be read as today's status.
+> Start with the [README](../README.md), [current implementation boundary](walkthrough.md#implementation-boundary),
+> or [verification scope](l2-demo.md). The original findings below are retained as history.
+
 **Assessed:** 2026-07-28  
 **Reviewer:** GitHub Copilot (issue #67)  
 **Scope:** `MamoruKuroda/marketplace-saas-fulfillment-sample` (assessed while named

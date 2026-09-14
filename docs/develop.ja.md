@@ -1,124 +1,167 @@
 # ローカルで開発する
 
-サンプルを自分のマシンでビルド・テスト・実行・設定するために必要なことすべて（Azure 不要）。
-[README](../README.ja.md#ローカルで動かす) に 30 秒のクイックスタートがあり、ここではその詳細を補足します。
+実装をビルド・設定・変更するための文書です。ブラウザー体験一式の準備は
+**[デモを用意する](run-demo.ja.md)**、その意味は[実装ガイド](walkthrough.ja.md)を参照してください。
 
-> 🌐 English: **[develop.md](develop.md)**
+> English: **[develop.md](develop.md)**
 
 ## 前提条件
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)。
-- 状態ストア用のデータベース。`dotnet run` は既定で **SQLite** を使うため、開始に追加の準備は
-  不要です。SQL Server 経路（権威あるストア）を使う場合は、ホストに応じて選択します：
-
-  | ホスト | データベース | 方法 |
-  | --- | --- | --- |
-  | x86-64（Linux / Intel Mac / Windows x64） | SQL Server | 同梱の `docker-compose.yml` で Docker |
-  | arm64（Apple Silicon・Windows-on-ARM） | SQLite | 組み込みプロバイダ、ローカル開発専用 |
-  | Windows x64（Docker なし） | SQL Server LocalDB | 同じ接続文字列の切り替え |
-
-- Docker ベースのエンドツーエンド経路には [Fulfillment API Emulator](l2-demo.ja.md)。
-  （自動実証は Docker 不要です。）
-
-<details>
-<summary>データベースプロバイダの切り替えとマイグレーション</summary>
-
-以下のキー（`appsettings.Development.json` または環境変数）でプロバイダを選択します：
-
-| `Database:Provider` | `Database:ConnectionString` の例 |
-| --- | --- |
-| `SqlServer`（既定） | `Server=localhost,1433;Database=SaasAgentSample;User Id=sa;<password>;TrustServerCertificate=True;` |
-| `Sqlite` | `Data Source=./saas-agent-sample.db` |
-| `InMemory` | *(無視される — テスト専用)* |
-
-x86-64 でローカル SQL Server を起動（イメージ `mcr.microsoft.com/mssql/server:2022-latest`）：
-
-```bash
-cp .env.example .env       # then edit MSSQL_SA_PASSWORD to a strong value
-docker compose up -d sqlserver
-```
-
-起動時、SQL Server 経路は `DbContext.Database.Migrate()`（権威あるマイグレーションは
-`src/SaaSAgentSample.Data/Persistence/Migrations/`）を実行します。SQLite 経路は
-`EnsureCreated()` を実行するため、arm64 開発者は別途マイグレーション履歴を維持せずに反復開発できます。
-
-</details>
+- .NET 10 SDK。[global.json](../global.json)を参照。
+- [appsettings.json](../src/SaaSAgentSample.Web/appsettings.json)の既定DBはSQLite。
+  arm64を含め、DBサーバーの準備は不要です。
+- エミュレーター開発にはNode/npm、コンテナー経路にはDockerが必要です。
+  [デモ準備](run-demo.ja.md#local-node)を参照。
+- SQL Serverのテストは任意です。ComposeのSQL Server 2022イメージはx86-64向けで、
+  デモを試すだけの前提条件にはしません。
 
 ## ビルドとテスト
 
-```bash
+リポジトリのルートから実行します。
+
+```powershell
 dotnet build SaaSAgentSample.slnx
 dotnet test SaaSAgentSample.slnx
 ```
 
-既定のテスト実行は SQLite / InMemory 経路のみを対象にします。
+`SQL_SERVER_CONNECTION` が未設定の場合、SQL Server統合テストはスキップされます。
+[連携の検証](l2-demo.ja.md#automated-checks)では、InMemory、実HTTP、フォームPOST、
+エミュレーターを使う確認を区別しています。同じ範囲の実証ではありません。
 
-<details>
-<summary>SQL Server 統合テストもあわせて実行する</summary>
+エミュレーターを変更する場合は[run-demo](run-demo.ja.md#local-node)のインストール・ビルド後、
+`emulator` で `npm test -- --runInBand` を実行します。CIはNode 18での起動も確認します。
 
-上記の compose サービスを起動し、接続文字列をエクスポートします：
+<a id="アプリの起動"></a>
+## ローカル設定
 
-```bash
-export SQL_SERVER_CONNECTION='Server=localhost,1433;Database=SaasAgentSample;User Id=sa;<your MSSQL_SA_PASSWORD>;TrustServerCertificate=True;'
+起動コマンド、ターミナルの分け方、ポートは[run-demo](run-demo.ja.md)を正本とします。
+`appsettings*.json` と環境変数（ネストキーは `__`）から設定します。
+ソースにはプレースホルダを使い、実ID・資格情報を入れないでください。
+
+| 設定 | 役割・既定値 |
+| --- | --- |
+| `Database:Provider` | 既定は `Sqlite`。`SqlServer`、`InMemory` も選択可能 |
+| `Database:ConnectionString` | 既定はSQLiteファイル。隔離した実行では別の保存先を明示 |
+| `Landing:RequireAuthentication` | Developmentは `false`、基本設定は `true` |
+| `AzureAd:*` | 任意の購入者・運用担当者サインイン。外向きAPIのトークンproviderではない |
+| `Fulfillment:BaseUrl` | Developmentは `http://localhost:3978/api`。基本設定は実API URLだが、**実API連携の完成実装ではない** |
+| `Fulfillment:PublisherId` | トークン不要エミュレーター用。エミュレーターの `PUBLISHER_ID` と一致させる |
+| `Fulfillment:ApiVersion` | `2018-08-31` |
+| `Fulfillment:Webhook:RequireSignedToken` | Developmentと標準Azureデモは `false`、基本設定は `true` |
+| `Fulfillment:Webhook:Audience`、`ExpectedAppId`、`MetadataAddress` | Webhook検証用。APIアクセストークン取得の設定ではない |
+
+既定の[DevNull provider](../src/SaaSAgentSample.Fulfillment/DevNullMarketplaceTokenProvider.cs)はAPIトークンを返しません。
+設定変更を実Marketplace連携の完成と扱う前に、[実装範囲](walkthrough.ja.md#implementation-boundary)を確認してください。
+
+| パス | 役割 |
+| --- | --- |
+| トークンなしの `/` | デモ開始画面 |
+| `/?token=<purchase-token>` | 購入者ランディング。フォームPOSTで明示的に有効化 |
+| `/admin`、`/admin/{guid}` | パートナー側の保存記録。管理画面は実装例 |
+| `POST /api/webhook` | 通知受信口 |
+
+アプリはEN / 日本語に対応します。言語切替はブラウザーの既定を上書きし購入の文脈を保持しますが、
+画面のラベルは権限規則ではありません。
+
+## DBプロバイダとマイグレーション
+
+| プロバイダ | 保存の動作 |
+| --- | --- |
+| `Sqlite`（既定） | `EnsureCreated()`。独立したSQLiteマイグレーション履歴は持たない |
+| `SqlServer` | `src/SaaSAgentSample.Data/Persistence/Migrations` のEF Coreマイグレーションを実行 |
+| `InMemory` | テスト専用。永続的な契約ストアではない |
+
+スキーマ変更後も `EnsureCreated()` は既存SQLiteファイルをアップグレードしません。
+ローカル実験には新しい使い捨てファイルを選び、他の人のデータを削除しないでください。
+SQL Serverはマイグレーションを検証するプロバイダであり、Microsoftの商用課金の正本という意味ではありません。
+
+### 任意のSQL Serverテスト
+
+自分のローカルSQL環境を使います。同梱コンテナーでは、強固なローカル専用の
+`MSSQL_SA_PASSWORD` をターミナルか、[.env.example](../.env.example)を元にしたgitignore対象の
+`.env` に設定してから、そのサービスだけを起動します。
+
+```powershell
+docker compose up -d sqlserver
+$env:SQL_SERVER_CONNECTION = "Server=localhost,1433;Database=SaasAgentSample;User Id=sa;Password=<local-password>;TrustServerCertificate=True;"
 dotnet test SaaSAgentSample.slnx
 ```
 
-</details>
+POSIXでは `export SQL_SERVER_CONNECTION='...'` を使います。本番の資格情報を渡さないでください。
+終了時は自分が起動したSQLコンテナーだけを停止します（この構成なら `docker compose stop sqlserver`）。
+名前付きデータボリュームは残ります。合成ライフサイクルテスト自体は、
+SQL ServerがあるCIジョブでも明示的にInMemoryを使います。
 
-## アプリの起動
+<a id="エンドツーエンドで実証するl2"></a>
+## 連携を検証する
 
-```bash
-dotnet run --project src/SaaSAgentSample.Web
-```
+自動テストの指定、期待する保存結果、手動通知テストは[連携の検証](l2-demo.ja.md)を正本とします。
+既存の `L2` パスとテストクラスは互換性のため維持しますが、デモ参加者の予備知識にはしません。
 
-`Development` 環境では、SQLite ストアを使い、購入者サインインを無効化
-（`Landing:RequireAuthentication=false`）、Fulfillment クライアントをローカルエミュレーター向けに設定し、
-未署名の Webhook トークンを受理します — つまり Entra も実購入もなしで一連のフローがローカルで動きます。
+## UIと文書を一緒に保守する
 
-UI は **英語と日本語**にローカライズされています。既定ではブラウザの `Accept-Language` に従い、
-ヘッダーの **EN / 日本語** トグル（Cookie に保存）で上書きできます。
+日英の範囲・操作・画像・リンク・旧アンカーを同時に更新します。
+UIのラベルは実際に使われるRazor／HTMLとリソース、動作はコードとテスト、
+Marketplace要件は公式一次資料を基準にします。
 
-| パス | 内容 |
-| --- | --- |
-| `/?token=<purchase-token>` | 購入者 SSO ランディング（Resolve → 明示確認 Activate） |
-| `/admin`, `/admin/{id}` | パブリッシャー管理（閲覧＋明示確認 Activate） |
-| `POST /api/webhook` | 接続 Webhook（サーバー側で Entra JWT ＋ Get Operation 検証） |
+`scripts/check-i18n.ps1` はアプリのリソースキーを検査し、文書の翻訳までは検査しません。
+`scripts/check-shared-ui.ps1` は特定のCSS値を比較し、画像や文書リンクは確認しません。
+現行CIは.NET・エミュレーター・Bicepのビルド等を実行しますが、文書の鮮度を保証しません。
+更新時は相対ファイルリンク、見出しアンカー、画像、対応言語を確認してください。
+デモの固定ガイドURLで `docs/walkthrough*.md` に到達でき、クエリ情報を送らない構成を維持します。
+
+<a id="screenshots-and-evidence"></a>
+### 画像と証跡
+
+現在のREADME・実装ガイドは `docs/images/screenshots` の `experience-*` と `boundary-*` を参照します。
+ファイル名を安定させてください。旧 `en-1-*` / `ja-1-*` 等の画像や未使用の図は履歴素材として残し、
+現在のUI仕様として扱いません。再撮影時は基準commit、言語、ホスト、保存先・フィクスチャの条件、
+実際に描画された画面かモックかを記録します。実トークンや顧客データを含めないでください。
 
 <details>
-<summary>設定リファレンス</summary>
+<summary>既存画像の出自 — #101 / b5e5963時点</summary>
 
-`appsettings*.json`・環境変数（ネストキーは `__`）・App Service 設定からバインドします。
-シークレットは**プレースホルダのみ**。実値をコミットしないでください。
-
-| キー | 目的 | ローカル既定 |
-| --- | --- | --- |
-| `Database:Provider` | `SqlServer` \| `Sqlite` \| `InMemory` | `Sqlite` |
-| `Database:ConnectionString` | 状態ストアの接続 | SQLite ファイル |
-| `Landing:RequireAuthentication` | ランディング/管理で Entra サインインを必須にする | `false`（dev） |
-| `AzureAd:*` | 購入者サインイン用アプリ（マルチテナント・authority `common`） | プレースホルダの client id |
-| `Fulfillment:BaseUrl` | Fulfillment API のベース（`/api` を含む） | エミュレーター |
-| `Fulfillment:ApiVersion` | API バージョン | `2018-08-31` |
-| `Fulfillment:Webhook:Audience` | 期待する JWT audience = パブリッシャーアプリの client id | プレースホルダ |
-| `Fulfillment:Webhook:ExpectedAppId` | 期待する `appid`/`azp` クレーム | 公開 Marketplace アプリ ID |
-| `Fulfillment:Webhook:MetadataAddress` | 署名鍵取得用の Entra OpenID メタデータ | — |
-| `Fulfillment:Webhook:RequireSignedToken` | JWT 署名を必須にする（**本番では true**） | `false`（dev） |
+参照画像は実際のサンプルUIと合成データを使い、エミュレーターAPIは隔離したHTTPフィクスチャで撮影しました。
+完全なNodeエミュレーターとの統合検証や実購入の証拠ではありません。
+当時の対象限定チェックはjourney 37件、experience 14件、checkout 18件、購読選択10件で、
+Jest全体の実行ではありません。当時の作業環境にはnpmフィードの404とDocker利用不可の記録があります。
+これらは撮影時点の条件であり、リポジトリの利用要件や恒久的な制約ではありません。
 
 </details>
 
-## エンドツーエンドで実証する（L2）
+インライン図は参照文書内のMermaidがソースです。参照中のPNG図は対応する `.mmd` と一致させます。
+`images` を `assets` に改名するためだけの一括移動はしません。
+リポジトリ内で未参照でも、外部から使われていないとは限りません。
 
-フルフィルメントの一連（Resolve → Activate → Webhook → 状態）を実購入なしで通しで実行します。
-エミュレーターが実 HTTP 上で Microsoft の代役を務めます。自動テストは Docker なしで CI 上でも
-実行され、手動手順では実エミュレーターを Docker で起動します。
+<a id="verification-record"></a>
+### 今回の更新の検証記録
 
-```bash
-dotnet test --filter FullyQualifiedName~SyntheticL2LifecycleTests
-```
+2026-09-12に、変更していない `b5e5963` のアプリ・エミュレーターコードを確認しました。
 
-手動のエミュレーター手順を含む詳細は **[l2-demo.ja.md](l2-demo.ja.md)**。
+| 証跡 | 範囲 |
+| --- | --- |
+| ローカルブラウザー | Windows ARM64、.NET SDK 10.0.112、Node 24.13.0、headless Chromium。完全なNodeエミュレーターと、分離したSQLite・エミュレーター保存先・専用ポート |
+| 購入と保存結果 | 日英それぞれ `web-card`、`web-azure`、`azure-portal`。購入→パートナーへの引き渡し→明示有効化→保存済み契約 |
+| 任意の通知 | 両言語の `web-card` で、同じ契約のSuspend、パートナー側の状態と履歴 |
+| 自動テスト | .NETのライフサイクル・ページの対象テスト36件。エミュレーターのJest全129件（15スイート） |
 
-## 関連ドキュメント
+固定ガイドURL、言語、クエリ情報を送らないことも確認しました。外部ガイドを開いてトークンを送信していません。
+上記の完全エミュレーターでの確認によって、以前の画像のHTTPフィクスチャ撮影条件が変わるわけではありません。
 
-- [README](../README.ja.md) — 概要とクイックスタート。
-- [クラウドデモ / Azure へのデプロイ](deploy.ja.md) — ワンコマンドの `azd up` と、本番寄りの手動手順。
-- [L2 ウォークスルー](l2-demo.ja.md) — ライフサイクル全体の実証（自動・手動）。
+ローカルのnpmフィードが当初tarball取得に404を返しました。設定済みフィードの正しいパスから
+lockされたパッケージをキャッシュし、整合性検査付きのオフライン復元で解消しました。
+依存バージョンとlockfileは変更していません。他の利用者に同じレジストリ設定を要求するものではなく、
+この検証環境の記録です。
+
+Docker、POSIXでの実行、Node 18での実行、SQL Server、Azureデプロイは**今回実行していません**。
+これらの手順は設定との照合であり、E2E検証済みとは扱いません。
+共有デモ、実購入、本番適合性評価は対象にしていません。
+
+<a id="関連ドキュメント"></a>
+## 関連文書
+
+- [README](../README.ja.md) — 価値、画面プレビュー、文書の案内。
+- [デモの準備](run-demo.ja.md) — 環境の用意と停止。
+- [実装ガイド](walkthrough.ja.md) — 体験の説明と追加実装。
+- [連携の検証](l2-demo.ja.md) — テスト範囲と保存結果の証拠。
+- [実Marketplace接続の参考](deploy.ja.md) — 未完成部分のある接続例。デモの起動手順ではない。

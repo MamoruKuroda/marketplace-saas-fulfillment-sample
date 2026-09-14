@@ -1,12 +1,18 @@
 # Getting up and running with the emulator
 
+> **Standalone/upstream reference.** For this repository's paired partner app and emulator,
+> use [Prepare the demo](../../docs/run-demo.md) / [デモの準備](../../docs/run-demo.ja.md).
+> The Dev Container and image-publishing workflow mentioned below are not vendored here.
+> The Azure instructions below describe Container Instances, not the sample's azd/Container Apps path.
+
 ## Running the emulator
 
 Which deployment option is best is largely a matter of personal preference.
 
 If you have Docker installed, then building and running the container locally is a simple option.
 
-If you use Dev Containers in VS Code, there is a Dev Container definition in the project that includes all the required dependencies. You can simply "Re-open in container" from VS Code and run from there.
+The upstream project describes a Dev Container option for VS Code. Its definition is not
+included in this vendored directory; do not expect "Re-open in container" to configure this sample.
 
 If you prefer to run locally, make sure you have Node.js installed.
 
@@ -50,7 +56,7 @@ For additional configuration options see [configuration examples](./config.md)
 
 ### Run & debug the emulator in VS Code (using Dev Container)
 
-- There is a [.devcontainer](https://code.visualstudio.com/docs/devcontainers/tutorial) environment included as part of this repo
+- The upstream checkout has a [.devcontainer](https://code.visualstudio.com/docs/devcontainers/tutorial) environment; this vendored copy does not
 - The dev container contains all the dependencies required
 - In VS Code, open the repo
 - When prompted, opt to "Re-open in container" or select "Dev Containers: Reopen in Container" from the command palette
@@ -88,7 +94,9 @@ Building as a Docker image is as simple as:
 
 ### GitHub workflow to build & push to a container registry
 
-The repo includes a workflow [publish-docker-image.yml](../.github/workflows/publish-docker-image.yml) to automatically build and push the Docker image to your choice of container registry (Azure Container Registry, GitHub or Docker Hub).
+The upstream reference uses a `publish-docker-image.yml` workflow to build and push the Docker
+image to a container registry. That workflow is **not included in this vendored copy**.
+The following instructions require an upstream checkout containing it.
 
 The workflow can be manually triggered from the GitHub Actions UI. Depending on your target registry, you may need to set some GitHub Action secrets (Settings > Secrets and variables) before running the workflow.
 
@@ -125,7 +133,7 @@ However, if we are trying to access the emulator **from inside the container its
 
 It's important to be aware of this for two specific scenarios which only apply if you are running in a container (either `docker run...` or a Dev Container)
 
-1. If you are **developing your application in a container (eg using Dev Containers)** then you need to make sure it's on the same Docker bridge network as the emulator. If you're running the emulator in a Dev Container, a Docker bridge network called `emulator-net` will be created and a hostname will be set for the emulator. This is defined in the first few lines of [devcontainer.json](/.devcontainer/devcontainer.json). If you're using `docker run...`, you will need to set the hostname and create the network and bind it to the emulator container yourself. eg
+1. If you are **developing your application in a container (eg using Dev Containers)** then you need to make sure it's on the same Docker bridge network as the emulator. If you're running the emulator in a Dev Container, a Docker bridge network called `emulator-net` will be created and a hostname will be set for the emulator. This is defined in the upstream `devcontainer.json` (not included here). If you're using `docker run...`, you will need to set the hostname and create the network and bind it to the emulator container yourself. eg
 
     ```bash
     docker network create emulator-net

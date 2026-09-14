@@ -1,26 +1,24 @@
 #!/usr/bin/env sh
 # azd postup hook (posix / sh).
-# After `azd up`, tell people where to start. The app is the front door and hub:
-# its home page explains the three roles and the flow, and launches step 1 (a
-# purchase in the emulator, which stands in for Microsoft's marketplace). Keeping
-# a single entry point avoids the "which URL first?" guesswork.
+# After `azd up`, open the app to begin the purchase demo. Activation completes
+# the buyer experience; inspecting saved records and notifications is optional.
 
 emu="$SERVICE_EMULATOR_URI"
 app="$SERVICE_WEB_URI"
 
 echo ""
 echo "======================================================================"
-echo " Demo ready. Open the APP to start - it's your guide and hub."
+echo " Demo ready. Open the APP to start the purchase experience."
 echo "======================================================================"
 echo ""
 echo "  App (start here):  $app"
-echo "     Its home explains the three roles and the flow, and launches step 1."
+echo "     Choose 'Start the purchase experience'. No guide reading is required."
 echo ""
-echo "  The flow (the app walks you through it):"
-echo "    1. Buy in the Marketplace    - you're the buyer (opens the emulator)"
-echo "    2. Activate on the landing   - you're the buyer"
-echo "    3. Manage in Publisher admin - you're the publisher"
+echo "  Buyer flow: simulated purchase -> partner site -> activate -> result."
+echo "  Optional: inspect this saved contract and try a notification."
 echo ""
-echo "  Emulator (Microsoft's stand-in, used in steps 1 and 4):  $emu"
-echo "  Tear down when done:  azd down --purge"
+echo "  Emulator (Microsoft's stand-in, including on Azure):  $emu"
+echo "  No real purchase/payment. Azure hosting may incur costs."
+echo "  Setup and cleanup: docs/run-demo.md (Japanese: docs/run-demo.ja.md)"
+echo "  After checking the environment and removal approval: azd down"
 echo ""
