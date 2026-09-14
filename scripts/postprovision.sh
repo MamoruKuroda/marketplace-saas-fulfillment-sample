@@ -1,8 +1,8 @@
 #!/bin/sh
 # azd postprovision hook (Linux / macOS).
 # Azure SQL cannot create a contained user for a managed identity via ARM/Bicep, so we do it
-# here once, as the Entra admin (you, the deployer). This is the automated form of docs/deploy.md
-# section 2. Requires the Azure CLI (az) and sqlcmd; if either is missing, run that manual step.
+# here once, as the Entra admin (you, the deployer). See docs/run-demo.md#sql-access
+# and the linked manual SQL step in docs/deploy.md section 2. Requires az and sqlcmd.
 set -e
 
 # azd surfaces provisioning outputs as environment variables.
@@ -42,6 +42,6 @@ ALTER ROLE db_ddladmin  ADD MEMBER [$appName];"
 if sqlcmd -S "$server" -d "$database" -G -l 60 -Q "$tsql"; then
   echo "Done: [$appName] granted db_datareader / db_datawriter / db_ddladmin."
 else
-  echo "Automatic DB-user creation failed. Run docs/deploy.md section 2 once, then 'azd deploy'." >&2
+  echo "Automatic DB-user creation failed. See docs/run-demo.md#sql-access and its manual SQL step, then retry 'azd deploy'." >&2
   exit 1
 fi

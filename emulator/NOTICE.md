@@ -111,6 +111,10 @@ Changes we made on top of the upstream snapshot:
 
 ## Maintenance notes
 
+- Main-sample setup is maintained in `../docs/run-demo.md` and `../docs/run-demo.ja.md`.
+  Standalone upstream documentation stays under `docs/`; local scope notices and broken
+  vendoring-relative links are adjusted without treating upstream instructions as this
+  sample's tested deployment recipe.
 - The teaching map retains shared readable typography (`.lbl`: .85rem / 1.35 / 600;
   `.n`: .82rem). Mastheads, navigation and shapes intentionally differ across actor boundaries.
   `scripts/check-shared-ui.ps1` is maintained by the main sample, not the emulator.

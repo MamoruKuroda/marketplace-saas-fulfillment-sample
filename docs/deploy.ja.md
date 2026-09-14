@@ -1,4 +1,6 @@
-# Azure へのデプロイ（App Service + Azure SQL）
+<a id="azure-へのデプロイapp-service--azure-sql"></a>
+
+# 実Marketplace接続の参考（追加実装が必要）
 
 > **人間の承認がある場合のみ。** ここに自動化はなく、プロビジョニングとデプロイは人が実行します。これは
 > リファレンス手順です。レビューのうえ、ご自身で実行してください。以下の識別子はすべて
@@ -7,30 +9,43 @@
 
 > 🌐 English: **[deploy.md](deploy.md)**
 
-> **1コマンドがよい場合は？** `azd up` がこの手順全体（プロビジョニング・デプロイ・マネージド ID の
-> データベース権限付与）を自動化し、さらに **Fulfillment API Emulator** も一緒にデプロイします。
-> その結果、購入者サインイン**オフ**でそのままクリック体験できるデモになります。
-> [クラウドにデモをデプロイ](../README.ja.md#クラウドにデモをデプロイazd) を参照。以下の手作業の手順は、
-> 代わりに**実際の**マーケットプレース（サインイン有効・エミュレーターなし）を対象にします。各コマンドを
-> 自分で実行したい・各リソースを理解したいときにどうぞ。（**ローカル**で動かしたい場合は
-> [README](../README.ja.md) を参照 — そちらは SQLite を使い Azure 不要です。）
+> **動くデモを用意する方は[デモの準備](run-demo.ja.md#azure-demo)へ。**
+> 標準の `azd` 構成はエミュレーターを含み、**この実Marketplace構成の自動版ではありません**。
+> ローカルデモもAzureデモもエミュレーターを使います。
 
-v0（初期バージョン、最小構成）の対象トポロジ：
+**これは実オファー向けの完成したデプロイ手順ではありません。**
+Azureリソースと接続の例を保持した参考資料です。利用前に[実装範囲](walkthrough.ja.md#implementation-boundary)の
+不足部分（APIトークン取得、顧客アカウント対応付け、製品の利用制御、サービス固有の運用）を実装してください。
+登録済みの `DevNullMarketplaceTokenProvider` はトークンを返しません。
+`Fulfillment:BaseUrl` と `Landing:RequireAuthentication` の変更だけで外向きAPIの認証は実装されません。
+今回の文書更新では実オファー・Azureデプロイの検証は行っていません。
+
+不足する連携を完成させた後の、構成の例：
 
 - **Azure App Service**（Linux, .NET 10）が `SaaSAgentSample.Web` をホスト。
-- **Azure SQL Database** が権威ある状態ストア。
+- **Azure SQL Database** はパートナー企業の記録を保存。Microsoftの商用課金の正本ではありません。
 - **マネージド ID** で App Service → Azure SQL を**パスワードレス**接続（接続文字列にシークレットなし）。
 - リージョン：**West US 3**（本サンプルの統合テストで使用した実績から選定）。
 
-<!-- GitHub の Mermaid は日本語ラベルを見切れさせるため、PNG を事前生成して埋め込み。ソース: images/ja-deploy-topology.mmd -->
-![Azure デプロイのトポロジ](images/ja-deploy-topology.png)
+```mermaid
+flowchart LR
+    MP["Microsoft Marketplace"]
+    subgraph AZ["Azure — 実接続の実装後の例"]
+        APP["App Service<br/>パートナー企業のアプリ"]
+        SQL[("Azure SQL<br/>パートナー企業の契約記録")]
+    end
+    MP -->|"購入トークンと通知"| APP
+    APP -->|"Fulfillment API"| MP
+    APP -->|"マネージドID"| SQL
+```
 
 ## 前提条件
 
 - Azure サブスクリプションと [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)。
-- 購入者サインインとマーケットプレースのセキュリティトークン用に登録済みの **Microsoft Entra アプリケーション**
-  （[Register a SaaS application](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-registration) 参照）。
-- Partner Center 上の取引可能な SaaS オファー（Partner Center 前のテスト用にはエミュレーターでも可）。
+- オファーのTechnical configurationに登録するアプリによるサービス間API認証
+  （[Register a SaaS application](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-registration)参照）。
+  サンプルの `AzureAd:*` は別目的のサインイン設定で、このAPIトークンを提供しません。
+- 実オファーと、実行承認のある検証計画。エミュレーターだけの準備は[run-demo](run-demo.ja.md)を参照。
 
 ## 1. プロビジョニング（例示）
 
@@ -84,7 +99,8 @@ Server=tcp:<sql-server-name>.database.windows.net,1433;Database=SaasAgentSample;
 
 ## 3. アプリ設定
 
-App Service に構成を設定します（App settings のネストキーは `__`）。ID はすべてプレースホルダです。
+不足する連携の実装後に、以下のApp Service設定を検討します（ネストキーは `__`）。
+IDはすべてプレースホルダです。接続の例であり、既存の共有デモを切り替える指示ではありません。
 
 ```bash
 az webapp config appsettings set -g "$RG" -n "$APP" --settings \
@@ -104,8 +120,8 @@ az webapp config appsettings set -g "$RG" -n "$APP" --settings \
 
 補足：
 
-- `Fulfillment:Webhook:RequireSignedToken` は本番では **`true` 必須**（ローカルの `false` は
-  トークン不要のエミュレーター専用）。
+- 実Webhookには公式のJWT検証が必要です。標準のローカル・Azureデモの
+  `RequireSignedToken=false` はエミュレーター用の緩和で、本番の認証ではありません。
 - `ExpectedAppId` は既定で**公開**の Microsoft Marketplace アプリ ID `20e940b3-…`（文書化された定数で
   あり、シークレットではありません）。
 - 機微とみなす値には [Key Vault references](https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references)
@@ -122,6 +138,7 @@ az webapp deploy -g "$RG" -n "$APP" --src-path app.zip --type zip
 初回起動時、SQL Server 経路では権威ある EF Core マイグレーション（`Database.Migrate()`）が実行され、
 スキーマが作成されます。[Deploy an ASP.NET web app](https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore) 参照。
 
+<a id="marketplace-reference"></a>
 ## 5. マーケットプレースオファーの配線（Partner Center）
 
 SaaS オファーの **Technical configuration** で：
@@ -137,13 +154,31 @@ SaaS オファーの **Technical configuration** で：
 （[Register a SaaS application](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-registration)、
 [Implementing a webhook](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-webhook) 参照）。
 
+掲載・プレビュー・公開はサンプルの実装とは別の作業です。模擬購入経路の表示を、
+実オファーの購入許可と同一視しないでください。
+以下は旧体験ウォークスルーから保持したリンクで、**今回の更新では再取得していません（未検証）**。
+最新のポリシー助言ではなく、実際の条件を確認するための参考先です。
+
+- [SaaSオファーの作成](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/create-new-saas-offer)
+- [レビューと公開](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/review-publish-offer)
+- [購読ライフサイクル](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle)
+- [Web購入要件](https://learn.microsoft.com/en-us/marketplace/purchase-software-appsource)
+- [第三者SaaSのセルフサービス購入ポリシー](https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/allowselfservicepurchase-powershell?view=o365-worldwide#use-allowselfservicepurchase-with-third-party-offer-types)
+- [MCA請求プロファイルのロール](https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/manage-billing-profiles?view=o365-worldwide#assign-billing-profile-roles)
+- [Azure購入要件](https://learn.microsoft.com/en-us/marketplace/purchase-saas-offer-in-azure-portal#requirements)
+- [Private Marketplace](https://learn.microsoft.com/en-us/marketplace/create-manage-private-azure-marketplace-new)
+- [ランディングのサインイン・再訪](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/azure-ad-transactable-saas-landing-page)
+
 ## 6. 確認
 
 - `https://<app-name>.azurewebsites.net/admin` を開く（本番ではサインイン必須）。
-- Partner Center の preview またはエミュレーターから購入を駆動し、購読が表示され正しく遷移することを
-  確認する。
+- 不足部分の実装後、別途承認された計画で実オファーを検証します。管理画面の状態だけでなく、
+  顧客アクセスや障害復旧も確認します。[エミュレーターでの検証](l2-demo.ja.md)はその代わりにはなりません。
 
 ## 7. 破棄（teardown）
+
+データを削除する操作です。自分が作成し、削除の承認があるリソースだけを対象に `$RG` を確認してください。
+azd管理のデモは[専用の終了手順](run-demo.ja.md#azureデモを削除する)を使います。
 
 ```bash
 az group delete -n "$RG" --yes --no-wait
@@ -151,12 +186,19 @@ az group delete -n "$RG" --yes --no-wait
 
 ## Azure 上のガードレール
 
-- **状態 DB が唯一の正本**であることは、ここでも変わりません。
+- DBは**パートナー企業の画面が表示する保存記録**の正本です。
+  商用状態・課金・製品アクセスすべての権威ではありません。
 - **可能な限りソースや app settings にシークレットを置かない** — SQL はマネージド ID、その他は
   Key Vault references。本ドキュメントの ID はプレースホルダです。
 - Webhook の Authorization 検証は**サーバー側**（Entra JWT + Get Operation）のままです。
 
-## 出典（2026-07-18 に HTTP 200 で取得確認）
+<a id="出典2026-07-18-に-http-200-で取得確認"></a>
+## 出典と確認状況
+
+旧文書には2026-07-18の確認日が記録されていました。
+今回、**サービス登録・Webhook検証・マネージドIDによるSQL接続の記事は2026-09-12に取得確認**しました。
+以下の他の既存リンクは再検証していません。コマンド例のデプロイも行っていません。
+[今回確認した連携資料](walkthrough.ja.md#sources)も参照してください。
 
 - Deploy an ASP.NET web app to App Service: <https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore>
 - Connect .NET apps to Azure SQL with managed identity: <https://learn.microsoft.com/en-us/azure/app-service/tutorial-connect-msi-sql-database>

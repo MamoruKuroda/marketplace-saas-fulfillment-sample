@@ -1,138 +1,100 @@
-# L2 walkthrough: synthetic fulfillment lifecycle
+<a id="l2-walkthrough-synthetic-fulfillment-lifecycle"></a>
 
-This sample proves the SaaS fulfillment plumbing end to end, with no real purchase. It uses the
-Microsoft Commercial Marketplace SaaS Fulfillment APIs as the contract, and a token-free emulator as
-Microsoft's stand-in.
+# Verify the fulfillment integration
 
-Two terms from the title:
+Check the partner's saved results and distinguish them from emulator/API responses.
+**For purchase-demo participants, activation is the end; these checks are optional.**
 
-- **L2** — an integration-level proof. The app talks to a running fulfillment API over real HTTP (not
-  a unit mock) and reacts to connection webhooks, running the full lifecycle:
-  Resolve → Activate → webhook → state.
-- **Synthetic** — the emulator (or an in-repo HTTP stub) stands in for a real purchase. No buyer
-  account or marketplace subscription is needed.
+> 日本語: **[l2-demo.ja.md](l2-demo.ja.md)**
+>
+> The filename and `SyntheticL2LifecycleTests` class retain a historical name.
+> “L2” is this repository's integration-test classification, not a Marketplace tier or a demo prerequisite.
+> Prepare a browser environment using [run-demo](run-demo.md); explanation is in the [implementation guide](walkthrough.md).
 
-> 🌐 日本語版: **[l2-demo.ja.md](l2-demo.ja.md)**
+<a id="a-automated-synthetic-l2-recommended"></a>
+<a id="automated-checks"></a>
+## Automated checks and their boundaries
 
-There are two ways to run it:
+From the repository root:
 
-- **A. Automated (runs in CI, no Docker):** an in-repo HTTP stub of the emulator drives the full
-  lifecycle over real HTTP. This is the durable proof and needs nothing installed beyond the .NET SDK.
-- **B. Manual, against the real emulator:** run the actual
-  [Commercial Marketplace SaaS API Emulator](https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator)
-  in Docker and drive it from its UI.
-
-> **Prefer nothing installed locally?** The [cloud demo](../README.md#deploy-a-cloud-demo-azd)
-> (`azd up`) deploys this same emulator to Azure alongside the app, so you can click through the
-> whole lifecycle in a browser. The steps below are the **local Docker** path.
-
----
-
-## A. Automated synthetic L2 (recommended)
-
-The test hosts the real app, points its Fulfillment client at an in-repo stub that implements the
-emulator's `/api/saas/subscriptions/...` routes on a real socket, and drives the lifecycle over HTTP:
-
-```bash
-dotnet test --filter FullyQualifiedName~SyntheticL2LifecycleTests
+```powershell
+dotnet test SaaSAgentSample.slnx --filter "FullyQualifiedName~SyntheticL2LifecycleTests|FullyQualifiedName~PurchaseJourneyTests"
 ```
 
-What it asserts, step by step (authoritative state is checked after each step):
-
-1. **Resolve** — the buyer opens the landing page with a purchase token; the app calls the emulator's
-   resolve API and records the subscription as `PendingFulfillmentStart`.
-2. **Activate** — with explicit confirmation, the app calls the emulator's activate API; state → `Subscribed`.
-3. **ChangePlan webhook** — the app authorizes the notification via **Get Operation**, changes the plan,
-   and acknowledges via **Patch Operation** (all over HTTP). Plan → `gold`, state stays `Subscribed`.
-4. **Suspend** webhook → `Suspended`.
-5. **Reinstate** webhook → `Subscribed`.
-6. **Unsubscribe** webhook → `Unsubscribed`.
-
-A second test posts a webhook whose operation the emulator does not know about and asserts the app
-**rejects it (403) and does not change state** — the server-side Get Operation check fails closed.
-
-This runs as part of `dotnet test` in both CI lanes.
-
----
-
-## B. Manual walkthrough against the real emulator
-
-The emulator is a Node app; it runs natively on arm64 (Apple Silicon, Windows-on-ARM). You need Docker.
-
-### 1. Start the emulator
-
-```bash
-docker compose up -d --build emulator
-```
-
-This builds the emulator from source (pinned commit) and exposes it on `http://localhost:8080`
-(the container listens on port 80). It is preconfigured to call this app's webhook at
-`http://host.docker.internal:5134/api/webhook` (see `docker-compose.yml`; adjust the port to match
-your app URL).
-
-### 2. Run the app pointed at the emulator
-
-The default dev config points the Fulfillment client at `http://localhost:3978/api`; override it to
-the emulator's `/api` base and keep dev auth/signature relaxations on:
-
-```bash
-# from the repo root
-$env:Fulfillment__BaseUrl        = "http://localhost:8080/api"   # PowerShell
-$env:Landing__RequireAuthentication = "false"
-dotnet run --project src/SaaSAgentSample.Web
-```
-
-```bash
-# bash equivalent
-export Fulfillment__BaseUrl="http://localhost:8080/api"
-export Landing__RequireAuthentication="false"
-dotnet run --project src/SaaSAgentSample.Web
-```
-
-The app listens on `http://localhost:5134` by default. `appsettings.Development.json` already sets
-`Fulfillment:Webhook:RequireSignedToken=false` so the emulator's unsigned notifications are accepted.
-
-### 3. Resolve and activate
-
-1. Open the emulator UI at `http://localhost:8080` and **Generate Token**.
-2. Copy the generated purchase token, then open this app's landing page with it:
-   `http://localhost:5134/?token=<purchase-token>`.
-   The page calls **Resolve** and shows the plan.
-3. Click **Activate**. The app calls the emulator's **Activate** API and moves the record to `Subscribed`.
-4. Confirm the subscription at `http://localhost:5134/admin`.
-
-### 4. Drive webhooks
-
-In the emulator UI, change the plan / quantity, or **Suspend**, **Reinstate**, or **Unsubscribe** the
-subscription. The emulator POSTs a connection webhook to `/api/webhook`. The app validates it
-server-side (Entra JWT, then **Get Operation** authorization) and updates the authoritative state.
-Refresh `/admin` to see the new state.
-
-> The emulator adds realistic delays (`OPERATION_TIMEOUT`, `WEBHOOK_CALL_DELAY`,
-> `SUBSCRIPTION_UPDATE_DELAY`); a webhook may take a few seconds to arrive.
-
-### 5. Tear down
-
-```bash
-docker compose down
-```
-
----
-
-## Configuration reference
-
-| Setting | Where | Value for L2 |
+| Check | What it exercises | What it does not prove |
 | --- | --- | --- |
-| `Fulfillment:BaseUrl` | app | `http://localhost:8080/api` (emulator), incl. `/api` |
-| `Fulfillment:Webhook:RequireSignedToken` | app | `false` (emulator sends unsigned tokens) |
-| `Landing:RequireAuthentication` | app | `false` (skip Entra sign-in locally) |
-| `WEBHOOK_URL` | emulator | `http://host.docker.internal:5134/api/webhook` |
-| `PUBLISHER_ID` | emulator | any value (default `FourthCoffee`) |
-| `REQUIRE_AUTH` | emulator | unset/false (token-free) |
+| `SyntheticL2LifecycleTests` | Real Fulfillment client → HTTP emulator stub, WebApplicationFactory app, InMemory records; Resolve → Activate → ChangePlan → Suspend → Reinstate → Unsubscribe | Full Node emulator, browser checkout, real SQL persistence, live Marketplace |
+| Activation within that test | Direct `LandingService` invocation that calls the external API | A click or form POST through the buyer page |
+| `PurchaseJourneyTests` | Separate page/form POST, context, saved-record links, EN/JA presentation and fixed guide URL checks | A full browser executing the Node emulator |
+| Emulator Jest tests | API behavior and client logic; purchase client tests use Node VM / simulated DOM | Full cross-application browser E2E |
+| SQL Server integration tests | Provider-specific persistence/migrations when explicitly enabled | A different DB inside SyntheticL2; that fixture still selects InMemory |
 
-## Sources (fetched HTTP 200)
+The synthetic lifecycle checks saved partner state after the transitions and the plan-change
+acknowledgement. A second test rejects an unknown operation with 403 and leaves state unchanged.
+Those results are useful evidence within these boundaries, not a production certification.
 
-- Emulator repo & docs: <https://github.com/microsoft/Commercial-Marketplace-SaaS-API-Emulator>
-  (README, `docs/config.md`, `rest_calls/subscription-apis.http`, `docker/Dockerfile`)
-- Implementing a webhook: <https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-webhook>
-- SaaS fulfillment life cycle: <https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle>
+For prerequisites and the broader test commands, see [develop](develop.md#build--test).
+Automated tests do not leave the browser demo running afterwards.
+
+<a id="b-manual-walkthrough-against-the-real-emulator"></a>
+<a id="1-start-the-emulator"></a>
+<a id="2-run-the-app-pointed-at-the-emulator"></a>
+<a id="3-resolve-and-activate"></a>
+## Prepare manual verification
+
+Use [run-demo](run-demo.md) to start both components with their three connections aligned.
+Use fictional data on your own isolated instance and begin at **app `/` → Start the purchase
+experience → store → checkout → Continue on the partner site → Activate subscription**.
+Open the same saved contract from the result. Do not start with the legacy token utility
+unless you specifically want an API-only exercise.
+
+<a id="4-drive-webhooks"></a>
+<a id="manual-checks"></a>
+## Optional notification and saved-state checks
+
+From the saved contract, use **Try a change for this contract ↗** to select the same emulator
+subscription. Follow UI actions supported in the current state; the names below are notification
+actions, not a separate mandatory sequence for the buyer.
+
+| Action / precondition | Expected partner record |
+| --- | --- |
+| Resolve a new purchase | `PendingFulfillmentStart` |
+| Explicit Activate | `Subscribed` |
+| ChangePlan while subscribed | New `PlanId`, still `Subscribed`; check the saved event and recorded prior plan |
+| Suspend while subscribed | `Suspended` |
+| Reinstate while suspended | `Subscribed` |
+| Unsubscribe from an active/suspended test subscription | `Unsubscribed`; terminal for this record |
+| ChangeQuantity | Event/acknowledgement, not a new quantity field in the partner domain |
+| Renew | Informational event, no state change in this implementation |
+
+Emulator subscription ID and partner record GUID are different. Follow the generated links,
+not invented IDs. The partner list's Marketplace-ID filter must match exactly.
+Return to the same `/admin/{guid}#history` and reload to inspect saved evidence.
+If no prior plan was recorded, **Not recorded** is the expected comparison, not a guess.
+
+Webhook delivery, handling, acknowledgement and storage are distinct steps. Inspect an error
+or missing record rather than assuming an update is merely “pending.” Catalogue edits, operation
+button colors, or a successful emulator HTTP response do not demonstrate partner persistence.
+
+Standard demos relax JWT signature validation for unsigned emulator notifications; Get Operation
+comparison remains. This is not verification of production webhook authentication.
+Real-Marketplace validation is separate work; see the [implementation boundary](walkthrough.md#implementation-boundary).
+
+<a id="5-tear-down"></a>
+## Finish
+
+Stop only your own processes as described in [run-demo](run-demo.md).
+Do not reset all shared subscriptions for this exercise. The demo reset is a separate destructive
+test utility, not a Marketplace purchasing or cancellation operation.
+
+<a id="configuration-reference"></a>
+Connection values live in [run-demo](run-demo.md#check-the-three-connections);
+app settings and DB behavior live in [develop](develop.md#local-configuration).
+The emulator's standalone configuration reference is [here](../emulator/docs/config.md).
+
+<a id="sources-fetched-http-200"></a>
+## References and evidence
+
+[Official integration sources](walkthrough.md#sources) and the
+[current documentation verification record](develop.md#verification-record) distinguish
+specification, automated tests, manual observation, and historical screenshot evidence.

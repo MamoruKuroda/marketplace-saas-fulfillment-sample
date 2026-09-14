@@ -1,6 +1,6 @@
 // Subscription-scoped entry point for `azd up`.
 // Creates the resource group, then provisions the app resources in it.
-// Automated equivalent of docs/deploy.md (App Service + Azure SQL, passwordless).
+// Demo setup: docs/run-demo.md. This includes the emulator, not a real-Marketplace integration.
 targetScope = 'subscription'
 
 @minLength(1)
@@ -22,7 +22,7 @@ param principalName string = 'azd-deployer'
 @description('Type of the deployer principal (User for an interactive azd login).')
 param principalType string = 'User'
 
-@description('Require Microsoft Entra buyer sign-in for the landing/admin pages. Default false = quick, touchable demo (no Entra app registration needed). Set true for a production-shaped deploy and supply landingClientId.')
+@description('Require Microsoft Entra sign-in for landing/admin pages and supply landingClientId. Default false = emulator demo. Enabling sign-in does not implement real-Marketplace API authentication or product access.')
 param requireAuthentication bool = false
 
 @description('Landing app (multitenant) client id. Only used when requireAuthentication is true.')

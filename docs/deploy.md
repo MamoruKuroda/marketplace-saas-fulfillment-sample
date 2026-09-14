@@ -1,4 +1,6 @@
-# Deploy to Azure (App Service + Azure SQL)
+<a id="deploy-to-azure-app-service--azure-sql"></a>
+
+# Real-Marketplace connection reference (additional implementation required)
 
 > **Human-authorized only.** Nothing here is automated — provisioning and deployment are performed by a person. This is a reference
 > walkthrough; run it yourself after reviewing. All identifiers below are **placeholders** —
@@ -6,18 +8,22 @@
 
 > 🌐 日本語版: **[deploy.ja.md](deploy.ja.md)**
 
-> **Prefer one command?** `azd up` automates this entire walkthrough — provision, deploy, and
-> the managed-identity database grant — and additionally deploys the **Fulfillment API Emulator**,
-> so the result is an interactive, click-through demo with buyer sign-in **off**. See
-> [Deploy a cloud demo](../README.md#deploy-a-cloud-demo-azd). The manual steps below instead target
-> the **real** marketplace (sign-in on, no emulator): use them to run each command yourself or to
-> understand every resource. (Running the app **locally**? See the [README](../README.md) — that
-> path uses SQLite and needs no Azure.)
+> **Looking for a working demo?** Use [Prepare the demo](run-demo.md#azure-demo).
+> The standard `azd` configuration includes the emulator; it is **not an automated equivalent
+> of this real-Marketplace configuration**. Local and Azure demos both use that emulator.
 
-Target topology for v0 (initial version, minimal footprint):
+**This is not a complete deployment recipe for a real offer.** It retains illustrative Azure
+resource and connection examples. Before using them, implement the missing API token provider,
+customer-account mapping, product access rules and service-specific operations described in the
+[implementation boundary](walkthrough.md#implementation-boundary). The registered
+`DevNullMarketplaceTokenProvider` returns no token; changing `Fulfillment:BaseUrl` and
+`Landing:RequireAuthentication` does not implement outbound API authentication.
+No live-offer or Azure deployment verification was performed for this documentation update.
+
+Illustrative topology after completing the missing integration:
 
 - **Azure App Service** (Linux, .NET 10) hosts `SaaSAgentSample.Web`.
-- **Azure SQL Database** is the authoritative state store.
+- **Azure SQL Database** stores the partner's records, not Microsoft's commercial billing authority.
 - **Managed identity** connects App Service → Azure SQL **passwordless** (no connection-string secret).
 - Region: **West US 3** (chosen for prior integration testing in this sample).
 
@@ -26,7 +32,7 @@ flowchart LR
     MP["Microsoft Commercial Marketplace"]
     subgraph AZ["Azure (West US 3)"]
         APP["App Service (.NET 10)<br/>SaaSAgentSample.Web"]
-        SQL[("Azure SQL Database<br/>state = source of truth")]
+        SQL[("Azure SQL Database<br/>partner contract records")]
     end
     MP -->|marketplace token| APP
     APP -->|Resolve / Activate / Get Operation| MP
@@ -37,9 +43,10 @@ flowchart LR
 ## Prerequisites
 
 - An Azure subscription and the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
-- A registered **Microsoft Entra application** for buyer sign-in and for the marketplace security
-  token (see [Register a SaaS application](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-registration)).
-- A transactable SaaS offer in Partner Center (or the emulator for pre-Partner-Center testing).
+- Service-to-service API authentication using the app registered in the offer's Technical
+  configuration (see [Register a SaaS application](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-registration)).
+  The sample's `AzureAd:*` sign-in settings have a different purpose and do not supply that token.
+- A real offer and an authorized validation plan. The emulator-only preparation belongs in [run-demo](run-demo.md).
 
 ## 1. Provision (illustrative)
 
@@ -93,7 +100,9 @@ Server=tcp:<sql-server-name>.database.windows.net,1433;Database=SaasAgentSample;
 
 ## 3. App settings
 
-Set configuration on the App Service (App settings use `__` for nested keys). All IDs are placeholders.
+Only after completing the missing integration, review these App Service settings
+(nested keys use `__`). All IDs are placeholders. This is a connection example, not an
+instruction to convert an existing shared demo.
 
 ```bash
 az webapp config appsettings set -g "$RG" -n "$APP" --settings \
@@ -113,8 +122,8 @@ az webapp config appsettings set -g "$RG" -n "$APP" --settings \
 
 Notes:
 
-- `Fulfillment:Webhook:RequireSignedToken` **must be `true`** in production (the local `false` is for
-  the token-free emulator only).
+- Real webhooks need the documented JWT validation. `RequireSignedToken=false` in both standard
+  local and Azure demos is an emulator relaxation, not production authentication.
 - `ExpectedAppId` defaults to the **public** Microsoft Marketplace app id `20e940b3-…` (a documented
   constant, not a secret).
 - Prefer [Key Vault references](https://learn.microsoft.com/en-us/azure/app-service/app-service-key-vault-references)
@@ -132,6 +141,7 @@ On first start the SQL Server path runs the authoritative EF Core migration
 (`Database.Migrate()`), creating the schema. See
 [Deploy an ASP.NET web app](https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore).
 
+<a id="marketplace-reference"></a>
 ## 5. Wire up the marketplace offer (Partner Center)
 
 In the SaaS offer's **Technical configuration**:
@@ -147,13 +157,32 @@ The tenant/app IDs are the app registration used to authenticate to the fulfillm
 (see [Register a SaaS application](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-registration)
 and [Implementing a webhook](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-webhook)).
 
+Listing, preview and publishing are separate from this sample's implementation.
+Do not equate a simulated purchase route with permission to buy a real offer.
+The following links were retained from the former experience walkthrough; **they were not
+re-fetched for this update** and are references to check, not freshly validated policy advice:
+
+- [Create a SaaS offer](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/create-new-saas-offer)
+- [Review and publish an offer](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/review-publish-offer)
+- [Subscription lifecycle](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle)
+- [Web purchase requirements](https://learn.microsoft.com/en-us/marketplace/purchase-software-appsource)
+- [Third-party SaaS self-service policy](https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/allowselfservicepurchase-powershell?view=o365-worldwide#use-allowselfservicepurchase-with-third-party-offer-types)
+- [MCA billing-profile roles](https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/manage-billing-profiles?view=o365-worldwide#assign-billing-profile-roles)
+- [Azure purchase requirements](https://learn.microsoft.com/en-us/marketplace/purchase-saas-offer-in-azure-portal#requirements)
+- [Private Marketplace](https://learn.microsoft.com/en-us/marketplace/create-manage-private-azure-marketplace-new)
+- [Landing sign-in and return visits](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/azure-ad-transactable-saas-landing-page)
+
 ## 6. Verify
 
 - Browse `https://<app-name>.azurewebsites.net/admin` (sign-in required in production).
-- Drive a purchase from Partner Center's preview or the emulator and confirm the subscription
-  appears and transitions correctly.
+- After the missing implementation is complete, verify a real offer under a separately approved
+  plan, including customer access and failure recovery, not just an admin state badge.
+  Emulator checks in [integration verification](l2-demo.md) do not substitute for that validation.
 
 ## 7. Tear down
+
+Destructive: only for resources you created and are authorized to remove. Check `$RG` first.
+For an azd-managed demo use [its own cleanup instructions](run-demo.md#remove-an-azure-demo).
 
 ```bash
 az group delete -n "$RG" --yes --no-wait
@@ -161,12 +190,19 @@ az group delete -n "$RG" --yes --no-wait
 
 ## Guardrails on Azure
 
-- The **state DB remains the single source of truth**; nothing here changes that.
+- The DB is the source of the **partner UI's saved records**, not the authority for all
+  commercial state, billing, or product access.
 - **No secrets in source or app settings** where avoidable — managed identity for SQL, Key Vault
   references for anything else. IDs in this doc are placeholders.
 - Webhook Authorization validation stays **server-side** (Entra JWT + Get Operation).
 
-## Sources (fetched HTTP 200 on 2026-07-18)
+<a id="sources-fetched-http-200-on-2026-07-18"></a>
+## Sources and verification status
+
+The previous document recorded 2026-07-18 as its source-check date. In this update,
+**service registration, webhook validation, and the managed-identity SQL tutorial were
+retrieved on 2026-09-12**. Other retained links below were not reverified.
+The examples were not deployed. See also the [current integration sources](walkthrough.md#sources).
 
 - Deploy an ASP.NET web app to App Service: <https://learn.microsoft.com/en-us/azure/app-service/quickstart-dotnetcore>
 - Connect .NET apps to Azure SQL with managed identity: <https://learn.microsoft.com/en-us/azure/app-service/tutorial-connect-msi-sql-database>

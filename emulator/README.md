@@ -1,6 +1,14 @@
 # Microsoft Commercial Marketplace API Emulator
 
-This repository contains a Node.js implementation of an emulator for the Microsoft commercial marketplace SaaS Fulfillment APIs.
+> **Vendored component, not the main sample's entry point.**
+> To run the partner app and this emulator together, use
+> [Prepare the demo](../docs/run-demo.md) / [デモの準備](../docs/run-demo.ja.md).
+> For the purchase-to-code explanation, use the [implementation guide](../docs/walkthrough.md).
+> Upstream identity, pinned commit, license and local modifications are in [NOTICE.md](NOTICE.md).
+> The standalone references under `emulator/docs` include upstream options not bundled or
+> exercised by this sample; they are not the Azure Container Apps demo recipe.
+
+This directory contains a Node.js implementation of an emulator for the Microsoft commercial marketplace SaaS Fulfillment APIs.
 
 To make hosting the emulator as simple as possible, the repo includes a Dockerfile for a building a containerised version.
 
@@ -44,15 +52,16 @@ The emulator is a Node.js application designed to be run as a Docker container f
 | `/landing.html` | **Demo operator** using the emulator-built Resolve / Activate API test tool. This is neither the partner landing page nor a production page supplied by Microsoft. |
 | `/offers.html`, `/config.html` | **Demo operator** configuring emulator offers/plans and settings; these tools are not Partner Center. |
 
-Open **Demonstration role switch / 説明用の役割切替** for technical and cross-role navigation.
+Open **Tools / ツール** for the emulator's technical navigation.
 It starts closed; these labels do not grant permissions or implement authorization. Existing
 tools and actions remain available. Language controls remain visible outside the disclosure.
 
 The compact four-step map is a **teaching guide**, not product navigation. Links to the partner
-company (SaaS publisher)'s `/admin`, `/#boundary` responsibility overview and `/#how` explanation
+company (SaaS publisher)'s `/admin` and `/#boundary` responsibility overview
 open separately and preserve the selected language and scenario. The overview is not an activated
 landing page. If configuration cannot be read, the guide stays visible without inventing partner
-links. No guide label displays purchase-token values.
+links. No guide label displays purchase-token values. The footer implementation-guide link
+opens the language-matched repository document independently of partner configuration.
 
 After reviewing and placing a simulated order, the existing completion stage shows the handoff
 to the partner company. **Continue on the partner site / パートナー企業のサイトで設定する**
@@ -69,16 +78,13 @@ With the emulator running, you can connect to it using a browser and standard to
 
 The URL and port will depend on [your chosen deployment method](./docs/launching.md). eg if you're running the emulator locally using `docker run`, you would likely connect on `http://localhost:8080`.
 
-1. Run the emulator using your [chosen method](./docs/launching.md)
-1. With a browser, connect to `http://<domain>:<port>` (domain, port depend on your run method)
-   - You should be presented with a page for configuring a synthetic marketplace purchase token
-1. Configure a purchase token
-   1. (Optionally) configure properties on the purchase token (otherwise defaults will be populated)
-   1. Click the `Generate Token` button
-   1. Observe the generated JSON result
-1. You can now either
-   1. Use the emulator's simple, built-in landing page implementation to resolve & activate a subscription
-   1. Exercise the APIs manually (eg using the VS Code REST client or Postman)
+For the buyer experience, start at the **partner app** and continue to `/start.html`, not the
+emulator root. Activation ends that experience; event tests are optional.
+
+For an API-only exercise, open the legacy `/` tool, select an offer and configure fictional
+purchase values. **View JSON** and **View token** expose the corresponding representations;
+**Continue on the partner site** follows the configured landing URL. There is no separate
+**Generate Token** button in this modified UI. Never share or log real purchase tokens.
 
 ### Use the emulator's embedded API test tool
 
@@ -93,8 +99,8 @@ separate partner application. Do not confuse this utility with that buyer landin
 1. Key token properties are displayed on the page
 1. Click the `Activate subscription` button to call the `activate API`
 1. You should see a message indicating a `200 OK` status response
-1. Use **Demonstration role switch → Demo operator · Microsoft-side events** to inspect the
-   resulting emulator record (not the partner DB)
+1. Use **Tools** to open the subscriptions event tool and inspect the resulting emulator
+   record (not the partner DB)
 
 ### A word about the Publisher ID
 
@@ -117,7 +123,7 @@ For more information on configuration see [Configuring the emulator](./docs/conf
 
 ### Exercise the APIs manually
 
-1. Click the `Copy to clipboard` button in the Token area (**not** the JSON result)
+1. Open **View token** and use its copy action (**not** the JSON representation)
 1. This copies the Base64 encoded purchase token to the clipboard
 1. Call the `resolve API` to resolve (decode) the purchase token
    1. This repo includes helpers to call the emulated APIs using the REST Client extension for VS Code
@@ -186,9 +192,14 @@ The format of the marketplace [purchase identification token](https://learn.micr
 
 ## Accelerator Integration
 
-There are two Open Source projects from teams at Microsoft, the SaaS Accelerator and MONA SaaS that have been updated to work with the Emulator in place of the Azure Marketplace. Documentation: [Integrations](/docs/integration.md).
+The upstream reference describes SaaS Accelerator and MONA SaaS integration with the emulator:
+[Integrations](./docs/integration.md). Those are different applications, not setup instructions
+for this repository's partner app.
 
 ## Contributing
+
+The following contribution and trademark notices are retained from upstream. Changes specific
+to this sample are maintained in this repository, not automatically submitted to upstream.
 
 This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
