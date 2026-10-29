@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@azure/msal-node": "^5.4.2",
+    "@azure/msal-node": "^7.1.0",
     "dotenv": "^16.0.0",
     "express": "^4.22.2",
     "isomorphic-fetch": "^3.0.0",
