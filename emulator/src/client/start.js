@@ -105,6 +105,10 @@
             !requested.has("scenario") || !!journey.scenario(requested.get("scenario"));
         document.querySelectorAll('input[name="scenario"]').forEach(function (radio) {
             radio.addEventListener("change", function () {
+                if (radio.value === "web-checkout-training") {
+                    window.location.href = journey.withContext("/web-checkout.html").href;
+                    return;
+                }
                 document.getElementById("scenario-warning").hidden = true;
                 updateScenario();
             });

@@ -29,7 +29,8 @@ Changes we made on top of the upstream snapshot:
   language controls remain outside it. Role labels do not implement authorization.
   APIs, backend behavior, authentication and storage contracts are unchanged.
 - **Localization** — `src/client/i18n.js` adds an EN / 日本語 catalogue and applies it to the
-  existing markup through `data-i18n` attributes.
+  existing markup through `data-i18n` attributes. The Japanese portal-entry purchase button
+  uses **購入する** to make the action clear; the English label remains **Subscribe**.
 - **Demo map** — `src/client/demo-map.js` renders a compact four-step teaching guide, with
   current-step markers and no expanded cards. It also renders the shared demonstration-tool
   links without waiting for configuration. The guide reads `/api/util/config` only to locate
@@ -49,6 +50,14 @@ Changes we made on top of the upstream snapshot:
   resource-group controls, a review step, and simulated order confirmation. Only fictional saved
   cards and Azure resources can be selected. Built-in offers use a fictional product title for the
   visual example; their actual IDs, plans and stored catalogue are unchanged.
+- **Web Checkout training** — `src/client/web-checkout.{html,js,css}` and
+  `web-checkout-model.js` provide an in-memory, fictional checkout and post-purchase state
+  simulation. Manual setup passes a simulated token to the configured existing landing page;
+  that page can call the emulator's Resolve and Activate APIs. It does not create a real order,
+  send email or persist billing data. The Web screen is not live and its order is lost on reload.
+  The Web-training offer is not registered in the emulator catalogue; subsequent plan-change
+  exercises require a corresponding offer. The read-only PTC reference stops before ordering;
+  the existing portal purchase flow remains separately accessible.
 - **Simulation boundary** — This does not collect credentials or payment data, evaluate real
   identity/RBAC/purchase policies, or assert that all routes are available for every offer. Built-in
   sample catalogue prices are USD; their UI uses fixed display prices of USD 50 / JPY 7,500 by

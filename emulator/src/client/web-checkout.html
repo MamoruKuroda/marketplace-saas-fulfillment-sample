@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Web Checkout — Demo</title>
+  <link rel="stylesheet" href="core.css">
+  <link rel="stylesheet" href="web-checkout.css">
+  <script defer src="i18n.js"></script>
+  <script defer src="purchase-journey.js"></script>
+  <script defer src="web-checkout-model.js"></script>
+  <script defer src="web-checkout.js"></script>
+</head>
+<body>
+  <header class="boundary-header marketplace-header">
+    <div><h1>Marketplace Web Checkout</h1><p class="side-tag" data-text="training"></p></div>
+    <nav aria-label="Language"><button type="button" id="lang-ja">日本語</button><button type="button" id="lang-en">English</button></nav>
+  </header>
+  <main class="wc-shell">
+    <p class="wc-notice" data-text="notice"></p>
+    <details class="wc-settings">
+      <summary data-text="settings"></summary>
+      <div class="wc-settings-grid">
+        <label><span data-text="preset"></span><select id="preset"><option value="general" data-text="general"></option><option value="observation" data-text="observation"></option></select></label>
+        <label><span data-text="route"></span><select id="route"><option value="web">Marketplace Web</option><option value="azure">Azure portal</option></select></label>
+        <label><span data-text="commercial"></span><select id="commercial"><option value="public" data-text="public"></option><option value="private" data-text="private"></option></select></label>
+        <label><span data-text="activation"></span><select id="activation"><option value="auto" data-text="auto"></option><option value="manual" data-text="manual"></option></select></label>
+        <label><span data-text="countryStep"></span><select id="country-step"><option value="yes" data-text="show"></option><option value="no" data-text="hide"></option></select></label>
+        <label><span data-text="planCount"></span><select id="plan-count"><option value="one" data-text="one"></option><option value="multiple" data-text="multiple"></option></select></label>
+        <label><span data-text="paymentFrequency"></span><select id="payment-frequency"><option value="year" data-text="annual"></option><option value="oneTime" data-text="upfront"></option></select></label>
+        <label><span data-text="renewDefault"></span><select id="renew-default"><option value="on">On</option><option value="off">Off</option></select></label>
+      </div>
+      <p data-text="fixtureNote"></p>
+      <button type="button" id="reset" data-text="reset"></button>
+    </details>
+    <div class="wc-frame">
+      <nav aria-label="Checkout progress"><ol id="progress"></ol></nav>
+      <section class="wc-content">
+        <p id="evidence-class" class="wc-evidence"></p>
+        <div id="error" role="alert" hidden></div>
+        <section id="country" hidden>
+          <h2 tabindex="-1" data-text="countryTitle"></h2>
+          <p data-text="countryNote"></p>
+          <label for="country-select" data-text="countryLabel"></label>
+          <select id="country-select"><option value="" data-text="choose"></option><option value="JP" data-text="japan"></option><option value="US" data-text="usa"></option></select>
+        </section>
+        <section id="plan" hidden>
+          <h2 tabindex="-1" data-text="planTitle"></h2>
+          <p data-text="product"></p>
+          <fieldset><legend data-text="planLegend"></legend><div id="plans"></div></fieldset>
+          <p id="plan-details"></p><ul id="plan-prices"></ul>
+          <p data-text="commercialNote"></p>
+        </section>
+        <section id="price" hidden>
+          <h2 tabindex="-1" data-text="priceTitle"></h2>
+          <fieldset><legend data-text="term"></legend><div id="terms"></div></fieldset>
+          <p><strong data-text="paymentOption"></strong> <span id="price-display"></span></p>
+          <p><strong data-text="activation"></strong> <span id="activation-display"></span></p>
+          <p data-text="activationNote"></p>
+          <label class="wc-check"><input type="checkbox" id="renew"> <span data-text="renew"></span></label>
+          <div class="wc-cards">
+            <div><h3 data-text="cardInvoice"></h3><p data-text="invoiceNote"></p><a href="https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/pay-for-your-subscription" target="_blank" rel="noopener noreferrer" data-text="invoiceLink"></a></div>
+            <div><h3 data-text="azureRoute"></h3><p data-text="macc"></p><a href="https://learn.microsoft.com/en-us/marketplace/azure-consumption-commitment-benefit" target="_blank" rel="noopener noreferrer" data-text="maccLink"></a><br><a id="azure-example" href="/start.html?scenario=azure-portal" data-text="azureExample"></a></div>
+          </div>
+        </section>
+        <section id="payment" hidden>
+          <h2 tabindex="-1" data-text="paymentTitle"></h2>
+          <dl id="summary"></dl>
+          <p id="observed-price-note" hidden data-text="observedPriceNote"></p>
+          <div class="wc-cards">
+            <div><h3 data-text="soldTo"></h3><p data-text="fictionalAccount"></p></div>
+            <div><h3 data-text="billTo"></h3><label for="profile" data-text="profile"></label>
+              <select id="profile"><option value="" data-text="chooseProfile"></option><option value="sample" data-text="sampleProfile"></option><option value="sample-team" data-text="sampleTeamProfile"></option></select>
+              <button type="button" id="add-profile" data-text="addProfile"></button>
+              <div id="profile-form" hidden>
+                <p data-text="profileSafety"></p>
+                <label for="profile-name" data-text="profileName"></label><select id="profile-name" required><option value="" data-text="choose"></option><option value="demo" data-text="sampleProfile"></option><option value="demo-team" data-text="sampleTeamProfile"></option></select>
+                <label for="po" data-text="po"></label><select id="po"><option value="none" data-text="noPo"></option><option value="demo">DEMO-001</option></select>
+                <label for="profile-method" data-text="method"></label><select id="profile-method"><option value="" data-text="choose"></option><option value="card" data-text="demoCard"></option><option value="invoice" data-text="demoInvoice"></option></select>
+                <p id="profile-error" role="alert" hidden data-text="profileRequired"></p>
+                <button type="button" id="save-profile" data-text="save"></button><button type="button" id="cancel-profile" data-text="cancel"></button>
+              </div>
+            </div>
+          </div>
+          <p><strong data-text="tax"></strong> <span data-text="taxNote"></span></p>
+          <p><strong data-text="total"></strong> <span id="total"></span></p>
+          <div class="wc-legal"><h3 data-text="legal"></h3><p data-text="legalNote"></p><a href="https://learn.microsoft.com/en-us/legal/marketplace/marketplace-terms" target="_blank" rel="noopener noreferrer" data-text="legalLink"></a> · <a href="https://learn.microsoft.com/en-us/azure/cost-management-billing/understand/mca-overview#billing-profiles" target="_blank" rel="noopener noreferrer" data-text="profilesLink"></a></div>
+          <p data-text="notice"></p>
+          <button type="button" id="order" class="wc-primary" disabled data-text="mockOrder"></button>
+        </section>
+        <section id="complete" hidden>
+          <h2 tabindex="-1" data-text="simulationTitle"></h2>
+          <p class="wc-simulation" data-text="simulationBoundary"></p>
+          <dl><dt data-text="marketplaceState"></dt><dd id="subscription-state"></dd><dt data-text="productReadiness"></dt><dd data-text="notConfirmed"></dd></dl>
+          <p id="completion-overview"></p>
+          <details><summary data-text="presenterDetails"></summary><p id="completion-detail"></p>
+            <label for="readiness" data-text="readinessControl"></label>
+            <select id="readiness"><option value="unconfirmed" data-text="readinessUnknown"></option><option value="preparing" data-text="readinessPreparing"></option><option value="ready" data-text="readinessReady"></option></select>
+          </details>
+          <div id="manual-handoff" class="wc-handoff" hidden>
+            <h3 data-text="configureTitle"></h3>
+            <p data-text="configureExplanation"></p>
+            <p data-text="handoffBoundary"></p>
+            <p><span data-text="mockOrderId"></span> <code id="mock-order-id"></code></p>
+            <p id="handoff-status" role="status"></p>
+            <a id="configure-account" class="wc-primary wc-link" target="_blank" rel="noopener noreferrer" hidden data-text="configureNow"></a>
+            <button type="button" id="retry-config" hidden data-text="retryConfig"></button>
+            <p data-text="catalogueBoundary"></p>
+            <p><a href="https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle" target="_blank" rel="noopener noreferrer" data-text="lifecycleDoc"></a></p>
+          </div>
+          <p data-text="roles"></p>
+          <p data-text="privateBoundary"></p>
+        </section>
+        <div class="wc-actions"><button type="button" id="back" data-text="back"></button><button type="button" id="next" class="wc-primary" data-text="next"></button></div>
+      </section>
+    </div>
+    <p><a href="/start.html" data-text="legacy"></a></p>
+  </main>
+</body>
+</html>

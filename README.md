@@ -25,6 +25,41 @@ setup. Both standard demo configurations use the emulator, not the real Marketpl
 This repository does not promise an always-available shared demo; use an operator-provided
 URL or prepare your own instance.
 
+### Web Checkout training (about 60–90 seconds)
+
+From the emulator purchase entry's presenter controls, choose **Web Checkout training (opens a separate simulation)**.
+The checkout is an in-browser simulation; manual setup continues in the configured existing demo.
+
+1. Choose a fictional plan and explain that the buyer checks its price and term.
+2. In **Price + billing**, distinguish the plan's activation setting from the buyer's
+   auto-renew choice, and Web payment from the Azure subscription route.
+3. In **Payment**, select a fictional billing profile, distinguish Sold-to from Bill-to,
+   review the total and select **Simulate order**. No real order, charge or data submission occurs.
+4. The general example defaults to **Auto Activation Off** and shows
+   `PendingFulfillmentStart` immediately after purchase. Select **Configure account now
+   (simulation)** to continue to the existing partner landing page for Resolve → confirmation →
+   Activate. In a real purchase, setup can be started from the post-purchase screen or confirmation
+   email. `Subscribed` after activation and product or license readiness are separate.
+
+Presenter settings offer country-step, plan-count, payment frequency, route, public/Private Offer explanation,
+activation and initial renewal choices. Manual setup passes the same fictional order ID, plan,
+term and renewal setting in a simulated token; the emulator creates its record only when the
+destination resolves it. Pricing and billing details are not passed, and no email is sent.
+The Web screen is not live and its in-page order is lost on reload. Its fictional offer is not
+registered in the emulator catalogue, so later plan-change exercises require a corresponding
+offer to be registered. A static preview cannot load the destination: run the emulator.
+Automatic activation and webhook behavior are in-page simulations. The existing Azure portal
+training remains a separate purchase example.
+
+The PTC reference illustrates observation of a public zero-price listing through Payment
+before ordering. Purchase success, Private Offer acceptance and product readiness were not
+observed. Ordering is disabled in this reference; the original captures are in the supplied
+`review.html`. The one-year price-label difference is an observation with an unknown cause.
+Official references: [auto activation](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/create-new-saas-offer-plans#configure-auto-activation),
+[subscription lifecycle](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle),
+[purchasing on Marketplace](https://learn.microsoft.com/en-us/marketplace/purchase-software-appsource),
+and [MACC conditions](https://learn.microsoft.com/en-us/marketplace/azure-consumption-commitment-benefit).
+
 <a id="what-it-looks-like"></a>
 You can also preview the UI without running it:
 

@@ -25,6 +25,40 @@
 このリポジトリは常時利用できる共有デモを保証していません。管理者提供のURLか、
 自分で準備した環境を使います。
 
+### Web Checkout 教材（約60〜90秒）
+
+エミュレーターの購入入口のプレゼンター用設定で **Web Checkout 教材（選択で別の模擬画面を開く）** を選びます。
+購入画面はブラウザー内の模擬で、手動設定の続きは設定済みの既存デモへ移れます。
+
+1. 架空プランを選び、購入担当者が期間と価格を確認することを説明します。
+2. **価格と請求**で自動有効化はプラン設定、自動更新は購入時の選択だと示します。
+   Webの支払いと Azure subscription 経由を区別します。
+3. **支払い**では架空の請求プロファイルを選び、Sold-to と Bill-to、合計を確認して
+   **模擬注文**を押します。実注文・請求や実データの送信はありません。
+4. 一般例は **Auto Activation Off** が初期値で、購入直後の模擬状態は
+   `PendingFulfillmentStart` です。**Configure account now（模擬）** を押すと、
+   既存のパートナー側 Landing Page で Resolve → 確認 → Activate を体験できます。
+   実際には購入後の画面または確認メールから設定を開始します。Activate 後の
+   `Subscribed` と、製品の環境やライセンス準備は別です。
+
+プレゼンター設定では国ステップ、プラン数、支払頻度、購入経路、公開／Private Offerの説明、
+有効化方式、更新初期値を選べます。手動の導線は同じ架空注文ID、プラン、期間、更新設定を
+模擬トークンで渡し、エミュレーターは移動先の Resolve 時にレコードを初めて作成します。
+価格・請求情報は渡さず、実メールも送信しません。Web画面の状態はライブ更新されず、
+再読み込みで消えます。Web教材専用の架空オファーはエミュレーターのカタログに未登録のため、
+後続のプラン変更演習には対応するオファーの登録が必要です。静的プレビューでは設定先を
+読み込めないため、エミュレーターを起動してください。自動有効化・Webhookは画面内の
+状態シミュレーションです。Azure portal の操作は別の既存教材で体験できます。
+
+PTC参照は公開0円Listingから注文前のPaymentまでの観察を教材化したものです。
+注文成功、Private Offer受諾、製品準備は未確認です。参照画面の注文は無効で、
+元のキャプチャは提供された `review.html` にあります。1年価格の表示差は観察事実として
+記載し、理由は未確認です。公式仕様の参照：
+[自動有効化](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/create-new-saas-offer-plans#configure-auto-activation)、
+[購読ライフサイクル](https://learn.microsoft.com/en-us/partner-center/marketplace-offers/pc-saas-fulfillment-life-cycle)、
+[Marketplace での購入](https://learn.microsoft.com/en-us/marketplace/purchase-software-appsource)、
+[MACCの条件](https://learn.microsoft.com/en-us/marketplace/azure-consumption-commitment-benefit)。
+
 <a id="画面イメージ"></a>
 動かさずに画面を確認することもできます。
 

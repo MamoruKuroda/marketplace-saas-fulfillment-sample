@@ -96,6 +96,7 @@
             "hint.landing": "This emulator-built Resolve / Activate API test page is neither the partner company's landing page nor a page supplied by Microsoft for production.",
             "hint.offers": "Demo operator setup: sample offers and plans for this emulator only. This tool is not Partner Center.",
             "hint.config": "Emulator settings — webhook URL, timing delays, and sample data.",
+            "experience.webCheckoutTraining": "Web Checkout training (opens a separate simulation)",
             "journey.mapLabel": "Teaching guide: responsibility boundaries",
             "journey.badge": "ILLUSTRATIVE PURCHASE UX",
             "journey.startHint": "Discover a service → simulated checkout → the partner company's site.",
@@ -474,6 +475,7 @@
             "hint.landing": "エミュレーター製の Resolve / Activate API テスト画面です。パートナー企業のランディングページでも、Microsoft が本番用に提供する画面でもありません。",
             "hint.offers": "デモ操作者がエミュレーター専用のサンプルオファー・プランを設定するツールです。Partner Center ではありません。",
             "hint.config": "エミュレーターの設定 — Webhook URL、遅延、サンプルデータ。",
+            "experience.webCheckoutTraining": "Web Checkout 教材（選択で別の模擬画面を開く）",
             "journey.mapLabel": "教材ガイド：責任分界",
             "journey.badge": "購入 UX の説明用デモ",
             "journey.startHint": "サービスを探す → 模擬購入 → パートナー企業のサイトへ。",
@@ -504,7 +506,7 @@
             "journey.manageOffers": "オファーの設定を確認",
             "journey.catalogueNote": "このエミュレーターの既存のオファーです。次の画面でも同じオファーとプランを使います。",
             "journey.checkoutNext": "次は購入画面のデモです。実際の注文ではありません。",
-            "journey.subscribe": "サブスクライブ",
+            "journey.subscribe": "購入する",
             "journey.directCheckout": "既存のデモを使う場合：購入フォームを直接開く →",
             "journey.directTitle": "デモ購入フォームを直接表示",
             "journey.directHint": "経路別の前提条件はサービスを探す画面でデモの経路を選ぶと表示されます。この購入フォームはシナリオを指定しなくても使えます。",
@@ -797,15 +799,18 @@
 
     function applyI18n(root) {
         root = root || document;
-        const $root = $(root);
-        $root.find('[data-i18n]').addBack('[data-i18n]').each(function () {
-            this.textContent = t(this.getAttribute('data-i18n'));
+        function elements(selector) {
+            const result = Array.from(root.querySelectorAll(selector));
+            if (root.matches && root.matches(selector)) result.unshift(root);
+            return result;
+        }
+        elements('[data-i18n]').forEach(function (el) {
+            el.textContent = t(el.getAttribute('data-i18n'));
         });
-        $root.find('[data-i18n-html]').addBack('[data-i18n-html]').each(function () {
-            this.innerHTML = t(this.getAttribute('data-i18n-html'));
+        elements('[data-i18n-html]').forEach(function (el) {
+            el.innerHTML = t(el.getAttribute('data-i18n-html'));
         });
-        $root.find('[data-i18n-attr]').addBack('[data-i18n-attr]').each(function () {
-            const el = this;
+        elements('[data-i18n-attr]').forEach(function (el) {
             const pairs = el.getAttribute('data-i18n-attr').split(';');
             pairs.forEach(function (pair) {
                 const parts = pair.split(':');

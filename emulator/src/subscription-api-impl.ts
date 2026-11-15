@@ -164,7 +164,7 @@ export const activateApi: ApiCall = async (req, res, services) => {
   // TODO: Figure out the actual term unit and set the dates based on that
 
   const now = moment();
-  const endMoment = now.add(subscription.term.termUnit);
+  const endMoment = now.clone().add(subscription.term.termUnit);
 
   subscription.term.startDate = now.toDate();
   subscription.term.endDate = endMoment.toDate();

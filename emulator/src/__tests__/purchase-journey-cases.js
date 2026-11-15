@@ -26,6 +26,25 @@ const catalogue = {
     }
 };
 
+check("purchase token preserves explicit simulated term and renewal while legacy defaults stay unchanged", () => {
+    const test = runtime();
+    const purchase = {
+        id: "demo-id", name: "demo", offerId: "training", planId: "team",
+        beneficiary: { emailId: "demo@example.invalid" }, purchaser: { emailId: "demo@example.invalid" }
+    };
+    const legacy = JSON.parse(test.sandbox.PurchaseJourney.purchaseToken(purchase).json);
+    assert.equal(legacy.autoRenew, false);
+    assert.equal(legacy.isTest, false);
+    assert.equal(Object.hasOwn(legacy, "term"), false);
+    const token = test.sandbox.PurchaseJourney.purchaseToken(purchase, {
+        term: { termUnit: "P3Y" }, autoRenew: true, isTest: true
+    });
+    const payload = JSON.parse(Buffer.from(token.base64, "base64").toString("utf8"));
+    assert.deepEqual(payload.term, { termUnit: "P3Y" });
+    assert.equal(payload.autoRenew, true);
+    assert.equal(payload.isTest, true);
+});
+
 class Element {
     constructor(tag = "div") {
         this.tag = tag;
@@ -118,7 +137,7 @@ function discovery(query = "") {
     ].forEach(id => test.nodes.set(id, new Element(id.endsWith("-offer") || id.endsWith("-plan") ? "select" : "div")));
     ["discovery-offer", "discovery-plan", "discovery-continue"].forEach(id => { test.nodes.get(id).disabled = true; });
     ["catalogue-error", "scenario-warning", "product-preview"].forEach(id => { test.nodes.get(id).hidden = true; });
-    const radios = ["web-card", "web-azure", "azure-portal"].map(value => {
+    const radios = ["web-card", "web-azure", "azure-portal", "web-checkout-training"].map(value => {
         const radio = new Element("input");
         radio.value = value;
         return radio;
@@ -145,6 +164,33 @@ function discovery(query = "") {
     test.load("start.js");
     return { ...test, radios, start: () => test.ready[test.ready.length - 1]() };
 }
+
+check("presenter can open the separate Web Checkout training without replacing existing routes", async () => {
+    const test = discovery("?culture=ja");
+    test.sandbox.i18nLang = () => "ja";
+    await test.start();
+    const training = test.radios.find(radio => radio.value === "web-checkout-training");
+    training.checked = true;
+    training.listeners.change();
+    assert.equal(test.sandbox.location.pathname, "/web-checkout.html");
+    assert.equal(test.sandbox.location.searchParams.get("culture"), "ja");
+});
+
+check("localization initializes without jQuery and translates both the root and descendants", () => {
+    const test = runtime();
+    const root = new Element();
+    root.setAttribute("data-i18n", "common.plan");
+    root.matches = selector => selector === "[data-i18n]";
+    const child = new Element();
+    child.setAttribute("data-i18n-attr", "aria-label:common.plan");
+    root.querySelectorAll = selector => selector === "[data-i18n-attr]" ? [child] : [];
+    test.sandbox.document.documentElement = {};
+    test.load("i18n.js");
+    test.ready[test.ready.length - 1]();
+    test.sandbox.applyI18n(root);
+    assert.equal(root.textContent, "Plan");
+    assert.equal(child.getAttribute("aria-label"), "Plan");
+});
 
 function checkout(query = "") {
     const test = runtime(query);
@@ -224,6 +270,28 @@ for (const scenario of ["web-card", "web-azure", "azure-portal"]) {
         assert.equal(target.searchParams.get("offer"), "existing/offer & one");
         assert.equal(target.searchParams.get("plan"), "team & annual");
         assert.deepEqual(test.requests, ["/api/util/offers"]);
+    });
+}
+
+for (const [language, expected] of [["ja", "購入する"], ["en", "Subscribe"]]) {
+    check(`${language}: portal purchase button uses clear localized wording after route changes`, async () => {
+        const test = discovery("?scenario=azure-portal&culture=" + language);
+        const start = test.ready.at(-1);
+        test.load("i18n.js");
+        await start();
+        const button = test.nodes.get("discovery-continue");
+        assert.equal(button.textContent, expected);
+        assert.equal(button.disabled, false);
+        test.radios.forEach(radio => { radio.checked = radio.value === "web-card"; });
+        test.radios[0].listeners.change();
+        assert.equal(button.textContent, test.sandbox.t("common.getItNow"));
+        test.radios.forEach(radio => { radio.checked = radio.value === "azure-portal"; });
+        test.radios[2].listeners.change();
+        assert.equal(button.textContent, expected);
+        test.nodes.get("discovery-form").listeners.submit({ preventDefault() {} });
+        assert.equal(test.sandbox.location.pathname, "/checkout.html");
+        assert.equal(test.sandbox.location.searchParams.get("scenario"), "azure-portal");
+        assert.equal(test.sandbox.location.searchParams.get("culture"), language);
     });
 }
 

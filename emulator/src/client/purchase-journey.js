@@ -47,7 +47,7 @@
         return url.href;
     }
 
-    function purchaseToken(purchase) {
+    function purchaseToken(purchase, fulfillment) {
         const sub = {
             id: purchase.id,
             name: purchase.name,
@@ -56,10 +56,11 @@
             beneficiary: purchase.beneficiary,
             purchaser: purchase.purchaser,
             quantity: purchase.quantity,
-            autoRenew: false,
-            isTest: false,
+            autoRenew: fulfillment ? fulfillment.autoRenew : false,
+            isTest: fulfillment ? fulfillment.isTest : false,
             isFreeTrial: false
         };
+        if (fulfillment && fulfillment.term !== undefined) sub.term = fulfillment.term;
         const json = JSON.stringify(sub, null, 2);
         let binary = "";
         for (const byte of new TextEncoder().encode(json)) binary += String.fromCharCode(byte);

@@ -153,6 +153,7 @@ describe('Activate Api Tests', () => {
     const subscription = {
       planId: 'plan',
       term: {
+        termUnit: 'P3Y',
         startDate: undefined,
         endDate: undefined
       },
@@ -171,12 +172,13 @@ describe('Activate Api Tests', () => {
 
     // Act
     //
+    jest.setSystemTime(new Date('2026-01-15T00:00:00.000Z'));
     await activateApi(req, res, services);
 
     // Assert
     //
-    expect(subscription.term.startDate).toBeDefined();
-    expect(subscription.term.endDate).toBeDefined();
+    expect(subscription.term.startDate).toEqual(new Date('2026-01-15T00:00:00.000Z'));
+    expect(subscription.term.endDate).toEqual(new Date('2029-01-15T00:00:00.000Z'));
     expect(subscription.saasSubscriptionStatus).toBe('Subscribed');
     expect(updateSubscriptionAsync?.mock.calls.length === 1);
     expectStatus(res, 200);
