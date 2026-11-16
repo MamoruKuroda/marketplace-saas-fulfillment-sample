@@ -10,6 +10,7 @@
     <script src="i18n.js"></script>
     <script src="purchase-journey.js"></script>
     <script src="purchase-experience.js"></script>
+    <script src="web-checkout-model.js"></script>
     <script src="demo-map.js"></script>
     <script src="start.js"></script>
   </head>
@@ -36,22 +37,22 @@
           <summary data-i18n="experience.presenterControls">Presenter controls</summary>
           <fieldset class="scenario-picker">
             <legend data-i18n="experience.entryRoute">Entry route</legend>
-            <label><input type="radio" name="scenario" value="web-card" checked /><span data-i18n="journey.web-card.title">Web → own corporate card</span></label>
+            <label><input type="radio" name="scenario" value="web-card" checked /><span data-i18n="journey.web-card.title">Web direct purchase (Web Checkout)</span></label>
             <label><input type="radio" name="scenario" value="web-azure" /><span data-i18n="journey.web-azure.title">Web → Azure purchasing</span></label>
             <label><input type="radio" name="scenario" value="azure-portal" /><span data-i18n="journey.azure-portal.title">Start in Azure portal</span></label>
-            <label><input type="radio" name="scenario" value="web-checkout-training" /><span data-i18n="experience.webCheckoutTraining">Web Checkout training (opens a separate simulation)</span></label>
           </fieldset>
-          <label for="discovery-offer" data-i18n="experience.catalogueOffer">Emulator offer</label>
-          <select id="discovery-offer" disabled></select>
+          <div id="catalogue-offer-controls"><label for="discovery-offer" data-i18n="experience.catalogueOffer">Emulator offer</label>
+          <select id="discovery-offer" disabled></select></div>
           <p data-i18n="journey.routeLimits">Routes are illustrative, not available for every offer.</p>
           <a href="/" data-journey-link data-i18n="experience.technicalForm">Open the technical token form</a>
         </details>
       </div>
       <p id="scenario-warning" class="journey-error" role="alert" hidden data-i18n="journey.invalidScenario"></p>
+      <p id="web-training-notice" class="subtle" hidden data-i18n="experience.webTrainingNotice">Web direct purchase uses the fictional Web Checkout training offer. The emulator catalogue is available on Azure routes.</p>
       <p id="catalogue-status" role="status" data-i18n="journey.loading">Loading the emulator offer catalogue…</p>
       <div id="catalogue-error" class="journey-error" role="alert" hidden>
         <p id="catalogue-error-message"></p>
-        <a href="/offers.html" data-journey-link data-i18n="journey.manageOffers">View offer configuration</a>
+        <a id="catalogue-error-link" href="/offers.html" data-journey-link data-i18n="journey.manageOffers">View offer configuration</a>
       </div>
       <article id="product-preview" class="storefront" aria-labelledby="product-name" hidden>
         <div class="store-chrome"><strong id="listing-surface"></strong><span data-i18n="experience.catalogueBreadcrumb">Marketplace / Productivity / SaaS</span></div>
@@ -93,7 +94,7 @@
           </div>
         </div>
       </article>
-      <p class="subtle" data-i18n="experience.priceNotice">Sample price: US$50 / ¥7,500 — fixed demo values, not a real exchange rate.</p>
+      <p id="catalogue-price-notice" class="subtle" data-i18n="experience.priceNotice">Sample price: US$50 / ¥7,500 — fixed demo values, not a real exchange rate.</p>
       <noscript><p class="journey-error">JavaScript is required. / JavaScript を有効にしてください。</p></noscript>
     </main>
     <footer class="implementation-guide"><a data-implementation-guide data-i18n="map.learnMore" href="https://github.com/MamoruKuroda/marketplace-saas-fulfillment-sample/blob/main/docs/walkthrough.md" target="_blank" rel="noopener noreferrer">Implementation guide ↗</a></footer>

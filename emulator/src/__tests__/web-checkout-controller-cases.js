@@ -135,6 +135,34 @@ check("manual checkout passes its frozen mock purchase to the configured landing
     assert.equal(english.searchParams.get("token"), token);
 });
 
+for (const plan of ["basic", "team"]) {
+    check(`entry selection ${plan} survives checkout and reaches the mock purchase`, async () => {
+        const test = runtime({ url: `http://localhost:3978/web-checkout.html?culture=ja&offer=web-checkout-training&plan=${plan}` });
+        const selected = test.byId("plans").children.find(item => item.children[0].checked);
+        assert.equal(selected.children[0].value, plan);
+        assert.equal(new URL(test.byId("return-start").href).searchParams.get("plan"), plan);
+        test.payment();
+        test.click("order");
+        await test.flush();
+        const url = new URL(test.byId("configure-account").href);
+        const purchase = JSON.parse(Buffer.from(url.searchParams.get("token"), "base64").toString("utf8"));
+        assert.equal(purchase.offerId, "web-checkout-training");
+        assert.equal(purchase.planId, plan);
+    });
+}
+
+check("invalid entry selection is explicit and requires a new plan choice", () => {
+    for (const query of ["offer=web-checkout-training&plan=unknown", "offer=other&plan=team", "plan=team", "offer=web-checkout-training"]) {
+        const test = runtime({ url: `http://localhost:3978/web-checkout.html?${query}` });
+        assert.equal(test.byId("next").disabled, true);
+        assert.equal(test.byId("error").hidden, false);
+        assert.equal(test.byId("plans").children.some(item => item.children[0].checked), false);
+        test.byId("plans").children[1].children[0].listeners.change();
+        assert.equal(test.byId("next").disabled, false);
+        assert.equal(test.byId("error").hidden, true);
+    }
+});
+
 check("observation stays read-only and returning to general restores manual activation", () => {
     const test = runtime();
     test.change("preset", "observation");

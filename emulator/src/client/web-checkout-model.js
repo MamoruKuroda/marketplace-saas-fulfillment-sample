@@ -1,5 +1,7 @@
 (function (root) {
     "use strict";
+    const trainingOfferId = "web-checkout-training";
+    const trainingProductName = "Workspace Automation SaaS";
     const fixtures = {
         general: {
             plans: [
@@ -58,12 +60,12 @@
         quote(state);
         const party = { emailId: "demo.user@example.invalid", objectId: id, tenantId: id };
         return {
-            id: id, name: "web-checkout-demo", offerId: "web-checkout-training", planId: state.plan,
+            id: id, name: "web-checkout-demo", offerId: trainingOfferId, planId: state.plan,
             beneficiary: party, purchaser: { ...party }, autoRenew: state.renew,
             term: { termUnit: "P" + state.term + "Y" }, isTest: true
         };
     }
-    const api = { fixtures, initial, selectPreset, plans, quote, complete, manualPurchase };
+    const api = { trainingOfferId, trainingProductName, fixtures, initial, selectPreset, plans, quote, complete, manualPurchase };
     if (typeof module !== "undefined" && module.exports) module.exports = api;
     else root.WebCheckoutModel = api;
 }(typeof window === "undefined" ? globalThis : window));

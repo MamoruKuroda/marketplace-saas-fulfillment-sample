@@ -133,11 +133,12 @@ function discovery(query = "") {
         "discovery-form", "discovery-offer", "discovery-plan", "discovery-continue",
         "catalogue-error", "catalogue-status", "catalogue-error-message", "listing-surface",
         "scenario-warning", "product-preview", "product-name", "product-publisher",
-        "product-price", "product-period", "plan-cards"
+        "product-price", "product-period", "plan-cards", "catalogue-offer-controls",
+        "web-training-notice", "catalogue-price-notice", "catalogue-error-link"
     ].forEach(id => test.nodes.set(id, new Element(id.endsWith("-offer") || id.endsWith("-plan") ? "select" : "div")));
     ["discovery-offer", "discovery-plan", "discovery-continue"].forEach(id => { test.nodes.get(id).disabled = true; });
     ["catalogue-error", "scenario-warning", "product-preview"].forEach(id => { test.nodes.get(id).hidden = true; });
-    const radios = ["web-card", "web-azure", "azure-portal", "web-checkout-training"].map(value => {
+    const radios = ["web-card", "web-azure", "azure-portal"].map(value => {
         const radio = new Element("input");
         radio.value = value;
         return radio;
@@ -161,19 +162,53 @@ function discovery(query = "") {
         return node;
     };
     test.load("purchase-experience.js");
+    test.load("web-checkout-model.js");
     test.load("start.js");
     return { ...test, radios, start: () => test.ready[test.ready.length - 1]() };
 }
 
-check("presenter can open the separate Web Checkout training without replacing existing routes", async () => {
+check("Web direct route selects a fictional plan and opens Web Checkout only on purchase", async () => {
     const test = discovery("?culture=ja");
     test.sandbox.i18nLang = () => "ja";
     await test.start();
-    const training = test.radios.find(radio => radio.value === "web-checkout-training");
-    training.checked = true;
-    training.listeners.change();
+    assert.equal(test.sandbox.location.pathname, "/start.html");
+    assert.equal(test.nodes.get("discovery-offer").value, "web-checkout-training");
+    assert.equal(test.nodes.get("catalogue-offer-controls").hidden, true);
+    test.nodes.get("discovery-plan").value = "team";
+    test.nodes.get("discovery-plan").listeners.change();
+    assert.match(test.nodes.get("product-price").textContent, /12,000/);
+    test.nodes.get("discovery-form").listeners.submit({ preventDefault() {} });
     assert.equal(test.sandbox.location.pathname, "/web-checkout.html");
     assert.equal(test.sandbox.location.searchParams.get("culture"), "ja");
+    assert.equal(test.sandbox.location.searchParams.get("offer"), "web-checkout-training");
+    assert.equal(test.sandbox.location.searchParams.get("plan"), "team");
+});
+
+check("Web direct purchase remains available when the Azure catalogue fails", async () => {
+    const test = discovery("?scenario=web-card");
+    test.sandbox.fetch = async () => { throw new Error("offline"); };
+    await test.start();
+    assert.equal(test.nodes.get("discovery-continue").disabled, false);
+    assert.equal(test.nodes.get("catalogue-error").hidden, true);
+    test.radios.forEach(radio => { radio.checked = radio.value === "web-azure"; });
+    test.radios[1].listeners.change();
+    assert.equal(test.nodes.get("catalogue-error-message").textContent, "journey.catalogueError");
+    assert.equal(test.nodes.get("discovery-continue").disabled, true);
+});
+
+check("invalid Web entry plans are reported and require an explicit choice", async () => {
+    for (const plan of ["unknown", "__proto__", "constructor", ""]) {
+        const test = discovery("?scenario=web-card&offer=web-checkout-training&plan=" + plan);
+        await test.start();
+        assert.equal(test.nodes.get("catalogue-error-message").textContent, "experience.webSelectionError");
+        assert.equal(test.nodes.get("catalogue-error").hidden, false);
+        assert.equal(test.nodes.get("catalogue-error-link").hidden, true);
+        assert.equal(test.nodes.get("discovery-continue").disabled, true);
+        test.nodes.get("plan-cards").children[1].querySelector("button").listeners.click();
+        assert.equal(test.nodes.get("catalogue-error").hidden, true);
+        assert.equal(test.nodes.get("discovery-plan").value, "team");
+        assert.equal(test.nodes.get("discovery-continue").disabled, false);
+    }
 });
 
 check("localization initializes without jQuery and translates both the root and descendants", () => {
@@ -250,7 +285,7 @@ function checkout(query = "") {
     return { ...test, state, rendered, start: () => start() };
 }
 
-for (const scenario of ["web-card", "web-azure", "azure-portal"]) {
+for (const scenario of ["web-azure", "azure-portal"]) {
     check(`${scenario}: context, catalogue selection and checkout navigation`, async () => {
         const requested = new URLSearchParams({ scenario, culture: "ja", offer: "existing/offer & one", plan: "team & annual" });
         const test = discovery("?" + requested);
@@ -308,21 +343,29 @@ check("unknown scenario is ignored by metadata helpers and visibly defaults on d
     }
 });
 
-check("scenario switching changes presentation, not catalogue or selected plan", async () => {
+check("scenario switching keeps Web and Azure selections separate without navigating", async () => {
     const test = discovery("?scenario=web-card");
     await test.start();
-    const offer = test.nodes.get("discovery-offer").value;
-    const plan = test.nodes.get("discovery-plan").value;
+    test.nodes.get("discovery-plan").value = "team";
+    test.nodes.get("discovery-plan").listeners.change();
     test.radios.forEach(radio => { radio.checked = radio.value === "azure-portal"; });
     test.radios[2].listeners.change();
+    assert.equal(test.sandbox.location.pathname, "/start.html");
     assert.equal(test.sandbox.location.searchParams.get("scenario"), "azure-portal");
-    assert.equal(test.nodes.get("discovery-offer").value, offer);
-    assert.equal(test.nodes.get("discovery-plan").value, plan);
+    assert.equal(test.nodes.get("discovery-offer").value, "existing/offer & one");
+    test.nodes.get("discovery-plan").value = "team & annual";
+    test.nodes.get("discovery-plan").listeners.change();
+    test.radios.forEach(radio => { radio.checked = radio.value === "web-card"; });
+    test.radios[0].listeners.change();
+    assert.equal(test.nodes.get("discovery-plan").value, "team");
+    test.radios.forEach(radio => { radio.checked = radio.value === "azure-portal"; });
+    test.radios[2].listeners.change();
+    assert.equal(test.nodes.get("discovery-plan").value, "team & annual");
     assert.deepEqual(test.requests, ["/api/util/offers"]);
 });
 
 check("product-first entry shows catalogue prices and selecting a plan card updates the buy panel", async () => {
-    const test = discovery();
+    const test = discovery("?scenario=web-azure");
     await test.start();
     assert.equal(test.nodes.get("product-preview").hidden, false);
     assert.equal(test.nodes.get("product-price").textContent, "£37.00");
@@ -341,7 +384,7 @@ check("product-first entry shows catalogue prices and selecting a plan card upda
 
 check("built-in product and plan cards show fixed sample prices for the selected language", async () => {
     for (const [language, expected] of [["ja", "￥7,500"], ["en", "US$50.00"]]) {
-        const test = discovery();
+        const test = discovery("?scenario=web-azure");
         test.sandbox.i18nLang = () => language;
         const offer = structuredClone(Object.values(catalogue)[0]);
         offer.builtIn = true;
@@ -354,7 +397,7 @@ check("built-in product and plan cards show fixed sample prices for the selected
 });
 
 check("product entry never offers checkout when the selected catalogue plan has no price", async () => {
-    const test = discovery();
+    const test = discovery("?scenario=web-azure");
     const offer = structuredClone(Object.values(catalogue)[0]);
     delete offer.plans.basic.planComponents;
     test.sandbox.fetch = async () => ({ ok: true, json: async () => ({ [offer.offerId]: offer }) });
@@ -494,7 +537,7 @@ for (const [name, response, message] of [
     ["no plans", { ok: true, json: async () => ({ only: { offerId: "only", displayName: "Only", publisher: "Demo", plans: {} } }) }, "journey.noPlans"]
 ]) {
     check(`${name}: explicit error, no invented offer and no checkout`, async () => {
-        const test = discovery();
+        const test = discovery("?scenario=web-azure");
         test.sandbox.fetch = async () => response;
         await test.start();
         assert.equal(test.nodes.get("catalogue-error").hidden, false);
@@ -507,7 +550,7 @@ for (const [name, response, message] of [
 }
 
 check("network failure stays an explicit error", async () => {
-    const test = discovery();
+    const test = discovery("?scenario=web-azure");
     test.sandbox.fetch = async () => { throw new Error("offline"); };
     await test.start();
     assert.equal(test.nodes.get("catalogue-error-message").textContent, "journey.catalogueError");
@@ -515,7 +558,7 @@ check("network failure stays an explicit error", async () => {
 });
 
 check("invalid offer/plan does not silently purchase a different selection", async () => {
-    const test = discovery("?offer=missing&plan=missing");
+    const test = discovery("?scenario=web-azure&offer=missing&plan=missing");
     await test.start();
     assert.equal(test.nodes.get("catalogue-error-message").textContent, "journey.selectionError");
     assert.equal(test.nodes.get("discovery-offer").selectedIndex, -1);
@@ -541,7 +584,7 @@ check("selection persistence removes a stale plan when an offer has no plans", (
 });
 
 check("catalogue display uses text rather than interpreting product names as HTML", async () => {
-    const test = discovery();
+    const test = discovery("?scenario=web-azure");
     const offer = structuredClone(Object.values(catalogue)[0]);
     offer.displayName = '<img src=x onerror="alert(1)">';
     offer.publisher = "<script>untrusted</script>";

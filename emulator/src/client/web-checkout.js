@@ -10,7 +10,7 @@
         countryStep: "国のステップ", show: "表示", hide: "省略", planCount: "プラン数", one: "単一", multiple: "複数", paymentFrequency: "支払頻度（架空例）", annual: "年払い", upfront: "一括払い", renewDefault: "更新の初期値",
         fixtureNote: "国の表示条件は未確認です。PTC参照は公開0円・Web・自動有効化・単一プランの観察であり、Private Offer の受諾ではありません。設定変更は画面内の模擬注文をリセットします。",
         reset: "最初からやり直す", countryTitle: "請求国", countryNote: "国と言語は別です。これは架空の選択で、国の登録・変更は行いません。", countryLabel: "請求国（必須）",
-        choose: "選択してください", japan: "日本", usa: "米国", planTitle: "プランを選択", product: "架空の Workspace Automation SaaS", planLegend: "プラン",
+        choose: "選択してください", japan: "日本", usa: "米国", planTitle: "プランを選択", product: "架空の " + model.trainingProductName, planLegend: "プラン",
         commercialNote: "公開条件とPrivate Offerは独立した設定です。商談条件・署名済み注文契約・Private Offerの承認／購入は別々です。この教材は専用のPrivate Offer購入画面を再現しません。",
         priceTitle: "価格と請求", term: "契約期間", paymentOption: "価格・支払頻度:", activationNote: "自動／手動はプランの設定で、購入時の自動更新とは別です。",
         renew: "自動更新", cardInvoice: "Webでの支払い", invoiceNote: "カードまたは請求書払いの例。請求書払いは条件を満たし承認された組織が対象です。",
@@ -37,7 +37,8 @@
         lifecycleDoc: "公式資料: SaaS 購読ライフサイクル（別タブ）",
         configLoading: "既存教材の設定先を確認しています…", configError: "設定先を読み込めません。静的プレビューではなくエミュレーターを起動し、Landing Page の設定を確認してください。",
         retryConfig: "設定先を再確認", purchaseError: "模擬注文を作成できません。ブラウザーの設定を確認して再試行してください。",
-        back: "戻る", next: "次へ", legacy: "既存の購入教材に戻る",
+        back: "戻る", next: "次へ", legacy: "商品ページに戻る",
+        entrySelectionError: "入口の商品またはプランを確認できません。教材のプランを選び直してください。",
         observed: "実観察の参照：公開0円画面の注文前まで。操作は教材内の再現です。", mock: "架空のローカル教材：価格・組織・請求先は実在しません。",
         routeCaution: "Azure portal型の画面自体は今回未観察です。ここはWeb形式の説明画面で、Azure portal型は別の既存教材から操作します。",
         planDescription: "架空サービスのプラン。年額のサンプルを期間に応じて合計します。", observedDescription: "公開画面の表示を参照した例。製品や取引条件を保証しません。",
@@ -55,7 +56,7 @@
         countryStep: "Country step", show: "Show", hide: "Omit", planCount: "Plans", one: "Single", multiple: "Multiple", paymentFrequency: "Payment frequency (fictional)", annual: "Annual", upfront: "Upfront", renewDefault: "Renewal initial value",
         fixtureNote: "The country-step condition is unconfirmed. PTC reference is a public zero-price, Web, automatic-activation, single-plan observation, not Private Offer acceptance. Changing settings resets the in-page simulation.",
         reset: "Start over", countryTitle: "Billing country", countryNote: "Country and language are separate. This fictional selection does not register or change a country.", countryLabel: "Billing country (required)",
-        choose: "Select", japan: "Japan", usa: "United States", planTitle: "Select a plan", product: "Fictional Workspace Automation SaaS", planLegend: "Plan",
+        choose: "Select", japan: "Japan", usa: "United States", planTitle: "Select a plan", product: "Fictional " + model.trainingProductName, planLegend: "Plan",
         commercialNote: "Public terms and Private Offers are independent. Commercial negotiation, a signed order agreement, and Private Offer approval/purchase are distinct. This training does not recreate a private-offer purchase UI.",
         priceTitle: "Price + billing", term: "Billing term", paymentOption: "Price / payment frequency:", activationNote: "Auto/manual is a plan setting, separate from the buyer's auto-renew choice.",
         renew: "Auto-renew", cardInvoice: "Web payment", invoiceNote: "Card or invoice examples. Invoice payment is available only to eligible, approved organizations.",
@@ -82,7 +83,8 @@
         lifecycleDoc: "Official SaaS subscription lifecycle (new tab)",
         configLoading: "Checking the existing training's destination…", configError: "Could not load the destination. Start the emulator rather than a static preview and check its landing-page configuration.",
         retryConfig: "Retry destination", purchaseError: "Could not create the simulated order. Check your browser settings and retry.",
-        back: "Back", next: "Next", legacy: "Return to existing purchase training",
+        back: "Back", next: "Next", legacy: "Return to product page",
+        entrySelectionError: "The product or plan from the entry page is invalid. Select a training plan again.",
         observed: "Observed reference: public zero-price screen before ordering only. Interactions here are a training recreation.", mock: "Fictional local training: prices, organizations and billing data are not real.",
         routeCaution: "The Azure portal purchase screen was not observed in this investigation. This is a Web-format explanation; use the separate existing training for the portal example.",
         planDescription: "A fictional service plan. Sample annual pricing is totaled over the term.", observedDescription: "Based on the public display; this does not guarantee any product or transaction terms.",
@@ -93,11 +95,21 @@
         manualDetail: "After the buyer starts setup, the publisher resolves the supplied token and activates the purchase after explicit confirmation, starting billing. A real subscription is canceled if not activated within 30 days.",
         offer: "Offer", plan: "Plan", billing: "Billing term", renewal: "Auto-renew", on: "On", off: "Off", price: "Price", subtotal: "Term subtotal"
     };
-    const requestedLanguage = new URLSearchParams(location.search).get("culture");
+    const requested = new URLSearchParams(location.search);
+    const requestedLanguage = requested.get("culture");
     const storedLanguage = localStorage.getItem("emu-lang");
     let lang = ["ja", "en"].includes(requestedLanguage) ? requestedLanguage :
         (["ja", "en"].includes(storedLanguage) ? storedLanguage : ((navigator.language || "").toLowerCase().startsWith("ja") ? "ja" : "en"));
     let state = model.initial();
+    let entrySelectionError = false;
+    if (requested.has("offer") || requested.has("plan")) {
+        const plan = requested.get("plan");
+        if (requested.get("offer") === model.trainingOfferId && model.fixtures.general.plans.some(item => item.id === plan)) {
+            state.plan = plan;
+        } else {
+            entrySelectionError = true;
+        }
+    }
     let step = "plan";
     let manualOrder = null;
     let landingTarget = null;
@@ -151,10 +163,12 @@
         $("evidence-class").textContent = text(state.preset === "observation" ? "observed" : "mock") + (state.route === "azure" ? " " + text("routeCaution") : "");
         const plans = $("plans"); plans.replaceChildren();
         model.plans(state).forEach(item => {
-            plans.appendChild(optionRadio("plan-choice", item.id, item[lang], state.plan === item.id, () => {
-                state.plan = item.id; draw(false); plans.querySelector("input:checked").focus();
+            plans.appendChild(optionRadio("plan-choice", item.id, item[lang], !entrySelectionError && state.plan === item.id, () => {
+                state.plan = item.id; entrySelectionError = false; clearError(); draw(false); plans.querySelector("input:checked").focus();
             }));
         });
+        $("plan-details").hidden = entrySelectionError;
+        $("plan-prices").hidden = entrySelectionError;
         $("plan-details").textContent = text(state.preset === "observation" ? "observedDescription" : "planDescription") + " " +
             (state.preset === "observation" ? "1: ¥0/year; 2–5: ¥0/one-time payment." : text("yearPrice") + ": " + money(model.fixtures.general.plans.find(item => item.id === state.plan).price));
         const prices = $("plan-prices"); prices.replaceChildren();
@@ -176,7 +190,7 @@
         $("activation-display").textContent = text(state.activation) + " (" + (state.activation === "auto" ? "On" : "Off") + ")";
         const summary = $("summary"); summary.replaceChildren();
         const chosen = model.plans(state).find(item => item.id === state.plan);
-        pair(summary, text("offer"), state.preset === "observation" ? "PTC public listing (reference)" : "Workspace Automation");
+        pair(summary, text("offer"), state.preset === "observation" ? "PTC public listing (reference)" : model.trainingProductName);
         pair(summary, text("route"), state.route === "azure" ? "Azure portal" : "Marketplace Web");
         pair(summary, text("commercial"), text(state.commercial));
         pair(summary, text("plan"), chosen[lang]); pair(summary, text("billing"), state.term + text("years"));
@@ -214,12 +228,26 @@
             : configStatus === "error" ? text("configError") : "";
         $("retry-config").hidden = configStatus !== "error";
         $("azure-example").href = "/start.html?scenario=azure-portal&culture=" + lang;
+        const returnUrl = new URL("/start.html", location.href);
+        returnUrl.searchParams.set("scenario", "web-card");
+        returnUrl.searchParams.set("culture", lang);
+        if (state.preset === "general" && !entrySelectionError) {
+            returnUrl.searchParams.set("offer", model.trainingOfferId);
+            returnUrl.searchParams.set("plan", state.plan);
+        }
+        $("return-start").href = returnUrl.href;
         $("back").hidden = step === steps()[0] || step === "complete";
         $("next").hidden = step === "payment" || step === "complete";
+        $("next").disabled = entrySelectionError;
+        if (entrySelectionError) {
+            $("error").textContent = text("entrySelectionError");
+            $("error").hidden = false;
+        }
         if (focus) $(step).querySelector("h2").focus();
     }
     function resetDraft() {
         configVersion++;
+        entrySelectionError = false;
         manualOrder = null; landingTarget = null; configStatus = "idle";
         state.country = state.countryStep ? "" : "JP";
         state.plan = model.plans(state)[0].id; state.term = 1; state.renew = state.renewDefault;
@@ -272,6 +300,7 @@
     $("readiness").addEventListener("change", () => { state.productReadiness = $("readiness").value; draw(false); });
     $("profile").addEventListener("change", () => { state.profile = $("profile").value; $("profile").removeAttribute("aria-invalid"); clearError(); draw(false); });
     $("next").addEventListener("click", () => {
+        if (entrySelectionError) return error("entrySelectionError", $("plans"));
         clearError();
         if (step === "country" && !state.country) return error("errCountry", $("country-select"));
         if (step === "plan" && !model.plans(state).some(item => item.id === state.plan)) return error("errPlan", $("plans"));

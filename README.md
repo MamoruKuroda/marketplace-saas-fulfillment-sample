@@ -27,7 +27,9 @@ URL or prepare your own instance.
 
 ### Web Checkout training (about 60–90 seconds)
 
-From the emulator purchase entry's presenter controls, choose **Web Checkout training (opens a separate simulation)**.
+From the emulator purchase entry's presenter controls, choose **Web direct purchase (Web Checkout)**,
+review the fictional product and plan, and select **Get it now**. The selected plan carries into Web Checkout.
+Web direct purchase uses the fictional training offer; the emulator catalogue remains available on Azure routes.
 The checkout is an in-browser simulation; manual setup continues in the configured existing demo.
 
 1. Choose a fictional plan and explain that the buyer checks its price and term.

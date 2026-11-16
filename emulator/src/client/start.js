@@ -5,6 +5,7 @@
         document.title = t("experience.productName") + " — " + t("experience.demoNotice");
         const journey = window.PurchaseJourney;
         const experience = window.PurchaseExperience;
+        const training = window.WebCheckoutModel;
         const form = document.getElementById("discovery-form");
         const offerSelect = document.getElementById("discovery-offer");
         const planSelect = document.getElementById("discovery-plan");
@@ -13,6 +14,14 @@
         const status = document.getElementById("catalogue-status");
         const requested = new URLSearchParams(window.location.search);
         let selectedScenario = journey.scenario(requested.get("scenario")) || "web-card";
+        const requestedOffer = requested.get("offer");
+        let webPlan = requestedOffer === training.trainingOfferId
+            ? requested.get("plan") || ""
+            : training.fixtures.general.plans[0].id;
+        let azureSelection = requestedOffer && requestedOffer !== training.trainingOfferId
+            ? { offerId: requestedOffer, planId: requested.get("plan") } : null;
+        let catalogue = [];
+        let catalogueStatus = "loading";
         let offers = [];
         const tabs = document.querySelectorAll(".product-tabs a");
         tabs.forEach(function (link) {
@@ -27,12 +36,66 @@
             document.getElementById("catalogue-error-message").textContent = t(key);
         }
 
+        function trainingOffer() {
+            const language = journey.context().culture;
+            const plans = {};
+            training.fixtures.general.plans.forEach(function (plan) {
+                plans[plan.id] = {
+                    displayName: plan[language], isPricePerSeat: false,
+                    planComponents: { recurrentBillingTerms: [{ price: plan.price, currency: "JPY", termUnit: "P1Y" }] }
+                };
+            });
+            return {
+                offerId: training.trainingOfferId, displayName: training.trainingProductName,
+                publisher: t("experience.fictionalPublisher"), plans: plans
+            };
+        }
+
         function updateScenario() {
             selectedScenario = document.querySelector('input[name="scenario"]:checked').value;
+            const web = selectedScenario === "web-card";
             document.body.classList.toggle("portal-entry", selectedScenario === "azure-portal");
             document.getElementById("listing-surface").textContent = t("journey." + selectedScenario + ".surface");
             next.textContent = t(selectedScenario === "azure-portal" ? "journey.subscribe" : "common.getItNow");
-            journey.updateSelection(offerSelect.value || undefined, planSelect.value || undefined, selectedScenario);
+            document.getElementById("catalogue-offer-controls").hidden = web;
+            document.getElementById("web-training-notice").hidden = !web;
+            document.getElementById("catalogue-price-notice").hidden = web;
+            document.getElementById("catalogue-error-link").hidden = web;
+            error.hidden = true;
+            status.hidden = web || catalogueStatus !== "loading";
+            if (!web && catalogueStatus !== "ready") {
+                document.getElementById("product-preview").hidden = true;
+                next.disabled = true;
+                journey.updateSelection(undefined, undefined, selectedScenario);
+                if (catalogueStatus === "error") showError("journey.catalogueError");
+                else if (catalogueStatus === "empty") showError("journey.noOffers");
+                return;
+            }
+            offers = web ? [trainingOffer()] : catalogue;
+            offerSelect.replaceChildren();
+            offers.forEach(function (offer) {
+                const option = document.createElement("option");
+                option.value = offer.offerId;
+                option.textContent = offer.displayName + " (" + offer.offerId + ")";
+                offerSelect.appendChild(option);
+            });
+            offerSelect.disabled = web;
+            let selection = null;
+            if (!web && azureSelection) {
+                try {
+                    selection = journey.selection(offers, azureSelection.offerId, azureSelection.planId);
+                } catch (cause) {
+                    offerSelect.selectedIndex = -1;
+                    document.getElementById("product-preview").hidden = true;
+                    next.disabled = true;
+                    journey.updateSelection(undefined, undefined, selectedScenario);
+                    showError("journey.selectionError");
+                    return;
+                }
+            }
+            if (selection) offerSelect.value = selection.offer.offerId;
+            updateOffer(web ? webPlan : selection && selection.planId);
+            if (web && !Object.prototype.hasOwnProperty.call(offers[0].plans, webPlan)) showError("experience.webSelectionError");
         }
 
         function updatePlan() {
@@ -40,6 +103,10 @@
             const plan = offer && offer.plans[planSelect.value];
             const terms = experience.terms(plan);
             next.disabled = !plan || terms.length === 0;
+            if (plan) {
+                if (selectedScenario === "web-card") webPlan = planSelect.value;
+                else azureSelection = { offerId: offerSelect.value, planId: planSelect.value };
+            }
             document.getElementById("product-price").textContent = terms.length
                 ? experience.price(terms[0].price, terms[0].currency, journey.context().culture, offer.builtIn)
                 : t("experience.noPrice");
@@ -51,7 +118,8 @@
                 card.classList.toggle("selected", selected);
                 card.querySelector("button").setAttribute("aria-pressed", String(selected));
             });
-            journey.updateSelection(offerSelect.value, planSelect.value, selectedScenario);
+            journey.updateSelection(offerSelect.value,
+                selectedScenario === "web-card" && !plan ? webPlan : planSelect.value, selectedScenario);
         }
 
         function termLabel(unit) {
@@ -84,13 +152,14 @@
                 choose.textContent = t("experience.selectPlan") + " — " + entry[1].displayName;
                 choose.addEventListener("click", function () {
                     planSelect.value = entry[0];
+                    error.hidden = true;
                     updatePlan();
                     planSelect.focus();
                 });
                 card.append(title, price, choose);
                 cards.appendChild(card);
             });
-            if (planId) planSelect.value = planId;
+            if (planId !== undefined && planId !== null) planSelect.value = planId;
             planSelect.disabled = planSelect.options.length === 0;
             document.getElementById("product-preview").hidden = false;
             document.getElementById("product-name").textContent = experience.productName(offer, t);
@@ -105,52 +174,33 @@
             !requested.has("scenario") || !!journey.scenario(requested.get("scenario"));
         document.querySelectorAll('input[name="scenario"]').forEach(function (radio) {
             radio.addEventListener("change", function () {
-                if (radio.value === "web-checkout-training") {
-                    window.location.href = journey.withContext("/web-checkout.html").href;
-                    return;
-                }
                 document.getElementById("scenario-warning").hidden = true;
                 updateScenario();
             });
         });
         updateScenario();
         offerSelect.addEventListener("change", function () { updateOffer(); });
-        planSelect.addEventListener("change", updatePlan);
+        planSelect.addEventListener("change", function () { error.hidden = true; updatePlan(); });
         form.addEventListener("submit", function (event) {
             event.preventDefault();
             if (next.disabled) return;
-            window.location.href = journey.checkoutUrl(offerSelect.value, planSelect.value);
+            if (selectedScenario === "web-card") {
+                const url = journey.withContext("/web-checkout.html");
+                url.searchParams.set("offer", training.trainingOfferId);
+                url.searchParams.set("plan", planSelect.value);
+                window.location.href = url.href;
+            } else {
+                window.location.href = journey.checkoutUrl(offerSelect.value, planSelect.value);
+            }
         });
 
         try {
-            offers = await journey.loadOffers();
+            catalogue = await journey.loadOffers();
+            catalogueStatus = catalogue.length ? "ready" : "empty";
         } catch (error) {
-            status.hidden = true;
-            showError("journey.catalogueError");
-            return;
+            catalogueStatus = "error";
         }
-        status.hidden = true;
-        if (!offers.length) {
-            showError("journey.noOffers");
-            return;
-        }
-        offers.forEach(function (offer) {
-            const option = document.createElement("option");
-            option.value = offer.offerId;
-            option.textContent = offer.displayName + " (" + offer.offerId + ")";
-            offerSelect.appendChild(option);
-        });
-        offerSelect.disabled = false;
-        let selection;
-        try {
-            selection = journey.selection(offers, requested.get("offer"), requested.get("plan"));
-        } catch (error) {
-            offerSelect.selectedIndex = -1;
-            showError("journey.selectionError");
-            return;
-        }
-        if (selection) offerSelect.value = selection.offer.offerId;
-        updateOffer(selection && selection.planId);
+        if (selectedScenario !== "web-card") updateScenario();
     }
 
     if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start);
